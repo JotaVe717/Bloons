@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Calculadora Paragon - BTD6</title>
+  <style>
+    :root {
+      --bg-color: #0b0e14;
+      --card-bg: #151b23;
+      --border-color: #30363d;
+      --accent-color: #58a6ff;
+      --gold: #f59e0b;
+      --gold-light: #fbbf24;
+      --green: #10b981;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --danger: #ef4444;
+
+      /* Categorias */
+      --cat-primary: #38bdf8;
+      --cat-military: #22c55e;
+      --cat-magic: #c084fc;
+      --cat-support: #facc15;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text);
+      padding: 12px 10px 32px 10px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 780px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    header {
+      text-align: center;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h1 {
+      color: var(--gold-light);
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background-color: #21262d;
+      color: var(--text-muted);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--gold);
+    }
+    .status-dot.active { background-color: var(--green); }
+    .status-dot.error { background-color: var(--danger); }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    /* 5 COLUNAS ENXUTAS */
+    .five-cols-board {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+
+    .col-category {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .col-header {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      text-align: center;
+      padding: 3px 0;
+      border-radius: 4px;
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+    .col-header.primary { color: var(--cat-primary); }
+    .col-header.military { color: var(--cat-military); }
+    .col-header.magic { color: var(--cat-magic); }
+    .col-header.support { color: var(--cat-support); }
+    .col-header.diff { color: #94a3b8; }
+
+    .btn-item {
+      height: 30px;
+      background-color: #0b0e14;
+      border: 1.5px solid #21262d;
+      border-radius: 5px;
+      padding: 2px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease-in-out;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    @media (min-width: 600px) {
+      .btn-item { height: 28px; font-size: 0.74rem; }
+    }
+
+    .btn-item:active { transform: scale(0.96); }
+
+    .btn-item.cat-primary.active {
+      border-color: var(--cat-primary);
+      background-color: rgba(56, 189, 248, 0.16);
+      color: var(--cat-primary);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.35);
+    }
+    .btn-item.cat-military.active {
+      border-color: var(--cat-military);
+      background-color: rgba(34, 197, 94, 0.16);
+      color: var(--cat-military);
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.35);
+    }
+    .btn-item.cat-magic.active {
+      border-color: var(--cat-magic);
+      background-color: rgba(192, 132, 252, 0.16);
+      color: var(--cat-magic);
+      box-shadow: 0 0 8px rgba(192, 132, 252, 0.35);
+    }
+    .btn-item.cat-support.active {
+      border-color: var(--cat-support);
+      background-color: rgba(250, 204, 21, 0.16);
+      color: var(--cat-support);
+      box-shadow: 0 0 8px rgba(250, 204, 21, 0.35);
+    }
+
+    .btn-item.diff-btn {
+      background-color: #12161f;
+      border-color: #262c36;
+      color: #64748b;
+      font-size: 0.65rem;
+    }
+    .btn-item.diff-btn.active {
+      background-color: #0f172a;
+      border-color: #38bdf8;
+      color: #38bdf8;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.5), inset 0 0 4px rgba(56, 189, 248, 0.2);
+    }
+
+    /* BANNER SUPERIOR COM PREÇO BASE E CUSTO TOTAL */
+    .paragon-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(88, 166, 255, 0.08) 0%, rgba(245, 158, 11, 0.08) 100%);
+      border: 1px solid rgba(88, 166, 255, 0.25);
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+
+    .banner-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .banner-col.right {
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .banner-col span {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+    }
+
+    .banner-col strong {
+      font-size: 1.25rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .banner-col.left strong {
+      color: var(--text);
+    }
+
+    .banner-col.right strong {
+      color: var(--gold-light);
+    }
+
+    /* SLIDER DE INVESTIMENTO */
+    .slider-box {
+      background: linear-gradient(180deg, #182230 0%, #111722 100%);
+      border: 1px solid #3b82f644;
+      border-radius: 8px;
+      padding: 12px 10px;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 4px;
+    }
+    .slider-val-tag {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--gold-light);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .range-input {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 14px;
+      border-radius: 7px;
+      background: #21262d;
+      outline: none;
+      margin: 4px 0;
+      cursor: pointer;
+    }
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 2px solid #fff;
+      box-shadow: 0 0 6px rgba(245, 158, 11, 0.8);
+      cursor: pointer;
+    }
+
+    .degree-shortcuts-title {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin: 8px 0 4px 0;
+      font-weight: 600;
+    }
+
+    .degree-shortcuts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+    @media (min-width: 600px) {
+      .degree-shortcuts-grid { grid-template-columns: repeat(6, 1fr); gap: 5px; }
+    }
+
+    .btn-degree-target {
+      background-color: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 5px;
+      padding: 4px 2px;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      height: 38px;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .btn-degree-target .deg-label {
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: var(--gold-light);
+    }
+    .btn-degree-target .deg-cost {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .btn-degree-target.reached {
+      border-color: rgba(16, 185, 129, 0.5);
+      background-color: rgba(16, 185, 129, 0.12);
+    }
+    .btn-degree-target.reached .deg-cost { color: var(--green); }
+    .btn-degree-target.unreachable { border-color: rgba(239, 68, 68, 0.3); }
+    .btn-degree-target.unreachable .deg-cost { color: var(--danger); }
+
+    .btn-chip {
+      background-color: #21262d;
+      border: 1px solid #30363d;
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-size: 0.74rem;
+      cursor: pointer;
+      font-weight: 600;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+    }
+    .btn-chip:active { background-color: #30363d; }
+
+    /* CARD DE GRAU ATUAL */
+    .result-card-clean {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 14px;
+    }
+
+    .degree-display {
+      text-align: center;
+      width: 100%;
+    }
+
+    .degree-number {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--gold);
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .progress-bar-bg {
+      background-color: #21262d;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 8px 0 4px 0;
+      width: 100%;
+    }
+
+    .progress-bar-fill {
+      background: linear-gradient(90deg, #3b82f6, #10b981);
+      height: 100%;
+      width: 0%;
+      transition: width 0.2s ease-out;
+    }
+
+    /* CARD COMBATE E FARM */
+    .card-title {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--accent-color);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 6px;
+    }
+    .form-group:last-child { margin-bottom: 0; }
+
+    label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .input-pill-box {
+      display: flex;
+      align-items: center;
+      background-color: #0b0e14;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0 8px;
+      height: 36px;
+      transition: border-color 0.2s;
+    }
+    .input-pill-box:focus-within {
+      border-color: var(--accent-color);
+    }
+    .input-pill-box input {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      width: 100%;
+      height: 100%;
+    }
+    .input-pill-box span.prefix {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-right: 4px;
+      user-select: none;
+    }
+
+    /* Barra Bicolor Integrada */
+    .bicolor-track {
+      background-color: #21262d;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      margin-top: 6px;
+    }
+    .seg-pops {
+      background-color: var(--green);
+      height: 100%;
+      width: 0%;
+      transition: width 0.2s;
+    }
+    .seg-farm {
+      background-color: var(--gold);
+      height: 100%;
+      width: 0%;
+      transition: width 0.2s;
+    }
+
+    .bar-legend {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* 3 CONTADORES DE TAMBOR (WHEEL/CYLINDER PICKERS) */
+    .drum-pickers-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .drum-box {
+      background-color: #0b0e14;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .drum-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      text-align: center;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .drum-cylinder-viewport {
+      height: 72px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      cursor: ns-resize;
+      touch-action: none;
+      user-select: none;
+      background: radial-gradient(circle at center, #161b22 0%, #0b0e14 100%);
+      border-radius: 4px;
+      margin: 2px 0;
+      box-shadow: inset 0 6px 8px rgba(0,0,0,0.7), inset 0 -6px 8px rgba(0,0,0,0.7);
+    }
+
+    .drum-cylinder-viewport::after {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 0;
+      right: 0;
+      height: 24px;
+      border-top: 1px solid rgba(88, 166, 255, 0.35);
+      border-bottom: 1px solid rgba(88, 166, 255, 0.35);
+      background-color: rgba(88, 166, 255, 0.08);
+      pointer-events: none;
+    }
+
+    .drum-roll-track {
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+      transition: transform 0.08s ease-out;
+    }
+
+    .drum-roll-item {
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #64748b;
+      opacity: 0.45;
+      transform: scale(0.85);
+      transition: opacity 0.1s, transform 0.1s, color 0.1s;
+    }
+
+    .drum-roll-item.active {
+      color: var(--gold-light);
+      font-size: 1.15rem;
+      font-weight: 900;
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .drum-subtext {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      text-align: center;
+      font-weight: 600;
+      margin-top: 3px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Calculadora Paragon</h1>
+    <div class="status-badge" id="syncStatus">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">Conectando à planilha...</span>
+    </div>
+  </header>
+
+  <!-- 1. ESCOLHA DO PARAGON E DA DIFICULDADE -->
+  <div class="card">
+    <div class="five-cols-board">
+      <div class="col-category">
+        <div class="col-header primary">Prim.</div>
+        <div id="colPrimary" class="col-category"></div>
+      </div>
+      <div class="col-category">
+        <div class="col-header military">Milit.</div>
+        <div id="colMilitary" class="col-category"></div>
+      </div>
+      <div class="col-category">
+        <div class="col-header magic">Mág.</div>
+        <div id="colMagic" class="col-category"></div>
+      </div>
+      <div class="col-category">
+        <div class="col-header support">Suport.</div>
+        <div id="colSupport" class="col-category"></div>
+      </div>
+      <div class="col-category">
+        <div class="col-header diff">Dific.</div>
+        <div class="btn-item diff-btn" data-diff="facil" onclick="setDifficulty('facil')">FÁCIL</div>
+        <div class="btn-item diff-btn active" data-diff="medio" onclick="setDifficulty('medio')">MÉDIO</div>
+        <div class="btn-item diff-btn" data-diff="dificil" onclick="setDifficulty('dificil')">DIFÍCIL</div>
+        <div class="btn-item diff-btn" data-diff="inestouravel" onclick="setDifficulty('inestouravel')">INEST.</div>
+      </div>
+    </div>
+
+    <!-- PREÇO DO PARAGON E CUSTO TOTAL DE INVOCAÇÃO NA MESMA LINHA -->
+    <div class="paragon-banner">
+      <div class="banner-col left">
+        <span id="currentParagonSummaryLabel">PREÇO DO PARAGON</span>
+        <strong id="fixedParagonPriceDisplay">$0</strong>
+      </div>
+      <div class="banner-col right">
+        <span>CUSTO TOTAL DE INVOCAÇÃO</span>
+        <strong id="totalSpentOverall">$0</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. SLIDER DE INVESTIMENTO -->
+  <div class="card slider-box">
+    <div class="slider-header">
+      <div>
+        <span style="font-size: 0.74rem; color: var(--accent-color); font-weight: 700; text-transform: uppercase;">Slider de Investimento</span>
+        <div style="font-size: 0.68rem; color: var(--text-muted);">Teto da barra: 80.000 Energia (compartilhado c/ sacrifício)</div>
+      </div>
+      <div class="slider-val-tag" id="sliderValDisplay">$0</div>
+    </div>
+
+    <input type="range" class="range-input" id="cashSlider" min="0" max="3780000" step="1000" value="0" oninput="calculate()">
+
+    <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted);">
+      <span>$0</span>
+      <span id="sliderMaxLabel">Máx: $0</span>
+    </div>
+
+    <div class="degree-shortcuts-title">Atalhos de Grau:</div>
+    <div class="degree-shortcuts-grid" id="degreeShortcutsContainer"></div>
+
+    <div style="display: flex; gap: 5px; margin-top: 8px;">
+      <button class="btn-chip" onclick="adjustSliderPercent(-0.05)">-5%</button>
+      <button class="btn-chip" onclick="adjustSliderPercent(0.05)">+5%</button>
+      <button class="btn-chip" onclick="resetSlider()">Zerar Barra</button>
+    </div>
+  </div>
+
+  <!-- 3. GRAU ATUAL -->
+  <div class="card result-card-clean">
+    <div class="degree-display">
+      <div class="degree-number" id="currentDegreeDisplay">Grau 1</div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="energyProgressBar"></div>
+      </div>
+      <small id="energyRatio" style="color: var(--text-muted); font-size: 0.72rem;">0 / 200.000 Energia</small>
+    </div>
+  </div>
+
+  <!-- 4. COMBATE E FARM -->
+  <div class="card">
+    <div class="card-title">
+      <span>Combate & Farm</span>
+      <button class="btn-chip" onclick="fillPopsCap()" style="height: 22px; font-size: 0.65rem; padding: 0 8px; flex: none; border-color: var(--green); color: var(--green); background: rgba(16,185,129,0.1);">
+        ⚡ Bater Teto
+      </button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+      <div class="form-group">
+        <label for="popsInput">Pops (180 = 1 pt):</label>
+        <div class="input-pill-box">
+          <input type="text" id="popsInput" value="0" placeholder="ex: 15m, 800k" oninput="calculate()">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="farmInput">Farm ($1 = 4 pops):</label>
+        <div class="input-pill-box">
+          <span class="prefix">$</span>
+          <input type="text" id="farmInput" value="0" placeholder="ex: 2.5m" oninput="calculate()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra Bicolor Integrada -->
+    <div class="bicolor-track" title="Teto conjunto: 125.000 pts">
+      <div id="barPops" class="seg-pops"></div>
+      <div id="barFarm" class="seg-farm"></div>
+    </div>
+
+    <div class="bar-legend">
+      <span id="lblPopsPts" style="color: var(--green);">Pops: 0</span>
+      <span id="lblFarmPts" style="color: var(--gold);">Farm: 0</span>
+      <strong id="lblCombatTotal" style="color: #fff;">0 / 125.000 pts</strong>
+    </div>
+  </div>
+
+  <!-- 5. TORRES E INVESTIMENTO -->
+  <div class="card">
+    <div class="card-title">
+      <span>Torres & Investimento</span>
+      <span style="font-size: 0.62rem; color: var(--text-muted);">Role o tambor com o dedo</span>
+    </div>
+
+    <div class="drum-pickers-row">
+      <!-- Tambor 1: Torres 0/4/0 -->
+      <div class="drum-box">
+        <div class="drum-title">Torres 0/4/0</div>
+        <div class="drum-cylinder-viewport" id="viewportUnit">
+          <div class="drum-roll-track" id="trackUnit"></div>
+        </div>
+        <div class="drum-subtext" id="unitSubtext">$0</div>
+      </div>
+
+      <!-- Tambor 2: T5 Extras (limitado a 9) -->
+      <div class="drum-box">
+        <div class="drum-title">T5 Extras</div>
+        <div class="drum-cylinder-viewport" id="viewportT5">
+          <div class="drum-roll-track" id="trackT5"></div>
+        </div>
+        <div class="drum-subtext" id="t5Subtext">+0 pts</div>
+      </div>
+
+      <!-- Tambor 3: Totens de Geraldo -->
+      <div class="drum-box">
+        <div class="drum-title">Totens</div>
+        <div class="drum-cylinder-viewport" id="viewportTotem">
+          <div class="drum-roll-track" id="trackTotem"></div>
+        </div>
+        <div class="drum-subtext" id="totemSubtext">+0 pts</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SPREADSHEET_ID = '1xRZhyUQVPL6E2BUNmLg9YJ96Sb8WJHJoLxWfysZDhDg';
+
+  const MAX_POPS_POWER = 125000;
+  const POPS_CAP = 22500000; // 125.000 * 180
+  const MAX_CASH_CATEGORY_POWER = 80000; // Teto conjunto de dinheiro (torres + slider)
+  const KEY_DEGREES = [20, 30, 40, 60, 80, 100];
+  const ITEM_HEIGHT = 24;
+
+  const TOWER_CATEGORIES = {
+    // Primário
+    'DARDO': { cat: 'cat-primary', short: 'Dardo', col: 'colPrimary' },
+    'BOOMERANG': { cat: 'cat-primary', short: 'Boomer', col: 'colPrimary' },
+    'TACHINHA': { cat: 'cat-primary', short: 'Tacha', col: 'colPrimary' },
+    'GELO': { cat: 'cat-primary', short: 'Gelo', col: 'colPrimary' },
+    'BOMBARDEIRO': { cat: 'cat-primary', short: 'Bomba', col: 'colPrimary' },
+    // Militar
+    'ATIRADOR': { cat: 'cat-military', short: 'Atirador', col: 'colMilitary' },
+    'BUCANEIRO': { cat: 'cat-military', short: 'Barco', col: 'colMilitary' },
+    'ÁS': { cat: 'cat-military', short: 'Ás', col: 'colMilitary' },
+    'SUB': { cat: 'cat-military', short: 'Sub', col: 'colMilitary' },
+    // Mágico
+    'MAGO': { cat: 'cat-magic', short: 'Mago', col: 'colMagic' },
+    'NINJA': { cat: 'cat-magic', short: 'Ninja', col: 'colMagic' },
+    'DRUIDA': { cat: 'cat-magic', short: 'Druida', col: 'colMagic' },
+    // Suporte
+    'ENGENHEIRO': { cat: 'cat-support', short: 'Eng.', col: 'colSupport' },
+    'USINA': { cat: 'cat-support', short: 'Usina', col: 'colSupport' }
+  };
+
+  // Custo base de uma torre 0/4/0 no modo Médio por Paragon
+  const TOWER_040_PRICES = {
+    'DARDO': 8260,
+    'BOOMERANG': 8000,
+    'TACHINHA': 5900,
+    'GELO': 6350,
+    'BOMBARDEIRO': 6825,
+    'ATIRADOR': 13565,
+    'BUCANEIRO': 8000,
+    'ÁS': 20850,
+    'SUB': 13750,
+    'MAGO': 10550,
+    'NINJA': 9650,
+    'DRUIDA': 8760,
+    'ENGENHEIRO': 10250,
+    'USINA': 13350
+  };
+
+  let drumValues = {
+    unit: 0,
+    t5: 0,
+    totem: 0
+  };
+
+  const DRUM_LIMITS = {
+    unit: { min: 0, max: 50 },
+    t5: { min: 0, max: 9 },      // Limitado a 9
+    totem: { min: 0, max: 60 }
+  };
+
+  let paragonsData = [];
+  let powerTable = [];
+  let selectedParagonIndex = 0;
+  let currentDifficulty = 'medio';
+
+  function parseSmartNumber(input) {
+    if (!input) return 0;
+    if (typeof input === 'number') return input;
+    
+    let clean = String(input).trim().toLowerCase().replace(/\s+/g, '').replace(/\$/g, '');
+    let mult = 1;
+
+    if (clean.endsWith('b')) { mult = 1e9; clean = clean.slice(0, -1); }
+    else if (clean.endsWith('m')) { mult = 1e6; clean = clean.slice(0, -1); }
+    else if (clean.endsWith('k')) { mult = 1e3; clean = clean.slice(0, -1); }
+
+    clean = clean.replace(/\./g, '').replace(',', '.');
+    const val = parseFloat(clean);
+    return isNaN(val) ? 0 : Math.round(val * mult);
+  }
+
+  function formatMoney(num) {
+    return '$' + Math.round(num).toLocaleString('pt-BR');
+  }
+
+  function formatNumber(num) {
+    return Math.round(num).toLocaleString('pt-BR');
+  }
+
+  function getUnitSingleCost() {
+    const diffMultipliers = { facil: 0.85, medio: 1.0, dificil: 1.08, inestouravel: 1.20 };
+    const mult = diffMultipliers[currentDifficulty] || 1.0;
+    const currentName = paragonsData[selectedParagonIndex] ? paragonsData[selectedParagonIndex].nome.toUpperCase() : 'DARDO';
+    const baseCost040 = TOWER_040_PRICES[currentName] || 8000;
+    return Math.round(baseCost040 * mult);
+  }
+
+  function setupDrum(type, viewportId, trackId) {
+    const track = document.getElementById(trackId);
+    const viewport = document.getElementById(viewportId);
+    const limits = DRUM_LIMITS[type];
+
+    track.innerHTML = '';
+    for (let i = limits.min; i <= limits.max; i++) {
+      const el = document.createElement('div');
+      el.className = `drum-roll-item ${i === drumValues[type] ? 'active' : ''}`;
+      el.innerText = i;
+      track.appendChild(el);
+    }
+
+    function renderPosition() {
+      const offset = 24 - (drumValues[type] * ITEM_HEIGHT);
+      track.style.transform = `translateY(${offset}px)`;
+
+      const items = track.children;
+      for (let i = 0; i < items.length; i++) {
+        items[i].classList.toggle('active', i === drumValues[type]);
+      }
+    }
+
+    renderPosition();
+
+    viewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? 1 : -1;
+      setDrumValue(type, drumValues[type] + delta, renderPosition);
+    }, { passive: false });
+
+    let startY = 0;
+    let accumulated = 0;
+
+    viewport.addEventListener('touchstart', (e) => {
+      startY = e.touches[0].clientY;
+      accumulated = 0;
+    }, { passive: true });
+
+    viewport.addEventListener('touchmove', (e) => {
+      const currentY = e.touches[0].clientY;
+      const diff = startY - currentY;
+      accumulated += diff;
+      startY = currentY;
+
+      if (Math.abs(accumulated) >= 14) {
+        const step = accumulated > 0 ? 1 : -1;
+        setDrumValue(type, drumValues[type] + step, renderPosition);
+        accumulated = 0;
+      }
+    }, { passive: true });
+  }
+
+  function setDrumValue(type, val, callback) {
+    const limits = DRUM_LIMITS[type];
+    const clamped = Math.max(limits.min, Math.min(limits.max, val));
+    if (clamped !== drumValues[type]) {
+      drumValues[type] = clamped;
+      callback();
+      updateDrumSubtexts();
+      calculate();
+    }
+  }
+
+  function updateDrumSubtexts() {
+    const costEach = getUnitSingleCost();
+    const totalCash = drumValues.unit * costEach;
+    document.getElementById('unitSubtext').innerText = formatMoney(totalCash);
+    document.getElementById('t5Subtext').innerText = `+${formatNumber(drumValues.t5 * 6000)} pts`;
+    document.getElementById('totemSubtext').innerText = `+${formatNumber(drumValues.totem * 2000)} pts`;
+  }
+
+  function fillPopsCap() {
+    const farm = parseSmartNumber(document.getElementById('farmInput').value);
+    const farmAsPops = farm * 4;
+    const remainingPops = Math.max(0, POPS_CAP - farmAsPops);
+    
+    if (remainingPops >= 1e6) {
+      document.getElementById('popsInput').value = (remainingPops / 1e6).toFixed(1) + 'm';
+    } else if (remainingPops >= 1e3) {
+      document.getElementById('popsInput').value = (remainingPops / 1e3).toFixed(0) + 'k';
+    } else {
+      document.getElementById('popsInput').value = remainingPops;
+    }
+    calculate();
+  }
+
+  async function fetchSheetData(sheetName, query = 'SELECT *') {
+    const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?sheet=${encodeURIComponent(sheetName)}&tq=${encodeURIComponent(query)}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Falha HTTP ${response.status}`);
+    const text = await response.text();
+    const jsonString = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+    const json = JSON.parse(jsonString);
+    return json.table;
+  }
+
+  async function syncWithSpreadsheet() {
+    const statusText = document.getElementById('statusText');
+    const statusDot = document.getElementById('statusDot');
+
+    try {
+      const tablePrecos = await fetchSheetData('PreçoParagon');
+      paragonsData = [];
+
+      tablePrecos.rows.forEach(r => {
+        const c = r.c;
+        if (!c || !c[1] || !c[1].v) return;
+        const nome = String(c[1].v).trim();
+        if (nome === 'PARAGON' || !nome) return;
+
+        const parseCell = (cell) => {
+          if (!cell || cell.v == null) return 0;
+          if (typeof cell.v === 'number') return cell.v;
+          return parseFloat(String(cell.v).replace(/\./g, '').replace(',', '.')) || 0;
+        };
+
+        const facil = parseCell(c[2]);
+        const medio = parseCell(c[3]);
+        const dificil = parseCell(c[4]);
+        const inestouravel = parseCell(c[5]);
+
+        const meta = TOWER_CATEGORIES[nome.toUpperCase()] || { cat: 'cat-primary', short: nome, col: 'colPrimary' };
+
+        paragonsData.push({
+          nome: nome,
+          shortName: meta.short,
+          cat: meta.cat,
+          col: meta.col,
+          facil: facil || Math.round(medio * 0.85),
+          medio: medio,
+          dificil: dificil || Math.round(medio * 1.08),
+          inestouravel: inestouravel || Math.round(medio * 1.20)
+        });
+      });
+
+      const tablePoder = await fetchSheetData('CustoExcelência');
+      powerTable = [];
+
+      tablePoder.rows.forEach(r => {
+        const c = r.c;
+        if (!c || c[0] == null || c[1] == null) return;
+        const grau = parseInt(c[0].v);
+        const parseCell = (cell) => {
+          if (!cell || cell.v == null) return 0;
+          if (typeof cell.v === 'number') return cell.v;
+          return parseFloat(String(cell.v).replace(/\./g, '').replace(',', '.')) || 0;
+        };
+        const energia = parseCell(c[1]);
+
+        if (!isNaN(grau) && grau >= 1 && grau <= 100) {
+          powerTable[grau - 1] = energia;
+        }
+      });
+
+      renderColumns();
+
+      setupDrum('unit', 'viewportUnit', 'trackUnit');
+      setupDrum('t5', 'viewportT5', 'trackT5');
+      setupDrum('totem', 'viewportTotem', 'trackTotem');
+
+      updateDrumSubtexts();
+
+      statusDot.className = 'status-dot active';
+      statusText.innerText = `Sincronizado (${paragonsData.length} paragons)`;
+      
+      updateSliderConstraints();
+      calculate();
+
+    } catch (err) {
+      console.warn('Fallback offline ativado:', err);
+      statusDot.className = 'status-dot error';
+      statusText.innerText = 'Modo Local / Fallback';
+      loadFallbackData();
+    }
+  }
+
+  function renderColumns() {
+    ['colPrimary', 'colMilitary', 'colMagic', 'colSupport'].forEach(id => {
+      document.getElementById(id).innerHTML = '';
+    });
+
+    paragonsData.forEach((p, idx) => {
+      const container = document.getElementById(p.col);
+      if (!container) return;
+
+      const btn = document.createElement('div');
+      btn.className = `btn-item ${p.cat} ${idx === selectedParagonIndex ? 'active' : ''}`;
+      btn.innerText = p.shortName;
+      btn.onclick = () => selectParagon(idx);
+      container.appendChild(btn);
+    });
+  }
+
+  function selectParagon(idx) {
+    selectedParagonIndex = idx;
+    document.querySelectorAll('.col-category .btn-item:not(.diff-btn)').forEach((c, i) => {
+      c.classList.toggle('active', i === idx);
+    });
+    updateDrumSubtexts();
+    updateSliderConstraints();
+    calculate();
+  }
+
+  function setDifficulty(diff) {
+    currentDifficulty = diff;
+    document.querySelectorAll('.diff-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.diff === diff);
+    });
+    updateDrumSubtexts();
+    updateSliderConstraints();
+    calculate();
+  }
+
+  function loadFallbackData() {
+    const rawFallback = [
+      { nome: "DARDO", facil: 127000, medio: 150000, dificil: 162000, inestouravel: 180000 },
+      { nome: "BOOMERANG", facil: 318750, medio: 375000, dificil: 405000, inestouravel: 450000 },
+      { nome: "TACHINHA", facil: 170000, medio: 200000, dificil: 216000, inestouravel: 240000 },
+      { nome: "GELO", facil: 255000, medio: 300000, dificil: 324000, inestouravel: 360000 },
+      { nome: "BOMBARDEIRO", facil: 510000, medio: 600000, dificil: 648000, inestouravel: 720000 },
+      { nome: "ATIRADOR", facil: 680000, medio: 800000, dificil: 864000, inestouravel: 960000 },
+      { nome: "BUCANEIRO", facil: 467500, medio: 550000, dificil: 594000, inestouravel: 660000 },
+      { nome: "ÁS", facil: 765000, medio: 900000, dificil: 972000, inestouravel: 1080000 },
+      { nome: "SUB", facil: 340000, medio: 400000, dificil: 432000, inestouravel: 480000 },
+      { nome: "MAGO", facil: 680000, medio: 800000, dificil: 864000, inestouravel: 960000 },
+      { nome: "NINJA", facil: 425000, medio: 500000, dificil: 594000, inestouravel: 660000 },
+      { nome: "DRUIDA", facil: 403750, medio: 475000, dificil: 513000, inestouravel: 570000 },
+      { nome: "ENGENHEIRO", facil: 552500, medio: 650000, dificil: 702000, inestouravel: 780000 },
+      { nome: "USINA", facil: 637500, medio: 750000, dificil: 810000, inestouravel: 900000 }
+    ];
+
+    paragonsData = rawFallback.map(p => {
+      const meta = TOWER_CATEGORIES[p.nome.toUpperCase()] || { cat: 'cat-primary', short: p.nome, col: 'colPrimary' };
+      return { ...p, shortName: meta.short, cat: meta.cat, col: meta.col };
+    });
+
+    powerTable = [
+      0, 2000, 2324, 2666, 3027, 3408, 3808, 4228, 4669, 5131,
+      5615, 6121, 6650, 7203, 7779, 8379, 9004, 9654, 10330, 11032,
+      11761, 12518, 13302, 14114, 14955, 15825, 16725, 17655, 18616, 19609,
+      20633, 21689, 22778, 23900, 25056, 26246, 27471, 28732, 30028, 31360,
+      32729, 34135, 35579, 37061, 38582, 40143, 41743, 43383, 45064, 46786,
+      48550, 50356, 52205, 54098, 56034, 58014, 60039, 62109, 64225, 66387,
+      68596, 70853, 73157, 75509, 77910, 80360, 82860, 85410, 88011, 90664,
+      93368, 96124, 98933, 101795, 104711, 107681, 110706, 113787, 116923, 120115,
+      123364, 126670, 130034, 133456, 136937, 140478, 144078, 147738, 151459, 155241,
+      159085, 162991, 166960, 170993, 175089, 179249, 183474, 187764, 192120, 200000
+    ];
+
+    renderColumns();
+    setupDrum('unit', 'viewportUnit', 'trackUnit');
+    setupDrum('t5', 'viewportT5', 'trackT5');
+    setupDrum('totem', 'viewportTotem', 'trackTotem');
+    updateDrumSubtexts();
+    updateSliderConstraints();
+    calculate();
+  }
+
+  function getRequiredPower(degree) {
+    if (degree <= 1) return 0;
+    if (degree >= 100) return 200000;
+    return powerTable[degree - 1] || 0;
+  }
+
+  function getDegreeFromPower(power) {
+    if (!powerTable.length || power < powerTable[1]) return 1;
+    for (let i = powerTable.length - 1; i >= 0; i--) {
+      if (power >= powerTable[i]) return i + 1;
+    }
+    return 1;
+  }
+
+  function getBaseParagonCost() {
+    if (!paragonsData[selectedParagonIndex]) return 500000;
+    return paragonsData[selectedParagonIndex][currentDifficulty] || paragonsData[selectedParagonIndex].medio;
+  }
+
+  function getMaxSliderCash() {
+    return Math.round(getBaseParagonCost() * 4.2);
+  }
+
+  function updateSliderConstraints() {
+    const maxVal = getMaxSliderCash();
+    const slider = document.getElementById('cashSlider');
+    slider.max = maxVal;
+    if (parseFloat(slider.value) > maxVal) slider.value = maxVal;
+    document.getElementById('sliderMaxLabel').innerText = `Máx: ${formatMoney(maxVal)}`;
+  }
+
+  // Ajuste percentual (-5% e +5% do valor máximo do slider)
+  function adjustSliderPercent(percent) {
+    const slider = document.getElementById('cashSlider');
+    const cur = parseFloat(slider.value) || 0;
+    const max = parseFloat(slider.max);
+    const step = max * percent;
+    slider.value = Math.min(max, Math.max(0, cur + step));
+    calculate();
+  }
+
+  function resetSlider() {
+    document.getElementById('cashSlider').value = 0;
+    calculate();
+  }
+
+  function fitToDegree(targetDeg) {
+    const baseCost = getBaseParagonCost();
+    const targetPower = getRequiredPower(targetDeg);
+    const nonSliderPower = getNonSliderPower();
+    const neededPower = Math.max(0, targetPower - nonSliderPower);
+
+    const currentSacPower = getTowerSacrificePower();
+    const availableCashPowerSlot = Math.max(0, MAX_CASH_CATEGORY_POWER - currentSacPower);
+
+    const sliderPowerToFill = Math.min(availableCashPowerSlot, neededPower);
+
+    const neededCash = (sliderPowerToFill / MAX_CASH_CATEGORY_POWER) * (baseCost * 4.2);
+    const slider = document.getElementById('cashSlider');
+    slider.value = Math.min(getMaxSliderCash(), Math.ceil(neededCash / 1000) * 1000);
+
+    calculate();
+  }
+
+  function updateDegreeShortcuts(nonSliderPower) {
+    const container = document.getElementById('degreeShortcutsContainer');
+    const baseCost = getBaseParagonCost();
+    const currentSacPower = getTowerSacrificePower();
+    const availableCashPowerSlot = Math.max(0, MAX_CASH_CATEGORY_POWER - currentSacPower);
+
+    container.innerHTML = '';
+
+    KEY_DEGREES.forEach(deg => {
+      const targetPower = getRequiredPower(deg);
+      const neededPower = Math.max(0, targetPower - nonSliderPower);
+
+      const btn = document.createElement('button');
+      btn.className = 'btn-degree-target';
+
+      let costLabel = '';
+      if (neededPower === 0) {
+        btn.classList.add('reached');
+        costLabel = 'Atingido';
+      } else if (neededPower > availableCashPowerSlot) {
+        btn.classList.add('unreachable');
+        costLabel = 'Excede';
+      } else {
+        const cashNeeded = (neededPower / MAX_CASH_CATEGORY_POWER) * (baseCost * 4.2);
+        costLabel = formatMoney(cashNeeded);
+      }
+
+      btn.innerHTML = `
+        <span class="deg-label">Grau ${deg}</span>
+        <span class="deg-cost">${costLabel}</span>
+      `;
+
+      btn.onclick = () => fitToDegree(deg);
+      container.appendChild(btn);
+    });
+  }
+
+  function getCombatPowerAndStats() {
+    const pops = parseSmartNumber(document.getElementById('popsInput').value);
+    const farm = parseSmartNumber(document.getElementById('farmInput').value);
+
+    const rawPopPower = Math.floor(pops / 180);
+    const rawFarmPower = Math.floor((farm * 4) / 180);
+
+    const totalRaw = rawPopPower + rawFarmPower;
+    const clampedTotal = Math.min(MAX_POPS_POWER, totalRaw);
+
+    const popPct = Math.min(100, (rawPopPower / MAX_POPS_POWER) * 100);
+    const farmPct = Math.min(100 - popPct, (rawFarmPower / MAX_POPS_POWER) * 100);
+
+    return { rawPopPower, rawFarmPower, clampedTotal, popPct, farmPct };
+  }
+
+  function getTowerSacrificePower() {
+    const baseCost = getBaseParagonCost();
+    const costPerPowerPoint = baseCost / 20000;
+
+    const unitCash = drumValues.unit * getUnitSingleCost();
+    const rawSacPower = Math.floor(unitCash / costPerPowerPoint);
+    return Math.min(MAX_CASH_CATEGORY_POWER, rawSacPower);
+  }
+
+  function getNonSliderPower() {
+    const combat = getCombatPowerAndStats();
+    const sacrificePower = getTowerSacrificePower();
+
+    const t5Power = Math.min(50000, drumValues.t5 * 6000);
+    const totemPower = drumValues.totem * 2000;
+
+    return combat.clampedTotal + sacrificePower + t5Power + totemPower;
+  }
+
+  function calculate() {
+    const baseCost = getBaseParagonCost();
+
+    // 1. Combate & Farm
+    const combat = getCombatPowerAndStats();
+    document.getElementById('barPops').style.width = combat.popPct + '%';
+    document.getElementById('barFarm').style.width = combat.farmPct + '%';
+    document.getElementById('lblPopsPts').innerText = `Pops: ${formatNumber(combat.rawPopPower)}`;
+    document.getElementById('lblFarmPts').innerText = `Farm: ${formatNumber(combat.rawFarmPower)}`;
+    document.getElementById('lblCombatTotal').innerText = `${formatNumber(combat.clampedTotal)} / ${formatNumber(MAX_POPS_POWER)} pts`;
+
+    // 2. Sacrifício em Torres 0/4/0
+    const unitCash = drumValues.unit * getUnitSingleCost();
+    const towerSacPower = getTowerSacrificePower();
+
+    // 3. Bônus Extras
+    const t5Power = Math.min(50000, drumValues.t5 * 6000);
+    const totemPower = drumValues.totem * 2000;
+
+    // 4. Slider de Investimento
+    const sliderCash = parseFloat(document.getElementById('cashSlider').value) || 0;
+    const maxSliderCash = getMaxSliderCash();
+    const rawSliderPower = Math.floor((sliderCash / maxSliderCash) * MAX_CASH_CATEGORY_POWER);
+
+    const combinedCashPower = Math.min(MAX_CASH_CATEGORY_POWER, towerSacPower + rawSliderPower);
+
+    const nonSliderPower = combat.clampedTotal + towerSacPower + t5Power + totemPower;
+    const totalPower = combat.clampedTotal + combinedCashPower + t5Power + totemPower;
+    const currentDegree = getDegreeFromPower(totalPower);
+
+    updateDegreeShortcuts(nonSliderPower);
+
+    // 5. Interface
+    const diffNames = { facil: 'FÁCIL', medio: 'MÉDIO', dificil: 'DIFÍCIL', inestouravel: 'INEST.' };
+    const currentParagon = paragonsData[selectedParagonIndex];
+    const paragonName = currentParagon ? currentParagon.nome : 'PARAGON';
+    document.getElementById('currentParagonSummaryLabel').innerText = `${paragonName} (${diffNames[currentDifficulty]})`;
+    document.getElementById('fixedParagonPriceDisplay').innerText = formatMoney(baseCost);
+
+    document.getElementById('sliderValDisplay').innerText = formatMoney(sliderCash);
+    document.getElementById('currentDegreeDisplay').innerText = `Grau ${currentDegree}`;
+
+    // Custo Total de Invocação no topo lado a lado com o preço do paragon
+    document.getElementById('totalSpentOverall').innerText = formatMoney(baseCost + sliderCash + unitCash);
+
+    const progressPercent = Math.min(100, (totalPower / 200000) * 100);
+    document.getElementById('energyProgressBar').style.width = `${progressPercent}%`;
+    document.getElementById('energyRatio').innerText = `${formatNumber(totalPower)} / 200.000 Energia (${progressPercent.toFixed(1)}%)`;
+  }
+
+  syncWithSpreadsheet();
+</script>
+
+</body>
+</html>
