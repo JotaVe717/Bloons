@@ -345,7 +345,7 @@
     .btn-degree-target.unreachable { border-color: rgba(239, 68, 68, 0.3); }
     .btn-degree-target.unreachable .deg-cost { color: var(--danger); }
 
-    /* CARD COMBATE E FARM */
+    /* CARD POPS E FARM */
     .card-title {
       font-size: 0.74rem;
       font-weight: 700;
@@ -402,6 +402,40 @@
       user-select: none;
     }
 
+    /* Sliders de Pops e Farm */
+    .mini-slider-combat {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #21262d;
+      outline: none;
+      margin: 4px 0 2px 0;
+      cursor: pointer;
+    }
+    .mini-slider-combat.pops-thumb::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--green);
+      border: 2px solid #fff;
+      cursor: pointer;
+      box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+    }
+    .mini-slider-combat.farm-thumb::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 2px solid #fff;
+      cursor: pointer;
+      box-shadow: 0 0 6px rgba(245, 158, 11, 0.8);
+    }
+
     /* Barra Bicolor Integrada */
     .bicolor-track {
       background-color: #21262d;
@@ -409,7 +443,7 @@
       border-radius: 4px;
       overflow: hidden;
       display: flex;
-      margin-top: 6px;
+      margin-top: 8px;
     }
     .seg-pops {
       background-color: var(--green);
@@ -426,11 +460,16 @@
 
     .bar-legend {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
-      font-size: 0.68rem;
-      color: var(--text-muted);
       margin-top: 3px;
+    }
+
+    .combat-pct-display {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--gold-light);
+      font-variant-numeric: tabular-nums;
     }
 
     /* 3 CONTADORES DE TAMBOR (WHEEL/CYLINDER PICKERS) */
@@ -614,22 +653,27 @@
   <div class="card">
     <div class="card-title">
       <span>Pops e Farm</span>
+      <span class="combat-pct-display" id="lblCombatPct">0%</span>
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+      <!-- Coluna Pops -->
       <div class="form-group">
-        <label for="popsInput">Pops (180 = 1 pt):</label>
+        <label for="popsInput">Pops:</label>
         <div class="input-pill-box">
-          <input type="text" id="popsInput" value="0" placeholder="ex: 15m, 800k" oninput="calculate()">
+          <input type="text" id="popsInput" value="0" placeholder="ex: 15m, 800k" oninput="syncPopsFromText()">
         </div>
+        <input type="range" class="mini-slider-combat pops-thumb" id="popsSlider" min="0" max="22500000" step="100000" value="0" oninput="syncPopsFromSlider()">
       </div>
 
+      <!-- Coluna Farm -->
       <div class="form-group">
-        <label for="farmInput">Farm ($1 = 4 pops):</label>
+        <label for="farmInput">Farm:</label>
         <div class="input-pill-box">
           <span class="prefix">$</span>
-          <input type="text" id="farmInput" value="0" placeholder="ex: 2.5m" oninput="calculate()">
+          <input type="text" id="farmInput" value="0" placeholder="ex: 2.5m" oninput="syncFarmFromText()">
         </div>
+        <input type="range" class="mini-slider-combat farm-thumb" id="farmSlider" min="0" max="5625000" step="10000" value="0" oninput="syncFarmFromSlider()">
       </div>
     </div>
 
@@ -637,12 +681,6 @@
     <div class="bicolor-track" title="Teto conjunto: 125.000 pts">
       <div id="barPops" class="seg-pops"></div>
       <div id="barFarm" class="seg-farm"></div>
-    </div>
-
-    <div class="bar-legend">
-      <span id="lblPopsPts" style="color: var(--green);">Pops: 0</span>
-      <span id="lblFarmPts" style="color: var(--gold);">Farm: 0</span>
-      <strong id="lblCombatTotal" style="color: #fff;">0 / 125.000 pts</strong>
     </div>
   </div>
 
@@ -688,7 +726,8 @@
 
   const MAX_POPS_POWER = 125000;
   const POPS_CAP = 22500000; // 125.000 * 180
-  const MAX_CASH_CATEGORY_POWER = 80000; // Teto conjunto de dinheiro (torres + slider)
+  const FARM_CAP = 5625000;  // 22.5M / 4 = $5.625.000
+  const MAX_CASH_CATEGORY_POWER = 80000;
   const KEY_DEGREES = [20, 30, 40, 60, 80, 100];
   const ITEM_HEIGHT = 24;
 
@@ -713,7 +752,6 @@
     'USINA': { cat: 'cat-support', short: 'Usina', col: 'colSupport', order: 14 }
   };
 
-  // Custo base de uma torre 0/4/0 no modo Médio por Paragon
   const TOWER_040_PRICES = {
     'DARDO': 8260,
     'BOOMERANG': 8000,
@@ -739,7 +777,7 @@
 
   const DRUM_LIMITS = {
     unit: { min: 0, max: 50 },
-    t5: { min: 0, max: 9 },      // Limitado a 9
+    t5: { min: 0, max: 9 },
     totem: { min: 0, max: 60 }
   };
 
@@ -850,6 +888,41 @@
     document.getElementById('unitSubtext').innerText = formatMoney(totalCash);
     document.getElementById('t5Subtext').innerText = `+${formatNumber(drumValues.t5 * 6000)} pts`;
     document.getElementById('totemSubtext').innerText = `+${formatNumber(drumValues.totem * 2000)} pts`;
+  }
+
+  // SINCRONIZAÇÃO DOS SLIDERS DE POPS E FARM
+  function syncPopsFromSlider() {
+    const val = parseInt(document.getElementById('popsSlider').value) || 0;
+    document.getElementById('popsInput').value = formatShortNumber(val);
+    calculate();
+  }
+
+  function syncPopsFromText() {
+    const val = parseSmartNumber(document.getElementById('popsInput').value);
+    document.getElementById('popsSlider').value = Math.min(POPS_CAP, val);
+    calculate();
+  }
+
+  function syncFarmFromSlider() {
+    const val = parseInt(document.getElementById('farmSlider').value) || 0;
+    document.getElementById('farmInput').value = formatShortNumber(val);
+    calculate();
+  }
+
+  function syncFarmFromText() {
+    const val = parseSmartNumber(document.getElementById('farmInput').value);
+    document.getElementById('farmSlider').value = Math.min(FARM_CAP, val);
+    calculate();
+  }
+
+  function formatShortNumber(num) {
+    if (num >= 1e6) {
+      return (num / 1e6).toFixed(1).replace('.0', '') + 'm';
+    }
+    if (num >= 1e3) {
+      return (num / 1e3).toFixed(0) + 'k';
+    }
+    return String(num);
   }
 
   async function fetchSheetData(sheetName, query = 'SELECT *') {
@@ -1129,8 +1202,9 @@
 
     const popPct = Math.min(100, (rawPopPower / MAX_POPS_POWER) * 100);
     const farmPct = Math.min(100 - popPct, (rawFarmPower / MAX_POPS_POWER) * 100);
+    const totalPct = Math.min(100, (clampedTotal / MAX_POPS_POWER) * 100);
 
-    return { rawPopPower, rawFarmPower, clampedTotal, popPct, farmPct };
+    return { rawPopPower, rawFarmPower, clampedTotal, popPct, farmPct, totalPct };
   }
 
   function getTowerSacrificePower() {
@@ -1159,9 +1233,7 @@
     const combat = getCombatPowerAndStats();
     document.getElementById('barPops').style.width = combat.popPct + '%';
     document.getElementById('barFarm').style.width = combat.farmPct + '%';
-    document.getElementById('lblPopsPts').innerText = `Pops: ${formatNumber(combat.rawPopPower)}`;
-    document.getElementById('lblFarmPts').innerText = `Farm: ${formatNumber(combat.rawFarmPower)}`;
-    document.getElementById('lblCombatTotal').innerText = `${formatNumber(combat.clampedTotal)} / ${formatNumber(MAX_POPS_POWER)} pts`;
+    document.getElementById('lblCombatPct').innerText = `${Math.round(combat.totalPct)}%`;
 
     // 2. Sacrifício em Torres 0/4/0
     const unitCash = drumValues.unit * getUnitSingleCost();
@@ -1194,7 +1266,6 @@
     document.getElementById('sliderValDisplay').innerText = formatMoney(sliderCash);
     document.getElementById('currentDegreeDisplay').innerText = `Grau ${currentDegree}`;
 
-    // Custo Total no topo lado a lado com o preço do paragon
     document.getElementById('totalSpentOverall').innerText = formatMoney(baseCost + sliderCash + unitCash);
 
     const progressPercent = Math.min(100, (totalPower / 200000) * 100);
