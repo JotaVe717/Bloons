@@ -223,6 +223,44 @@
       color: var(--gold-light);
     }
 
+    /* CARD DE GRAU ATUAL */
+    .result-card-clean {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 14px;
+    }
+
+    .degree-display {
+      text-align: center;
+      width: 100%;
+    }
+
+    .degree-number {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--gold);
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .progress-bar-bg {
+      background-color: #21262d;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 8px 0 4px 0;
+      width: 100%;
+    }
+
+    .progress-bar-fill {
+      background: linear-gradient(90deg, #3b82f6, #10b981);
+      height: 100%;
+      width: 0%;
+      transition: width 0.2s ease-out;
+    }
+
     /* SLIDER DE INVESTIMENTO */
     .slider-box {
       background: linear-gradient(180deg, #182230 0%, #111722 100%);
@@ -265,19 +303,11 @@
       cursor: pointer;
     }
 
-    .degree-shortcuts-title {
-      font-size: 0.68rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      margin: 8px 0 4px 0;
-      font-weight: 600;
-    }
-
     .degree-shortcuts-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 4px;
+      margin-top: 6px;
     }
     @media (min-width: 600px) {
       .degree-shortcuts-grid { grid-template-columns: repeat(6, 1fr); gap: 5px; }
@@ -331,44 +361,6 @@
       flex: 1;
     }
     .btn-chip:active { background-color: #30363d; }
-
-    /* CARD DE GRAU ATUAL */
-    .result-card-clean {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 10px 14px;
-    }
-
-    .degree-display {
-      text-align: center;
-      width: 100%;
-    }
-
-    .degree-number {
-      font-size: 2.8rem;
-      font-weight: 900;
-      color: var(--gold);
-      letter-spacing: -1px;
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-
-    .progress-bar-bg {
-      background-color: #21262d;
-      height: 8px;
-      border-radius: 4px;
-      overflow: hidden;
-      margin: 8px 0 4px 0;
-      width: 100%;
-    }
-
-    .progress-bar-fill {
-      background: linear-gradient(90deg, #3b82f6, #10b981);
-      height: 100%;
-      width: 0%;
-      transition: width 0.2s ease-out;
-    }
 
     /* CARD COMBATE E FARM */
     .card-title {
@@ -592,20 +584,31 @@
       </div>
     </div>
 
-    <!-- PREÇO DO PARAGON E CUSTO TOTAL DE INVOCAÇÃO NA MESMA LINHA -->
+    <!-- PREÇO DO PARAGON E CUSTO TOTAL NA MESMA LINHA -->
     <div class="paragon-banner">
       <div class="banner-col left">
         <span id="currentParagonSummaryLabel">PREÇO DO PARAGON</span>
         <strong id="fixedParagonPriceDisplay">$0</strong>
       </div>
       <div class="banner-col right">
-        <span>CUSTO TOTAL DE INVOCAÇÃO</span>
+        <span>CUSTO TOTAL</span>
         <strong id="totalSpentOverall">$0</strong>
       </div>
     </div>
   </div>
 
-  <!-- 2. SLIDER DE INVESTIMENTO -->
+  <!-- 2. GRAU ATUAL -->
+  <div class="card result-card-clean">
+    <div class="degree-display">
+      <div class="degree-number" id="currentDegreeDisplay">Grau 1</div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="energyProgressBar"></div>
+      </div>
+      <small id="energyRatio" style="color: var(--text-muted); font-size: 0.72rem;">0 / 200.000 Energia</small>
+    </div>
+  </div>
+
+  <!-- 3. SLIDER DE INVESTIMENTO -->
   <div class="card slider-box">
     <div class="slider-header">
       <div>
@@ -621,24 +624,12 @@
       <span id="sliderMaxLabel">Máx: $0</span>
     </div>
 
-    <div class="degree-shortcuts-title">Atalhos de Grau:</div>
     <div class="degree-shortcuts-grid" id="degreeShortcutsContainer"></div>
 
     <div style="display: flex; gap: 5px; margin-top: 8px;">
       <button class="btn-chip" onclick="adjustSliderPercent(-0.05)">-5%</button>
       <button class="btn-chip" onclick="adjustSliderPercent(0.05)">+5%</button>
       <button class="btn-chip" onclick="resetSlider()">Zerar Barra</button>
-    </div>
-  </div>
-
-  <!-- 3. GRAU ATUAL -->
-  <div class="card result-card-clean">
-    <div class="degree-display">
-      <div class="degree-number" id="currentDegreeDisplay">Grau 1</div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="energyProgressBar"></div>
-      </div>
-      <small id="energyRatio" style="color: var(--text-muted); font-size: 0.72rem;">0 / 200.000 Energia</small>
     </div>
   </div>
 
@@ -685,7 +676,6 @@
   <div class="card">
     <div class="card-title">
       <span>Torres & Investimento</span>
-      <span style="font-size: 0.62rem; color: var(--text-muted);">Role o tambor com o dedo</span>
     </div>
 
     <div class="drum-pickers-row">
@@ -953,7 +943,6 @@
         });
       });
 
-      // Ordena rigorosamente pelas categorias na mesma ordem das 5 colunas
       paragonsData.sort((a, b) => a.order - b.order);
 
       const tablePoder = await fetchSheetData('CustoExcelência');
@@ -1260,7 +1249,7 @@
     document.getElementById('sliderValDisplay').innerText = formatMoney(sliderCash);
     document.getElementById('currentDegreeDisplay').innerText = `Grau ${currentDegree}`;
 
-    // Custo Total de Invocação no topo lado a lado com o preço do paragon
+    // Custo Total no topo lado a lado com o preço do paragon
     document.getElementById('totalSpentOverall').innerText = formatMoney(baseCost + sliderCash + unitCash);
 
     const progressPercent = Math.min(100, (totalPower / 200000) * 100);
