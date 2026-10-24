@@ -48,6 +48,36 @@
       gap: 10px;
     }
 
+    /* GRID RESTRITO EXCLUSIVAMENTE AO DESKTOP (3 COLUNAS) */
+    @media (min-width: 992px) {
+      .container {
+        max-width: 1220px;
+      }
+
+      .desktop-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 1fr 1fr;
+        gap: 12px;
+        align-items: start;
+      }
+
+      .desktop-col {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+
+    /* NO MOBILE: COMPORTAMENTO NATURAL 100% EMPILHADO */
+    @media (max-width: 991px) {
+      .desktop-grid {
+        display: contents;
+      }
+      .desktop-col {
+        display: contents;
+      }
+    }
+
     header {
       text-align: center;
       padding-bottom: 4px;
@@ -309,7 +339,7 @@
       gap: 4px;
       margin-top: 6px;
     }
-    @media (min-width: 600px) {
+    @media (min-width: 600px) and (max-width: 991px) {
       .degree-shortcuts-grid { grid-template-columns: repeat(6, 1fr); gap: 5px; }
     }
 
@@ -570,144 +600,157 @@
     </div>
   </header>
 
-  <!-- 1. ESCOLHA DO PARAGON E DA DIFICULDADE -->
-  <div class="card">
-    <div class="five-cols-board">
-      <div class="col-category">
-        <div class="col-header primary">Prim.</div>
-        <div id="colPrimary" class="col-category"></div>
-      </div>
-      <div class="col-category">
-        <div class="col-header military">Milit.</div>
-        <div id="colMilitary" class="col-category"></div>
-      </div>
-      <div class="col-category">
-        <div class="col-header magic">Mág.</div>
-        <div id="colMagic" class="col-category"></div>
-      </div>
-      <div class="col-category">
-        <div class="col-header support">Suport.</div>
-        <div id="colSupport" class="col-category"></div>
-      </div>
-      <div class="col-category">
-        <div class="col-header diff">Dific.</div>
-        <div class="btn-item diff-btn" data-diff="facil" onclick="setDifficulty('facil')">FÁCIL</div>
-        <div class="btn-item diff-btn active" data-diff="medio" onclick="setDifficulty('medio')">MÉDIO</div>
-        <div class="btn-item diff-btn" data-diff="dificil" onclick="setDifficulty('dificil')">DIFÍCIL</div>
-        <div class="btn-item diff-btn" data-diff="inestouravel" onclick="setDifficulty('inestouravel')">INEST.</div>
-      </div>
-    </div>
-
-    <!-- PREÇO DO PARAGON E CUSTO TOTAL NA MESMA LINHA -->
-    <div class="paragon-banner">
-      <div class="banner-col left">
-        <span id="currentParagonSummaryLabel">PREÇO DO PARAGON</span>
-        <strong id="fixedParagonPriceDisplay">$0</strong>
-      </div>
-      <div class="banner-col right">
-        <span>CUSTO TOTAL</span>
-        <strong id="totalSpentOverall">$0</strong>
-      </div>
-    </div>
-  </div>
-
-  <!-- 2. GRAU ATUAL -->
-  <div class="card result-card-clean">
-    <div class="degree-display">
-      <div class="degree-number" id="currentDegreeDisplay">Grau 1</div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="energyProgressBar"></div>
-      </div>
-      <small id="energyRatio" style="color: var(--text-muted); font-size: 0.72rem;">0 / 200.000 Energia</small>
-    </div>
-  </div>
-
-  <!-- 3. SLIDER DE INVESTIMENTO -->
-  <div class="card slider-box">
-    <div class="slider-header">
-      <div>
-        <span style="font-size: 0.74rem; color: var(--accent-color); font-weight: 700; text-transform: uppercase;">Slider de Investimento</span>
-      </div>
-      <div class="slider-val-tag" id="sliderValDisplay">$0</div>
-    </div>
-
-    <input type="range" class="range-input" id="cashSlider" min="0" max="3780000" step="1000" value="0" oninput="calculate()">
-
-    <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted);">
-      <span>$0</span>
-      <span id="sliderMaxLabel">Máx: $0</span>
-    </div>
-
-    <div class="degree-shortcuts-grid" id="degreeShortcutsContainer"></div>
-  </div>
-
-  <!-- 4. TORRES & INVESTIMENTO -->
-  <div class="card">
-    <div class="card-title">
-      <span>Torres & Investimento</span>
-    </div>
-
-    <div class="drum-pickers-row">
-      <!-- Tambor 1: Torres 0/4/0 -->
-      <div class="drum-box">
-        <div class="drum-title">Torres 0/4/0</div>
-        <div class="drum-cylinder-viewport" id="viewportUnit">
-          <div class="drum-roll-track" id="trackUnit"></div>
+  <!-- CONTAINER DE DISTRIBUIÇÃO: Mobile empilhado clássico / Desktop 3 colunas -->
+  <div class="desktop-grid">
+    
+    <!-- COLUNA 1 (ESQUERDA NO DESKTOP): 1. ESCOLHA DO PARAGON E DA DIFICULDADE -->
+    <div class="desktop-col">
+      <div class="card">
+        <div class="five-cols-board">
+          <div class="col-category">
+            <div class="col-header primary">Prim.</div>
+            <div id="colPrimary" class="col-category"></div>
+          </div>
+          <div class="col-category">
+            <div class="col-header military">Milit.</div>
+            <div id="colMilitary" class="col-category"></div>
+          </div>
+          <div class="col-category">
+            <div class="col-header magic">Mág.</div>
+            <div id="colMagic" class="col-category"></div>
+          </div>
+          <div class="col-category">
+            <div class="col-header support">Suport.</div>
+            <div id="colSupport" class="col-category"></div>
+          </div>
+          <div class="col-category">
+            <div class="col-header diff">Dific.</div>
+            <div class="btn-item diff-btn" data-diff="facil" onclick="setDifficulty('facil')">FÁCIL</div>
+            <div class="btn-item diff-btn active" data-diff="medio" onclick="setDifficulty('medio')">MÉDIO</div>
+            <div class="btn-item diff-btn" data-diff="dificil" onclick="setDifficulty('dificil')">DIFÍCIL</div>
+            <div class="btn-item diff-btn" data-diff="inestouravel" onclick="setDifficulty('inestouravel')">INEST.</div>
+          </div>
         </div>
-        <div class="drum-subtext" id="unitSubtext">$0</div>
-      </div>
 
-      <!-- Tambor 2: T5 Extras (limitado a 9) -->
-      <div class="drum-box">
-        <div class="drum-title">T5 Extras</div>
-        <div class="drum-cylinder-viewport" id="viewportT5">
-          <div class="drum-roll-track" id="trackT5"></div>
+        <!-- PREÇO DO PARAGON E CUSTO TOTAL NA MESMA LINHA -->
+        <div class="paragon-banner">
+          <div class="banner-col left">
+            <span id="currentParagonSummaryLabel">PREÇO DO PARAGON</span>
+            <strong id="fixedParagonPriceDisplay">$0</strong>
+          </div>
+          <div class="banner-col right">
+            <span>CUSTO TOTAL</span>
+            <strong id="totalSpentOverall">$0</strong>
+          </div>
         </div>
-        <div class="drum-subtext" id="t5Subtext">+0 pts</div>
-      </div>
-
-      <!-- Tambor 3: Totens de Geraldo -->
-      <div class="drum-box">
-        <div class="drum-title">Totens</div>
-        <div class="drum-cylinder-viewport" id="viewportTotem">
-          <div class="drum-roll-track" id="trackTotem"></div>
-        </div>
-        <div class="drum-subtext" id="totemSubtext">+0 pts</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 5. POPS & FARM -->
-  <div class="card">
-    <div class="card-title">
-      <span>Pops & Farm</span>
-      <span class="combat-pct-display" id="lblCombatPct">0%</span>
-    </div>
-
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-      <div class="form-group">
-        <label for="popsInput">Pops:</label>
-        <div class="input-pill-box">
-          <input type="text" id="popsInput" value="0" placeholder="ex: 15m, 800k" oninput="syncPopsFromText()">
-        </div>
-        <input type="range" class="mini-slider-combat pops-thumb" id="popsSlider" min="0" max="22500000" step="100000" value="0" oninput="syncPopsFromSlider()">
-      </div>
-
-      <div class="form-group">
-        <label for="farmInput">Farm:</label>
-        <div class="input-pill-box">
-          <span class="prefix">$</span>
-          <input type="text" id="farmInput" value="0" placeholder="ex: 2.5m" oninput="syncFarmFromText()">
-        </div>
-        <input type="range" class="mini-slider-combat farm-thumb" id="farmSlider" min="0" max="5625000" step="10000" value="0" oninput="syncFarmFromSlider()">
       </div>
     </div>
 
-    <!-- Barra Bicolor Integrada -->
-    <div class="bicolor-track" title="Teto conjunto: 125.000 pts">
-      <div id="barPops" class="seg-pops"></div>
-      <div id="barFarm" class="seg-farm"></div>
+    <!-- COLUNA 2 (MEIO NO DESKTOP): 2. GRAU ATUAL & 3. SLIDER DE INVESTIMENTO -->
+    <div class="desktop-col">
+      <!-- 2. GRAU ATUAL -->
+      <div class="card result-card-clean">
+        <div class="degree-display">
+          <div class="degree-number" id="currentDegreeDisplay">Grau 1</div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="energyProgressBar"></div>
+          </div>
+          <small id="energyRatio" style="color: var(--text-muted); font-size: 0.72rem;">0 / 200.000 Energia</small>
+        </div>
+      </div>
+
+      <!-- 3. SLIDER DE INVESTIMENTO -->
+      <div class="card slider-box">
+        <div class="slider-header">
+          <div>
+            <span style="font-size: 0.74rem; color: var(--accent-color); font-weight: 700; text-transform: uppercase;">Slider de Investimento</span>
+          </div>
+          <div class="slider-val-tag" id="sliderValDisplay">$0</div>
+        </div>
+
+        <input type="range" class="range-input" id="cashSlider" min="0" max="3780000" step="1000" value="0" oninput="calculate()">
+
+        <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted);">
+          <span>$0</span>
+          <span id="sliderMaxLabel">Máx: $0</span>
+        </div>
+
+        <div class="degree-shortcuts-grid" id="degreeShortcutsContainer"></div>
+      </div>
     </div>
+
+    <!-- COLUNA 3 (DIREITA NO DESKTOP): 4. TORRES & INVESTIMENTO & 5. POPS & FARM -->
+    <div class="desktop-col">
+      <!-- 4. TORRES E INVESTIMENTO -->
+      <div class="card">
+        <div class="card-title">
+          <span>Torres & Investimento</span>
+        </div>
+
+        <div class="drum-pickers-row">
+          <!-- Tambor 1: Torres 0/4/0 -->
+          <div class="drum-box">
+            <div class="drum-title">Torres 0/4/0</div>
+            <div class="drum-cylinder-viewport" id="viewportUnit">
+              <div class="drum-roll-track" id="trackUnit"></div>
+            </div>
+            <div class="drum-subtext" id="unitSubtext">$0</div>
+          </div>
+
+          <!-- Tambor 2: T5 Extras (limitado a 9) -->
+          <div class="drum-box">
+            <div class="drum-title">T5 Extras</div>
+            <div class="drum-cylinder-viewport" id="viewportT5">
+              <div class="drum-roll-track" id="trackT5"></div>
+            </div>
+            <div class="drum-subtext" id="t5Subtext">+0 pts</div>
+          </div>
+
+          <!-- Tambor 3: Totens de Geraldo -->
+          <div class="drum-box">
+            <div class="drum-title">Totens</div>
+            <div class="drum-cylinder-viewport" id="viewportTotem">
+              <div class="drum-roll-track" id="trackTotem"></div>
+            </div>
+            <div class="drum-subtext" id="totemSubtext">+0 pts</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. POPS & FARM -->
+      <div class="card">
+        <div class="card-title">
+          <span>Pops & Farm</span>
+          <span class="combat-pct-display" id="lblCombatPct">0%</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+          <div class="form-group">
+            <label for="popsInput">Pops:</label>
+            <div class="input-pill-box">
+              <input type="text" id="popsInput" value="0" placeholder="ex: 15m, 800k" oninput="syncPopsFromText()">
+            </div>
+            <input type="range" class="mini-slider-combat pops-thumb" id="popsSlider" min="0" max="22500000" step="100000" value="0" oninput="syncPopsFromSlider()">
+          </div>
+
+          <div class="form-group">
+            <label for="farmInput">Farm:</label>
+            <div class="input-pill-box">
+              <span class="prefix">$</span>
+              <input type="text" id="farmInput" value="0" placeholder="ex: 2.5m" oninput="syncFarmFromText()">
+            </div>
+            <input type="range" class="mini-slider-combat farm-thumb" id="farmSlider" min="0" max="5625000" step="10000" value="0" oninput="syncFarmFromSlider()">
+          </div>
+        </div>
+
+        <!-- Barra Bicolor Integrada -->
+        <div class="bicolor-track" title="Teto conjunto: 125.000 pts">
+          <div id="barPops" class="seg-pops"></div>
+          <div id="barFarm" class="seg-farm"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
