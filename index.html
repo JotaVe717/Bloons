@@ -610,7 +610,6 @@
     <div class="slider-header">
       <div>
         <span style="font-size: 0.74rem; color: var(--accent-color); font-weight: 700; text-transform: uppercase;">Slider de Investimento</span>
-        <div style="font-size: 0.68rem; color: var(--text-muted);">Teto da barra: 80.000 Energia (compartilhado c/ sacrifício)</div>
       </div>
       <div class="slider-val-tag" id="sliderValDisplay">$0</div>
     </div>
@@ -731,23 +730,23 @@
 
   const TOWER_CATEGORIES = {
     // Primário
-    'DARDO': { cat: 'cat-primary', short: 'Dardo', col: 'colPrimary' },
-    'BOOMERANG': { cat: 'cat-primary', short: 'Boomer', col: 'colPrimary' },
-    'TACHINHA': { cat: 'cat-primary', short: 'Tacha', col: 'colPrimary' },
-    'GELO': { cat: 'cat-primary', short: 'Gelo', col: 'colPrimary' },
-    'BOMBARDEIRO': { cat: 'cat-primary', short: 'Bomba', col: 'colPrimary' },
+    'DARDO': { cat: 'cat-primary', short: 'Dardo', col: 'colPrimary', order: 1 },
+    'BOOMERANG': { cat: 'cat-primary', short: 'Boomer', col: 'colPrimary', order: 2 },
+    'TACHINHA': { cat: 'cat-primary', short: 'Tacha', col: 'colPrimary', order: 3 },
+    'GELO': { cat: 'cat-primary', short: 'Gelo', col: 'colPrimary', order: 4 },
+    'BOMBARDEIRO': { cat: 'cat-primary', short: 'Bomba', col: 'colPrimary', order: 5 },
     // Militar
-    'ATIRADOR': { cat: 'cat-military', short: 'Atirador', col: 'colMilitary' },
-    'BUCANEIRO': { cat: 'cat-military', short: 'Barco', col: 'colMilitary' },
-    'ÁS': { cat: 'cat-military', short: 'Ás', col: 'colMilitary' },
-    'SUB': { cat: 'cat-military', short: 'Sub', col: 'colMilitary' },
+    'ATIRADOR': { cat: 'cat-military', short: 'Atirador', col: 'colMilitary', order: 6 },
+    'BUCANEIRO': { cat: 'cat-military', short: 'Barco', col: 'colMilitary', order: 7 },
+    'ÁS': { cat: 'cat-military', short: 'Ás', col: 'colMilitary', order: 8 },
+    'SUB': { cat: 'cat-military', short: 'Sub', col: 'colMilitary', order: 9 },
     // Mágico
-    'MAGO': { cat: 'cat-magic', short: 'Mago', col: 'colMagic' },
-    'NINJA': { cat: 'cat-magic', short: 'Ninja', col: 'colMagic' },
-    'DRUIDA': { cat: 'cat-magic', short: 'Druida', col: 'colMagic' },
+    'MAGO': { cat: 'cat-magic', short: 'Mago', col: 'colMagic', order: 10 },
+    'NINJA': { cat: 'cat-magic', short: 'Ninja', col: 'colMagic', order: 11 },
+    'DRUIDA': { cat: 'cat-magic', short: 'Druida', col: 'colMagic', order: 12 },
     // Suporte
-    'ENGENHEIRO': { cat: 'cat-support', short: 'Eng.', col: 'colSupport' },
-    'USINA': { cat: 'cat-support', short: 'Usina', col: 'colSupport' }
+    'ENGENHEIRO': { cat: 'cat-support', short: 'Eng.', col: 'colSupport', order: 13 },
+    'USINA': { cat: 'cat-support', short: 'Usina', col: 'colSupport', order: 14 }
   };
 
   // Custo base de uma torre 0/4/0 no modo Médio por Paragon
@@ -939,19 +938,23 @@
         const dificil = parseCell(c[4]);
         const inestouravel = parseCell(c[5]);
 
-        const meta = TOWER_CATEGORIES[nome.toUpperCase()] || { cat: 'cat-primary', short: nome, col: 'colPrimary' };
+        const meta = TOWER_CATEGORIES[nome.toUpperCase()] || { cat: 'cat-primary', short: nome, col: 'colPrimary', order: 99 };
 
         paragonsData.push({
           nome: nome,
           shortName: meta.short,
           cat: meta.cat,
           col: meta.col,
+          order: meta.order,
           facil: facil || Math.round(medio * 0.85),
           medio: medio,
           dificil: dificil || Math.round(medio * 1.08),
           inestouravel: inestouravel || Math.round(medio * 1.20)
         });
       });
+
+      // Ordena rigorosamente pelas categorias na mesma ordem das 5 colunas
+      paragonsData.sort((a, b) => a.order - b.order);
 
       const tablePoder = await fetchSheetData('CustoExcelência');
       powerTable = [];
@@ -1006,6 +1009,7 @@
       const btn = document.createElement('div');
       btn.className = `btn-item ${p.cat} ${idx === selectedParagonIndex ? 'active' : ''}`;
       btn.innerText = p.shortName;
+      btn.id = `paragon-btn-${idx}`;
       btn.onclick = () => selectParagon(idx);
       container.appendChild(btn);
     });
@@ -1013,9 +1017,12 @@
 
   function selectParagon(idx) {
     selectedParagonIndex = idx;
-    document.querySelectorAll('.col-category .btn-item:not(.diff-btn)').forEach((c, i) => {
-      c.classList.toggle('active', i === idx);
+    document.querySelectorAll('.col-category .btn-item:not(.diff-btn)').forEach(btn => {
+      btn.classList.remove('active');
     });
+    const activeBtn = document.getElementById(`paragon-btn-${idx}`);
+    if (activeBtn) activeBtn.classList.add('active');
+
     updateDrumSubtexts();
     updateSliderConstraints();
     calculate();
@@ -1050,9 +1057,9 @@
     ];
 
     paragonsData = rawFallback.map(p => {
-      const meta = TOWER_CATEGORIES[p.nome.toUpperCase()] || { cat: 'cat-primary', short: p.nome, col: 'colPrimary' };
-      return { ...p, shortName: meta.short, cat: meta.cat, col: meta.col };
-    });
+      const meta = TOWER_CATEGORIES[p.nome.toUpperCase()] || { cat: 'cat-primary', short: p.nome, col: 'colPrimary', order: 99 };
+      return { ...p, shortName: meta.short, cat: meta.cat, col: meta.col, order: meta.order };
+    }).sort((a, b) => a.order - b.order);
 
     powerTable = [
       0, 2000, 2324, 2666, 3027, 3408, 3808, 4228, 4669, 5131,
@@ -1107,7 +1114,6 @@
     document.getElementById('sliderMaxLabel').innerText = `Máx: ${formatMoney(maxVal)}`;
   }
 
-  // Ajuste percentual (-5% e +5% do valor máximo do slider)
   function adjustSliderPercent(percent) {
     const slider = document.getElementById('cashSlider');
     const cur = parseFloat(slider.value) || 0;
