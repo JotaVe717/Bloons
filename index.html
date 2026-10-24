@@ -402,7 +402,6 @@
       user-select: none;
     }
 
-    /* Sliders de Pops e Farm */
     .mini-slider-combat {
       -webkit-appearance: none;
       width: 100%;
@@ -458,13 +457,6 @@
       transition: width 0.2s;
     }
 
-    .bar-legend {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      margin-top: 3px;
-    }
-
     .combat-pct-display {
       font-size: 0.85rem;
       font-weight: 800;
@@ -472,7 +464,7 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* 3 CONTADORES DE TAMBOR (WHEEL/CYLINDER PICKERS) */
+    /* 3 CONTADORES DE TAMBOR */
     .drum-pickers-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -657,7 +649,6 @@
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-      <!-- Coluna Pops -->
       <div class="form-group">
         <label for="popsInput">Pops:</label>
         <div class="input-pill-box">
@@ -666,7 +657,6 @@
         <input type="range" class="mini-slider-combat pops-thumb" id="popsSlider" min="0" max="22500000" step="100000" value="0" oninput="syncPopsFromSlider()">
       </div>
 
-      <!-- Coluna Farm -->
       <div class="form-group">
         <label for="farmInput">Farm:</label>
         <div class="input-pill-box">
@@ -725,29 +715,25 @@
   const SPREADSHEET_ID = '1xRZhyUQVPL6E2BUNmLg9YJ96Sb8WJHJoLxWfysZDhDg';
 
   const MAX_POPS_POWER = 125000;
-  const POPS_CAP = 22500000; // 125.000 * 180
-  const FARM_CAP = 5625000;  // 22.5M / 4 = $5.625.000
+  const POPS_CAP = 22500000;
+  const FARM_CAP = 5625000;
   const MAX_CASH_CATEGORY_POWER = 80000;
   const KEY_DEGREES = [20, 30, 40, 60, 80, 100];
   const ITEM_HEIGHT = 24;
 
   const TOWER_CATEGORIES = {
-    // Primário
     'DARDO': { cat: 'cat-primary', short: 'Dardo', col: 'colPrimary', order: 1 },
     'BOOMERANG': { cat: 'cat-primary', short: 'Boomer', col: 'colPrimary', order: 2 },
     'TACHINHA': { cat: 'cat-primary', short: 'Tacha', col: 'colPrimary', order: 3 },
     'GELO': { cat: 'cat-primary', short: 'Gelo', col: 'colPrimary', order: 4 },
     'BOMBARDEIRO': { cat: 'cat-primary', short: 'Bomba', col: 'colPrimary', order: 5 },
-    // Militar
     'ATIRADOR': { cat: 'cat-military', short: 'Atirador', col: 'colMilitary', order: 6 },
     'BUCANEIRO': { cat: 'cat-military', short: 'Barco', col: 'colMilitary', order: 7 },
     'ÁS': { cat: 'cat-military', short: 'Ás', col: 'colMilitary', order: 8 },
     'SUB': { cat: 'cat-military', short: 'Sub', col: 'colMilitary', order: 9 },
-    // Mágico
     'MAGO': { cat: 'cat-magic', short: 'Mago', col: 'colMagic', order: 10 },
     'NINJA': { cat: 'cat-magic', short: 'Ninja', col: 'colMagic', order: 11 },
     'DRUIDA': { cat: 'cat-magic', short: 'Druida', col: 'colMagic', order: 12 },
-    // Suporte
     'ENGENHEIRO': { cat: 'cat-support', short: 'Eng.', col: 'colSupport', order: 13 },
     'USINA': { cat: 'cat-support', short: 'Usina', col: 'colSupport', order: 14 }
   };
@@ -769,12 +755,7 @@
     'USINA': 13350
   };
 
-  let drumValues = {
-    unit: 0,
-    t5: 0,
-    totem: 0
-  };
-
+  let drumValues = { unit: 0, t5: 0, totem: 0 };
   const DRUM_LIMITS = {
     unit: { min: 0, max: 50 },
     t5: { min: 0, max: 9 },
@@ -786,6 +767,7 @@
   let selectedParagonIndex = 0;
   let currentDifficulty = 'medio';
 
+  // PARSER ROBUSTO (Resolve conflito de ponto e vírgula)
   function parseSmartNumber(input) {
     if (!input) return 0;
     if (typeof input === 'number') return input;
@@ -797,7 +779,18 @@
     else if (clean.endsWith('m')) { mult = 1e6; clean = clean.slice(0, -1); }
     else if (clean.endsWith('k')) { mult = 1e3; clean = clean.slice(0, -1); }
 
-    clean = clean.replace(/\./g, '').replace(',', '.');
+    if (mult > 1) {
+      clean = clean.replace(',', '.');
+    } else {
+      if (clean.includes(',') && clean.includes('.')) {
+        clean = clean.replace(/\./g, '').replace(',', '.');
+      } else if (clean.includes(',')) {
+        clean = clean.replace(',', '.');
+      } else if ((clean.match(/\./g) || []).length > 1) {
+        clean = clean.replace(/\./g, '');
+      }
+    }
+
     const val = parseFloat(clean);
     return isNaN(val) ? 0 : Math.round(val * mult);
   }
@@ -890,7 +883,6 @@
     document.getElementById('totemSubtext').innerText = `+${formatNumber(drumValues.totem * 2000)} pts`;
   }
 
-  // SINCRONIZAÇÃO DOS SLIDERS DE POPS E FARM
   function syncPopsFromSlider() {
     const val = parseInt(document.getElementById('popsSlider').value) || 0;
     document.getElementById('popsInput').value = formatShortNumber(val);
@@ -1133,6 +1125,11 @@
     slider.max = maxVal;
     if (parseFloat(slider.value) > maxVal) slider.value = maxVal;
     document.getElementById('sliderMaxLabel').innerText = `Máx: ${formatMoney(maxVal)}`;
+  }
+
+  function resetSlider() {
+    document.getElementById('cashSlider').value = 0;
+    calculate();
   }
 
   function fitToDegree(targetDeg) {
