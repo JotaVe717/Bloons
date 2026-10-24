@@ -345,23 +345,6 @@
     .btn-degree-target.unreachable { border-color: rgba(239, 68, 68, 0.3); }
     .btn-degree-target.unreachable .deg-cost { color: var(--danger); }
 
-    .btn-chip {
-      background-color: #21262d;
-      border: 1px solid #30363d;
-      color: var(--text);
-      padding: 6px 10px;
-      border-radius: 5px;
-      font-size: 0.74rem;
-      cursor: pointer;
-      font-weight: 600;
-      height: 32px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-    }
-    .btn-chip:active { background-color: #30363d; }
-
     /* CARD COMBATE E FARM */
     .card-title {
       font-size: 0.74rem;
@@ -625,21 +608,12 @@
     </div>
 
     <div class="degree-shortcuts-grid" id="degreeShortcutsContainer"></div>
-
-    <div style="display: flex; gap: 5px; margin-top: 8px;">
-      <button class="btn-chip" onclick="adjustSliderPercent(-0.05)">-5%</button>
-      <button class="btn-chip" onclick="adjustSliderPercent(0.05)">+5%</button>
-      <button class="btn-chip" onclick="resetSlider()">Zerar Barra</button>
-    </div>
   </div>
 
-  <!-- 4. COMBATE E FARM -->
+  <!-- 4. POPS E FARM -->
   <div class="card">
     <div class="card-title">
-      <span>Combate & Farm</span>
-      <button class="btn-chip" onclick="fillPopsCap()" style="height: 22px; font-size: 0.65rem; padding: 0 8px; flex: none; border-color: var(--green); color: var(--green); background: rgba(16,185,129,0.1);">
-        ⚡ Bater Teto
-      </button>
+      <span>Pops e Farm</span>
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
@@ -878,21 +852,6 @@
     document.getElementById('totemSubtext').innerText = `+${formatNumber(drumValues.totem * 2000)} pts`;
   }
 
-  function fillPopsCap() {
-    const farm = parseSmartNumber(document.getElementById('farmInput').value);
-    const farmAsPops = farm * 4;
-    const remainingPops = Math.max(0, POPS_CAP - farmAsPops);
-    
-    if (remainingPops >= 1e6) {
-      document.getElementById('popsInput').value = (remainingPops / 1e6).toFixed(1) + 'm';
-    } else if (remainingPops >= 1e3) {
-      document.getElementById('popsInput').value = (remainingPops / 1e3).toFixed(0) + 'k';
-    } else {
-      document.getElementById('popsInput').value = remainingPops;
-    }
-    calculate();
-  }
-
   async function fetchSheetData(sheetName, query = 'SELECT *') {
     const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?sheet=${encodeURIComponent(sheetName)}&tq=${encodeURIComponent(query)}`;
     const response = await fetch(url);
@@ -1101,20 +1060,6 @@
     slider.max = maxVal;
     if (parseFloat(slider.value) > maxVal) slider.value = maxVal;
     document.getElementById('sliderMaxLabel').innerText = `Máx: ${formatMoney(maxVal)}`;
-  }
-
-  function adjustSliderPercent(percent) {
-    const slider = document.getElementById('cashSlider');
-    const cur = parseFloat(slider.value) || 0;
-    const max = parseFloat(slider.max);
-    const step = max * percent;
-    slider.value = Math.min(max, Math.max(0, cur + step));
-    calculate();
-  }
-
-  function resetSlider() {
-    document.getElementById('cashSlider').value = 0;
-    calculate();
   }
 
   function fitToDegree(targetDeg) {
