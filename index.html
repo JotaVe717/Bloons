@@ -345,7 +345,7 @@
     .btn-degree-target.unreachable { border-color: rgba(239, 68, 68, 0.3); }
     .btn-degree-target.unreachable .deg-cost { color: var(--danger); }
 
-    /* CARD POPS E FARM */
+    /* CARD POPS & FARM */
     .card-title {
       font-size: 0.74rem;
       font-weight: 700;
@@ -641,40 +641,7 @@
     <div class="degree-shortcuts-grid" id="degreeShortcutsContainer"></div>
   </div>
 
-  <!-- 4. POPS E FARM -->
-  <div class="card">
-    <div class="card-title">
-      <span>Pops e Farm</span>
-      <span class="combat-pct-display" id="lblCombatPct">0%</span>
-    </div>
-
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-      <div class="form-group">
-        <label for="popsInput">Pops:</label>
-        <div class="input-pill-box">
-          <input type="text" id="popsInput" value="0" placeholder="ex: 15m, 800k" oninput="syncPopsFromText()">
-        </div>
-        <input type="range" class="mini-slider-combat pops-thumb" id="popsSlider" min="0" max="22500000" step="100000" value="0" oninput="syncPopsFromSlider()">
-      </div>
-
-      <div class="form-group">
-        <label for="farmInput">Farm:</label>
-        <div class="input-pill-box">
-          <span class="prefix">$</span>
-          <input type="text" id="farmInput" value="0" placeholder="ex: 2.5m" oninput="syncFarmFromText()">
-        </div>
-        <input type="range" class="mini-slider-combat farm-thumb" id="farmSlider" min="0" max="5625000" step="10000" value="0" oninput="syncFarmFromSlider()">
-      </div>
-    </div>
-
-    <!-- Barra Bicolor Integrada -->
-    <div class="bicolor-track" title="Teto conjunto: 125.000 pts">
-      <div id="barPops" class="seg-pops"></div>
-      <div id="barFarm" class="seg-farm"></div>
-    </div>
-  </div>
-
-  <!-- 5. TORRES E INVESTIMENTO -->
+  <!-- 4. TORRES & INVESTIMENTO -->
   <div class="card">
     <div class="card-title">
       <span>Torres & Investimento</span>
@@ -707,6 +674,39 @@
         </div>
         <div class="drum-subtext" id="totemSubtext">+0 pts</div>
       </div>
+    </div>
+  </div>
+
+  <!-- 5. POPS & FARM -->
+  <div class="card">
+    <div class="card-title">
+      <span>Pops & Farm</span>
+      <span class="combat-pct-display" id="lblCombatPct">0%</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+      <div class="form-group">
+        <label for="popsInput">Pops:</label>
+        <div class="input-pill-box">
+          <input type="text" id="popsInput" value="0" placeholder="ex: 15m, 800k" oninput="syncPopsFromText()">
+        </div>
+        <input type="range" class="mini-slider-combat pops-thumb" id="popsSlider" min="0" max="22500000" step="100000" value="0" oninput="syncPopsFromSlider()">
+      </div>
+
+      <div class="form-group">
+        <label for="farmInput">Farm:</label>
+        <div class="input-pill-box">
+          <span class="prefix">$</span>
+          <input type="text" id="farmInput" value="0" placeholder="ex: 2.5m" oninput="syncFarmFromText()">
+        </div>
+        <input type="range" class="mini-slider-combat farm-thumb" id="farmSlider" min="0" max="5625000" step="10000" value="0" oninput="syncFarmFromSlider()">
+      </div>
+    </div>
+
+    <!-- Barra Bicolor Integrada -->
+    <div class="bicolor-track" title="Teto conjunto: 125.000 pts">
+      <div id="barPops" class="seg-pops"></div>
+      <div id="barFarm" class="seg-farm"></div>
     </div>
   </div>
 </div>
@@ -767,7 +767,6 @@
   let selectedParagonIndex = 0;
   let currentDifficulty = 'medio';
 
-  // PARSER ROBUSTO (Resolve conflito de ponto e vírgula)
   function parseSmartNumber(input) {
     if (!input) return 0;
     if (typeof input === 'number') return input;
