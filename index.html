@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BTD6 Hub - Macacos Hidráulicos</title>
+  <style>
+    :root {
+      --bg-color: #0b0e14;
+      --card-bg: rgba(21, 27, 35, 0.85);
+      --border-color: #30363d;
+      --accent-color: #58a6ff;
+      --gold: #f59e0b;
+      --green: #10b981;
+      --danger: #ef4444;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      background-image: linear-gradient(rgba(11, 14, 20, 0.75), rgba(11, 14, 20, 0.95)), url('gif/wallpaper.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      
+      color: var(--text);
+      /* Ajuste no padding superior e alteração do align-items para mover o conteúdo para cima */
+      padding: 40px 10px 40px 10px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      align-items: flex-start; 
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+    }
+
+    .clan-badge {
+      display: inline-block;
+      background-color: rgba(88, 166, 255, 0.1);
+      border: 1px solid var(--accent-color);
+      color: var(--accent-color);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+      box-shadow: 0 0 12px rgba(88, 166, 255, 0.3);
+    }
+
+    h1 {
+      color: var(--text);
+      font-size: 3.5rem; /* Título maior */
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.6);
+      line-height: 1.1;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 2.8rem; }
+    }
+
+    h1 span {
+      color: var(--accent-color);
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #a3b3c4;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      font-weight: 500;
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .nav-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .menu-card {
+      background-color: var(--card-bg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px 20px;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.2s ease-in-out;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+
+    .menu-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--border-color);
+      transition: background 0.3s;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-4px);
+      border-color: #4b5563;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+      background-color: rgba(30, 38, 48, 0.9);
+    }
+
+    .menu-card.paragon:hover { border-color: var(--gold); }
+    .menu-card.paragon::before { background: var(--gold); }
+    
+    .menu-card.boss:hover { border-color: var(--danger); }
+    .menu-card.boss::before { background: var(--danger); }
+    
+    .menu-card.farm:hover { border-color: var(--green); }
+    .menu-card.farm::before { background: var(--green); }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .menu-card.paragon .card-title { color: var(--gold); }
+    .menu-card.boss .card-title { color: var(--danger); }
+    .menu-card.farm .card-title { color: var(--green); }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      flex-grow: 1;
+    }
+
+    .card-footer {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 12px;
+    }
+
+    .menu-card.paragon .card-footer { color: rgba(245, 158, 11, 0.8); }
+    .menu-card.boss .card-footer { color: rgba(239, 68, 68, 0.8); }
+    .menu-card.farm .card-footer { color: rgba(16, 185, 129, 0.8); }
+
+    .card-footer::after {
+      content: '→';
+      font-size: 1.1em;
+      transition: transform 0.2s;
+    }
+
+    .menu-card:hover .card-footer::after {
+      transform: translateX(4px);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="clan-badge">Clã Macacos Hidráulicos</div>
+    <h1>Hub <span>BTD6</span></h1>
+    <p class="subtitle">Ferramentas, cálculos e estratégias otimizadas</p>
+  </header>
+
+  <div class="nav-grid">
+    
+    <!-- Calculadora Paragon -->
+    <a href="calculadora.html" class="menu-card paragon">
+      <div class="card-title">Calculadora Paragon</div>
+      <div class="card-desc">
+        Calcule o grau exato do seu Paragon. Simule investimentos, dinheiro gerado, pops necessários e os sacrifícios de torres 0/4/0.
+      </div>
+      <div class="card-footer">Acessar Calculadora</div>
+    </a>
+
+    <!-- Guia de Chefões -->
+    <a href="boss.html" class="menu-card boss">
+      <div class="card-title">Guia de Chefões</div>
+      <div class="card-desc">
+        Mecânicas detalhadas, dicas de imunidade e as melhores torres de dano para derrubar Bloonarius, Lych, Vortex e os demais bosses.
+      </div>
+      <div class="card-footer">Acessar Guias</div>
+    </a>
+
+    <!-- Guia de Farm -->
+    <a href="farm.html" class="menu-card farm">
+      <div class="card-title">Estratégias de Farm</div>
+      <div class="card-desc">
+        Aprenda a fazer a Miniópolis perfeita, gerenciar bancos com Benjamin e escalar sua economia rapidamente para o late game.
+      </div>
+      <div class="card-footer">Acessar Farms</div>
+    </a>
+
+  </div>
+</div>
+
+</body>
+</html>
