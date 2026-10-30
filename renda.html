@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Renda por Rodada - Macacos Hidráulicos</title>
+  <style>
+    :root {
+      --bg-color: #0b0e14;
+      --card-bg: rgba(21, 27, 35, 0.85);
+      --border-color: #30363d;
+      --accent-color: #58a6ff;
+      --gold: #f59e0b;
+      --green: #10b981;
+      --danger: #ef4444;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      /* O mesmo wallpaper do index para manter a imersão */
+      background-image: linear-gradient(rgba(11, 14, 20, 0.85), rgba(11, 14, 20, 0.95)), url('gif/wallpaper.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      
+      color: var(--text);
+      padding: 20px 10px 40px 10px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      align-items: flex-start; 
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .btn-back {
+      background-color: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-back:hover {
+      background-color: rgba(255,255,255,0.05);
+      color: var(--text);
+      border-color: var(--text-muted);
+    }
+
+    header {
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+    }
+
+    .clan-badge {
+      display: inline-block;
+      background-color: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--green);
+      color: var(--green);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+    }
+
+    h1 {
+      color: var(--text);
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: #a3b3c4;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 992px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr 2fr;
+      }
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent-color);
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(88, 166, 255, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+      border-left: 4px solid var(--accent-color);
+      padding: 12px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 12px;
+    }
+
+    .highlight-box h3 {
+      font-size: 0.85rem;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .highlight-box p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .chart-gallery {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .chart-gallery {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .chart-container {
+      background-color: #000;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-container.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .chart-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .chart-label {
+      padding: 10px;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+      background-color: rgba(255,255,255,0.02);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="top-bar">
+    <a href="index.html" class="btn-back">← Voltar ao Menu</a>
+  </div>
+
+  <header>
+    <div class="clan-badge">Economia</div>
+    <h1>Renda por Rodada</h1>
+    <p class="subtitle">Análise de ganho natural (Pops) para planejamento de compras e fazendas</p>
+  </header>
+
+  <div class="dashboard-grid">
+    
+    <!-- COLUNA 1: INSIGHTS E DESTAQUES -->
+    <div class="col">
+      <div class="card" style="height: 100%;">
+        <div class="card-title">Picos de Faturamento</div>
+        
+        <div class="highlight-box">
+          <h3>Early Game (1-40)</h3>
+          <p>O primeiro alívio financeiro chega na <strong>Rodada 18 ($358)</strong>. Guarde suas habilidades, pois a <strong>Rodada 39 ($1759)</strong> fornece o capital exato para iniciar sua expansão de fazendas antes do primeiro Boss ou MOAB.</p>
+        </div>
+
+        <div class="highlight-box">
+          <h3>Mid Game (41-80)</h3>
+          <p>A <strong>Rodada 49 ($4758)</strong> é o maior pico isolado desta fase. Planeje grandes upgrades (como a Miniópolis) para logo após esta rodada. A rodada 79 também injeta pesados <strong>$6709</strong> para as defesas finais.</p>
+        </div>
+
+        <div class="highlight-box" style="border-left-color: var(--danger);">
+          <h3>Late Game (81-100)</h3>
+          <p>As ondas de ZOMGs são extremamente lucrativas. As <strong>Rodadas 96 e 98</strong> são as minas de ouro do jogo, garantindo <strong>$9955 e $9653</strong> respectivamente, ideais para fechar Paragons.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUNA 2: GRÁFICOS -->
+    <div class="col">
+      <div class="card">
+        <div class="card-title">Gráficos Analíticos</div>
+        
+        <div class="chart-gallery">
+          <!-- Visão Geral -->
+          <div class="chart-container full-width">
+            <img src="renda/money1_100.png" alt="Renda Total 1 a 100">
+            <div class="chart-label">Visão Geral: Rodadas 1 a 100</div>
+          </div>
+
+          <!-- Cortes Detalhados -->
+          <div class="chart-container">
+            <img src="renda/money1_20.png" alt="Renda 1 a 20">
+            <div class="chart-label">Início: 1 a 20</div>
+          </div>
+
+          <div class="chart-container">
+            <img src="renda/money20_40.png" alt="Renda 20 a 40">
+            <div class="chart-label">Expansão: 20 a 40</div>
+          </div>
+
+          <div class="chart-container">
+            <img src="renda/money40_60.png" alt="Renda 40 a 60">
+            <div class="chart-label">Mid-Game: 40 a 60</div>
+          </div>
+
+          <div class="chart-container">
+            <img src="renda/money60_80.png" alt="Renda 60 a 80">
+            <div class="chart-label">Transição: 60 a 80</div>
+          </div>
+
+          <div class="chart-container full-width">
+            <img src="renda/money80_100.png" alt="Renda 80 a 100">
+            <div class="chart-label">Late-Game: 80 a 100</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
