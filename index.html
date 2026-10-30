@@ -13,6 +13,7 @@
       --gold: #f59e0b;
       --green: #10b981;
       --danger: #ef4444;
+      --purple: #a855f7; /* Nova cor para a Enciclopédia */
       --text: #e6edf3;
       --text-muted: #8b949e;
     }
@@ -33,7 +34,6 @@
       background-attachment: fixed;
       
       color: var(--text);
-      /* Ajuste no padding superior e alteração do align-items para mover o conteúdo para cima */
       padding: 40px 10px 40px 10px;
       display: flex;
       justify-content: center;
@@ -74,7 +74,7 @@
 
     h1 {
       color: var(--text);
-      font-size: 3.5rem; /* Título maior */
+      font-size: 3.5rem; 
       font-weight: 900;
       letter-spacing: -1px;
       margin-bottom: 8px;
@@ -153,6 +153,12 @@
     .menu-card.farm:hover { border-color: var(--green); }
     .menu-card.farm::before { background: var(--green); }
 
+    .menu-card.renda:hover { border-color: var(--accent-color); }
+    .menu-card.renda::before { background: var(--accent-color); }
+
+    .menu-card.bloons:hover { border-color: var(--purple); }
+    .menu-card.bloons::before { background: var(--purple); }
+
     .card-title {
       font-size: 1.2rem;
       font-weight: 800;
@@ -162,6 +168,8 @@
     .menu-card.paragon .card-title { color: var(--gold); }
     .menu-card.boss .card-title { color: var(--danger); }
     .menu-card.farm .card-title { color: var(--green); }
+    .menu-card.renda .card-title { color: var(--accent-color); }
+    .menu-card.bloons .card-title { color: var(--purple); }
 
     .card-desc {
       font-size: 0.85rem;
@@ -184,6 +192,8 @@
     .menu-card.paragon .card-footer { color: rgba(245, 158, 11, 0.8); }
     .menu-card.boss .card-footer { color: rgba(239, 68, 68, 0.8); }
     .menu-card.farm .card-footer { color: rgba(16, 185, 129, 0.8); }
+    .menu-card.renda .card-footer { color: rgba(88, 166, 255, 0.8); }
+    .menu-card.bloons .card-footer { color: rgba(168, 85, 247, 0.8); }
 
     .card-footer::after {
       content: '→';
@@ -233,6 +243,24 @@
         Aprenda a fazer a Miniópolis perfeita, gerenciar bancos com Benjamin e escalar sua economia rapidamente para o late game.
       </div>
       <div class="card-footer">Acessar Farms</div>
+    </a>
+
+    <!-- Renda por Rodada -->
+    <a href="renda.html" class="menu-card renda">
+      <div class="card-title">Renda por Rodada</div>
+      <div class="card-desc">
+        Análise gráfica do ganho natural de dinheiro para planejar investimentos e expansão de fazendas na hora exata.
+      </div>
+      <div class="card-footer">Acessar Gráficos</div>
+    </a>
+
+    <!-- Enciclopédia de Bloons -->
+    <a href="bloons.html" class="menu-card bloons">
+      <div class="card-title">Enciclopédia de Bloons</div>
+      <div class="card-desc">
+        Consulte as propriedades, imunidades e conteúdo de todos os balões normais, especiais e dirigíveis da classe M.O.A.B.
+      </div>
+      <div class="card-footer">Acessar Enciclopédia</div>
     </a>
 
   </div>

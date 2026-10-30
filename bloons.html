@@ -11,6 +11,7 @@
       --border-color: #30363d;
       --accent-color: #58a6ff;
       --gold: #f59e0b;
+      --gold-light: #fbbf24;
       --green: #10b981;
       --danger: #ef4444;
       --text: #e6edf3;
@@ -120,7 +121,7 @@
 
     @media (min-width: 992px) {
       .dashboard-grid {
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1.2fr;
       }
     }
 
@@ -160,7 +161,6 @@
       margin-bottom: 6px;
     }
 
-    /* Nova classe para as imagens dos balões */
     .bloon-icon {
       height: 32px;
       width: auto;
@@ -201,13 +201,12 @@
 
   <div class="dashboard-grid">
     
-    <!-- COLUNA 1: NORMAIS E M.O.A.B. -->
+    <!-- COLUNA 1: NORMAIS E MODIFICADORES -->
     <div class="col">
       <div class="card" style="margin-bottom: 16px;">
         <div class="card-title">Bloons Normais</div>
         <p class="bloon-desc" style="margin-bottom: 4px;">Sem características especiais. Listados do mais lento ao mais rápido.</p>
         
-        <!-- Agora empilhados um embaixo do outro -->
         <div class="bloon-item" style="padding: 6px 10px;">
           <div class="bloon-header" style="margin: 0;"><img src="bloons/Red-bloons.png" class="bloon-icon" alt="Red"><span class="bloon-name">Vermelho</span></div>
         </div>
@@ -226,91 +225,112 @@
       </div>
 
       <div class="card">
-        <div class="card-title" style="color: var(--danger);">Classe M.O.A.B.</div>
-        <p class="bloon-desc" style="margin-bottom: 4px;">Grandes dirigíveis que exigem muitos acertos para abrir, liberando outros bloons.</p>
+        <div class="card-title" style="color: var(--accent-color);">Modificadores de Balão</div>
+        <p class="bloon-desc" style="margin-bottom: 4px;">Propriedades únicas que se aplicam a diversos bloons, mudando a forma de interceptá-los.</p>
 
         <div class="bloon-item">
-          <div class="bloon-header"><img src="bloons/Moab-class-bloons.png" class="bloon-icon" alt="MOAB"><span class="bloon-name">M.O.A.B.</span></div>
-          <div class="bloon-desc">Massive Ornary Air Blimp. Exibe o dano recebido em 4 estágios. <strong>Solta:</strong> 4 Bloons de Cerâmica.</div>
+          <div class="bloon-header"><img src="bloons/Regrow-bloons.png" class="bloon-icon" alt="Regrow"><span class="bloon-name">Regenerador (Regrow)</span></div>
+          <div class="bloon-desc">Pode ser destruído de vez ao estourar a camada vermelha final; caso contrário, <strong>regenerará as camadas perdidas</strong> com o tempo.</div>
         </div>
 
         <div class="bloon-item">
-          <div class="bloon-header"><img src="bloons/Bfb-bloons.png" class="bloon-icon" alt="BFB"><span class="bloon-name">B.F.B.</span></div>
-          <div class="bloon-desc">Brutal Floating Behemoth. <strong>Solta:</strong> 4 M.O.A.B.s.</div>
-        </div>
-
-        <div class="bloon-item">
-          <div class="bloon-header"><img src="bloons/Zomg-bloons.png" class="bloon-icon" alt="ZOMG"><span class="bloon-name">Z.O.M.G.</span></div>
-          <div class="bloon-desc">Zeppelin Of Mighty Gargantuaness. <strong>Solta:</strong> 4 B.F.B.s.</div>
-        </div>
-
-        <div class="bloon-item">
-          <div class="bloon-header"><img src="bloons/Ddt-bloons.png" class="bloon-icon" alt="DDT"><span class="bloon-name">D.D.T.</span></div>
-          <div class="bloon-desc">Dark Dirigible Titan. <strong>Solta:</strong> 4 Bloons de Cerâmica Camuflados e Regeneradores.</div>
-        </div>
-
-        <div class="bloon-item">
-          <div class="bloon-header"><img src="bloons/Bad-bloons.png" class="bloon-icon" alt="BAD"><span class="bloon-name">B.A.D.</span></div>
-          <div class="bloon-desc">Big Airship of Doom. <strong>Solta:</strong> 2 Z.O.M.G.s e 3 D.D.T.s.</div>
+          <div class="bloon-header"><img src="bloons/Camo-bloons.png" class="bloon-icon" alt="Camo"><span class="bloon-name">Camuflado (Camo)</span></div>
+          <div class="bloon-desc">Totalmente invisível para Macacos, a não ser que sejam detectados por melhorias ou habilidades especiais (ex: Ninja, Vila, Visão Noturna).</div>
         </div>
       </div>
     </div>
 
-    <!-- COLUNA 2: ESPECIAIS (DIVISÃO E MULTIPLICAÇÃO) -->
+    <!-- COLUNA 2: PROPRIEDADES E RESISTÊNCIAS -->
     <div class="col">
-      <div class="card" style="height: 100%;">
+      <div class="card" style="margin-bottom: 16px;">
         <div class="card-title" style="color: var(--gold-light);">Especiais: Propriedades</div>
         
         <div class="bloon-item">
-          <div class="bloon-header"><img src="bloons/Black-bloons.png" class="bloon-icon" alt="Black"><span class="bloon-name">Preto</span></div>
-          <div class="bloon-desc"><strong>Imunidade:</strong> Explosões.<br><strong>Conteúdo:</strong> 2 Bloons Rosas.</div>
-        </div>
-
-        <div class="bloon-item">
-          <div class="bloon-header"><img src="bloons/White-bloons.png" class="bloon-icon" alt="White"><span class="bloon-name">Branco</span></div>
-          <div class="bloon-desc"><strong>Imunidade:</strong> Efeitos de Gelo.<br><strong>Conteúdo:</strong> 2 Bloons Rosas.</div>
+          <div class="bloon-header">
+            <div style="display: flex; gap: 4px;">
+              <img src="bloons/Black-bloons.png" class="bloon-icon" alt="Black">
+              <img src="bloons/White-bloons.png" class="bloon-icon" alt="White">
+            </div>
+            <span class="bloon-name">Preto & Branco</span>
+          </div>
+          <div class="bloon-desc"><strong>Imunidades:</strong> Explosões (Preto) e Gelo (Branco).<br><strong>Conteúdo em comum:</strong> Ambos soltam 2 Bloons Rosas ao estourar.</div>
         </div>
 
         <div class="bloon-item">
           <div class="bloon-header"><img src="bloons/Zebra-bloon.png" class="bloon-icon" alt="Zebra"><span class="bloon-name">Zebra</span></div>
-          <div class="bloon-desc"><strong>Imunidade:</strong> Explosões e Gelo.<br><strong>Conteúdo:</strong> 1 Bloon Preto e 1 Bloon Branco.</div>
+          <div class="bloon-desc"><strong>Imunidade Dupla:</strong> Explosões e Gelo.<br><strong>Conteúdo:</strong> 1 Bloon Preto e 1 Bloon Branco.</div>
         </div>
 
         <div class="bloon-item">
           <div class="bloon-header"><img src="bloons/Rainbow-bloons.png" class="bloon-icon" alt="Rainbow"><span class="bloon-name">Arco-íris</span></div>
           <div class="bloon-desc"><strong>Conteúdo:</strong> 2 Bloons Zebra.</div>
         </div>
-
-        <div class="bloon-item">
-          <div class="bloon-header"><img src="bloons/Regrow-bloons.png" class="bloon-icon" alt="Regrow"><span class="bloon-name">Regrow (Regenerador)</span></div>
-          <div class="bloon-desc">Aparece nas mesmas cores dos bloons padrão. Pode ser destruído ao estourar o balão vermelho; caso contrário, <strong>regenerará camadas com o tempo</strong>.</div>
-        </div>
       </div>
-    </div>
 
-    <!-- COLUNA 3: ESPECIAIS (IMUNIDADES E RESISTÊNCIAS) -->
-    <div class="col">
-      <div class="card" style="height: 100%;">
+      <div class="card">
         <div class="card-title" style="color: var(--gold-light);">Especiais: Resistências</div>
         
         <div class="bloon-item">
-          <div class="bloon-header"><img src="bloons/Camo-bloons.png" class="bloon-icon" alt="Camo"><span class="bloon-name">Camuflado (Camo)</span></div>
-          <div class="bloon-desc">Invisível e inatingível por Macacos, a menos que detectados por habilidades especiais. <br><br><strong>Exemplos de detecção:</strong> Herói Quincy Nível 5, Macacos Dardo com Visão Aprimorada e Macacos Sniper com Óculos de Visão Noturna.</div>
-        </div>
-
-        <div class="bloon-item">
           <div class="bloon-header"><img src="bloons/Purple-bloons.png" class="bloon-icon" alt="Purple"><span class="bloon-name">Roxo</span></div>
-          <div class="bloon-desc">Bloons de movimento rápido. <strong>Imunidade:</strong> Efeitos de energia, fogo e plasma.<br><strong>Conteúdo:</strong> 2 Bloons Rosas.</div>
+          <div class="bloon-desc">Bloons de movimento rápido. <strong>Imunidade:</strong> Efeitos de energia, fogo, plasma e magia.<br><strong>Conteúdo:</strong> 2 Bloons Rosas.</div>
         </div>
 
         <div class="bloon-item">
           <div class="bloon-header"><img src="bloons/Lead-bloons.png" class="bloon-icon" alt="Lead"><span class="bloon-name">Chumbo (Lead)</span></div>
-          <div class="bloon-desc">Super pesados. <strong>Devem ser estourados com bombas</strong> ou fontes de dano quente/explosivo.</div>
+          <div class="bloon-desc">Super pesados. <strong>Devem ser estourados com bombas</strong> ou fontes de calor/fogo.<br><strong>Conteúdo:</strong> 2 Bloons Pretos.</div>
         </div>
 
         <div class="bloon-item">
           <div class="bloon-header"><img src="bloons/Ceramic-bloons.png" class="bloon-icon" alt="Ceramic"><span class="bloon-name">Cerâmica</span></div>
-          <div class="bloon-desc">Casca endurecida. <strong>Deve ser atingido várias vezes</strong> para quebrar e revelar os bloons internos.</div>
+          <div class="bloon-desc">Casca endurecida. <strong>Deve ser atingido várias vezes</strong> para quebrar a armadura e revelar os bloons internos.<br><strong>Conteúdo:</strong> 2 Bloons Arco-íris.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUNA 3: CLASSE M.O.A.B. -->
+    <div class="col">
+      <div class="card" style="height: 100%;">
+        <div class="card-title" style="color: var(--danger);">Classe M.O.A.B.</div>
+        <p class="bloon-desc" style="margin-bottom: 4px;">Grandes dirigíveis que exigem milhares de acertos para abrir, liberando ondas de outros bloons.</p>
+
+        <div class="bloon-item">
+          <div class="bloon-header">
+            <img src="bloons/Moab-class-bloons.png" class="bloon-icon" alt="MOAB">
+            <span class="bloon-name">M.O.A.B. <span style="color: var(--green); margin-left: 6px; font-size: 0.85em;">200 HP</span></span>
+          </div>
+          <div class="bloon-desc">Massive Ornary Air Blimp. Exibe o dano recebido em 4 estágios.<br><strong>Solta:</strong> 4 Bloons de Cerâmica.</div>
+        </div>
+
+        <div class="bloon-item">
+          <div class="bloon-header">
+            <img src="bloons/Bfb-bloons.png" class="bloon-icon" alt="BFB">
+            <span class="bloon-name">B.F.B. <span style="color: var(--green); margin-left: 6px; font-size: 0.85em;">700 HP</span></span>
+          </div>
+          <div class="bloon-desc">Brutal Floating Behemoth.<br><strong>Solta:</strong> 4 M.O.A.B.s.</div>
+        </div>
+
+        <div class="bloon-item">
+          <div class="bloon-header">
+            <img src="bloons/Zomg-bloons.png" class="bloon-icon" alt="ZOMG">
+            <span class="bloon-name">Z.O.M.G. <span style="color: var(--green); margin-left: 6px; font-size: 0.85em;">4.000 HP</span></span>
+          </div>
+          <div class="bloon-desc">Zeppelin Of Mighty Gargantuaness.<br><strong>Solta:</strong> 4 B.F.B.s.</div>
+        </div>
+
+        <div class="bloon-item">
+          <div class="bloon-header">
+            <img src="bloons/Ddt-bloons.png" class="bloon-icon" alt="DDT">
+            <span class="bloon-name">D.D.T. <span style="color: var(--green); margin-left: 6px; font-size: 0.85em;">400 HP</span></span>
+          </div>
+          <div class="bloon-desc">Dark Dirigible Titan. É extremamente rápido e possui <strong>propriedades de Camuflado, Chumbo e Preto</strong> simultaneamente.<br><strong>Solta:</strong> 4 Bloons de Cerâmica Camuflados e Regeneradores.</div>
+        </div>
+
+        <div class="bloon-item">
+          <div class="bloon-header">
+            <img src="bloons/Bad-bloons.png" class="bloon-icon" alt="BAD">
+            <span class="bloon-name">B.A.D. <span style="color: var(--green); margin-left: 6px; font-size: 0.85em;">20.000 HP</span> <em style="color: var(--gold-light); font-size: 0.8em; margin-left: 4px;">(28.000 na rod. 100)</em></span>
+          </div>
+          <div class="bloon-desc">Big Airship of Doom. Imune a desaceleração, atordoamento e instakills.<br><strong>Solta:</strong> 2 Z.O.M.G.s e 3 D.D.T.s.</div>
         </div>
       </div>
     </div>
