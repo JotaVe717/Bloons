@@ -184,6 +184,117 @@
     .bloon-desc strong {
       color: var(--text);
     }
+
+    /* ESTILOS DA LISTA E FILTROS */
+    .card-full {
+      grid-column: 1 / -1;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-filter {
+      background-color: #12161f;
+      border: 1px solid #262c36;
+      color: #64748b;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-filter:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+    }
+
+    .btn-filter.active {
+      background-color: rgba(88, 166, 255, 0.15);
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+      box-shadow: 0 0 8px rgba(88, 166, 255, 0.2);
+    }
+
+    .rounds-container {
+      background: rgba(11, 14, 20, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      max-height: 450px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .rounds-container::-webkit-scrollbar { width: 8px; }
+    .rounds-container::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 0 8px 8px 0; }
+    .rounds-container::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 8px; }
+    .rounds-container::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+
+    .round-row {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+      transition: background-color 0.2s;
+    }
+    .round-row:hover { background-color: rgba(255, 255, 255, 0.03); }
+    .round-row:last-child { border-bottom: none; }
+
+    .round-num {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--text);
+      min-width: 90px;
+      display: flex;
+      flex-direction: column;
+    }
+    .round-num span {
+      font-size: 0.65rem;
+      color: var(--accent-color);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .round-spawns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      flex-grow: 1;
+    }
+
+    .spawn-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background-color: rgba(0, 0, 0, 0.4);
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .spawn-badge img {
+      height: 22px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+    }
+    
+    .empty-msg {
+      padding: 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -226,16 +337,16 @@
 
       <div class="card">
         <div class="card-title" style="color: var(--accent-color);">Modificadores de Balão</div>
-        <p class="bloon-desc" style="margin-bottom: 4px;">Propriedades únicas que se aplicam a diversos bloons, mudando a forma de interceptá-los.</p>
+        <p class="bloon-desc" style="margin-bottom: 4px;">Propriedades únicas que se aplicam a diversos bloons.</p>
 
         <div class="bloon-item">
           <div class="bloon-header"><img src="bloons/Regrow-bloons.png" class="bloon-icon" alt="Regrow"><span class="bloon-name">Regenerador (Regrow)</span></div>
-          <div class="bloon-desc">Pode ser destruído de vez ao estourar a camada vermelha final; caso contrário, <strong>regenerará as camadas perdidas</strong> com o tempo.</div>
+          <div class="bloon-desc">Pode ser destruído de vez ao estourar a camada final; caso contrário, <strong>regenerará as camadas perdidas</strong> com o tempo.</div>
         </div>
 
         <div class="bloon-item">
           <div class="bloon-header"><img src="bloons/Camo-bloons.png" class="bloon-icon" alt="Camo"><span class="bloon-name">Camuflado (Camo)</span></div>
-          <div class="bloon-desc">Totalmente invisível para Macacos, a não ser que sejam detectados por melhorias ou habilidades especiais (ex: Ninja, Vila, Visão Noturna).</div>
+          <div class="bloon-desc">Totalmente invisível para Macacos sem melhorias ou habilidades especiais de detecção.</div>
         </div>
       </div>
     </div>
@@ -253,17 +364,17 @@
             </div>
             <span class="bloon-name">Preto & Branco</span>
           </div>
-          <div class="bloon-desc"><strong>Imunidades:</strong> Explosões (Preto) e Gelo (Branco).<br><strong>Conteúdo em comum:</strong> Ambos soltam 2 Bloons Rosas ao estourar.</div>
+          <div class="bloon-desc"><strong>Imunidades:</strong> Explosões (Preto) e Gelo (Branco).<br>Ambos soltam 2 Bloons Rosas.</div>
         </div>
 
         <div class="bloon-item">
           <div class="bloon-header"><img src="bloons/Zebra-bloon.png" class="bloon-icon" alt="Zebra"><span class="bloon-name">Zebra</span></div>
-          <div class="bloon-desc"><strong>Imunidade Dupla:</strong> Explosões e Gelo.<br><strong>Conteúdo:</strong> 1 Bloon Preto e 1 Bloon Branco.</div>
+          <div class="bloon-desc"><strong>Imunidade:</strong> Explosões e Gelo.<br><strong>Solta:</strong> 1 Preto e 1 Branco.</div>
         </div>
 
         <div class="bloon-item">
           <div class="bloon-header"><img src="bloons/Rainbow-bloons.png" class="bloon-icon" alt="Rainbow"><span class="bloon-name">Arco-íris</span></div>
-          <div class="bloon-desc"><strong>Conteúdo:</strong> 2 Bloons Zebra.</div>
+          <div class="bloon-desc"><strong>Solta:</strong> 2 Bloons Zebra.</div>
         </div>
       </div>
 
@@ -272,17 +383,17 @@
         
         <div class="bloon-item">
           <div class="bloon-header"><img src="bloons/Purple-bloons.png" class="bloon-icon" alt="Purple"><span class="bloon-name">Roxo</span></div>
-          <div class="bloon-desc">Bloons de movimento rápido. <strong>Imunidade:</strong> Efeitos de energia, fogo, plasma e magia.<br><strong>Conteúdo:</strong> 2 Bloons Rosas.</div>
+          <div class="bloon-desc"><strong>Imunidade:</strong> Efeitos de energia, fogo, plasma e magia.<br><strong>Solta:</strong> 2 Bloons Rosas.</div>
         </div>
 
         <div class="bloon-item">
           <div class="bloon-header"><img src="bloons/Lead-bloons.png" class="bloon-icon" alt="Lead"><span class="bloon-name">Chumbo (Lead)</span></div>
-          <div class="bloon-desc">Super pesados. <strong>Devem ser estourados com bombas</strong> ou fontes de calor/fogo.<br><strong>Conteúdo:</strong> 2 Bloons Pretos.</div>
+          <div class="bloon-desc">Super pesados. <strong>Devem ser estourados com bombas</strong> ou fontes de calor/fogo.<br><strong>Solta:</strong> 2 Bloons Pretos.</div>
         </div>
 
         <div class="bloon-item">
           <div class="bloon-header"><img src="bloons/Ceramic-bloons.png" class="bloon-icon" alt="Ceramic"><span class="bloon-name">Cerâmica</span></div>
-          <div class="bloon-desc">Casca endurecida. <strong>Deve ser atingido várias vezes</strong> para quebrar a armadura e revelar os bloons internos.<br><strong>Conteúdo:</strong> 2 Bloons Arco-íris.</div>
+          <div class="bloon-desc">Casca endurecida. <strong>Deve ser atingido várias vezes</strong> para quebrar a armadura.<br><strong>Solta:</strong> 2 Bloons Arco-íris.</div>
         </div>
       </div>
     </div>
@@ -296,9 +407,9 @@
         <div class="bloon-item">
           <div class="bloon-header">
             <img src="bloons/Moab-class-bloons.png" class="bloon-icon" alt="MOAB">
-            <span class="bloon-name">M.O.A.B. <span style="color: var(--green); margin-left: 6px; font-size: 0.85em;">200 HP</span></span>
+            <span class="bloon-name">M.O.A.B. <span style="color: var(--green); margin-left: 6px; font-size: 0.85em;">400 HP</span></span>
           </div>
-          <div class="bloon-desc">Massive Ornary Air Blimp. Exibe o dano recebido em 4 estágios.<br><strong>Solta:</strong> 4 Bloons de Cerâmica.</div>
+          <div class="bloon-desc">Massive Ornary Air Blimp.<br><strong>Solta:</strong> 4 Bloons de Cerâmica.</div>
         </div>
 
         <div class="bloon-item">
@@ -312,7 +423,7 @@
         <div class="bloon-item">
           <div class="bloon-header">
             <img src="bloons/Zomg-bloons.png" class="bloon-icon" alt="ZOMG">
-            <span class="bloon-name">Z.O.M.G. <span style="color: var(--green); margin-left: 6px; font-size: 0.85em;">4.000 HP</span></span>
+            <span class="bloon-name">Z.O.M.G. <span style="color: var(--green); margin-left: 6px; font-size: 0.85em;">4000 HP</span></span>
           </div>
           <div class="bloon-desc">Zeppelin Of Mighty Gargantuaness.<br><strong>Solta:</strong> 4 B.F.B.s.</div>
         </div>
@@ -322,21 +433,198 @@
             <img src="bloons/Ddt-bloons.png" class="bloon-icon" alt="DDT">
             <span class="bloon-name">D.D.T. <span style="color: var(--green); margin-left: 6px; font-size: 0.85em;">400 HP</span></span>
           </div>
-          <div class="bloon-desc">Dark Dirigible Titan. É extremamente rápido e possui <strong>propriedades de Camuflado, Chumbo e Preto</strong> simultaneamente.<br><strong>Solta:</strong> 4 Bloons de Cerâmica Camuflados e Regeneradores.</div>
+          <div class="bloon-desc">Dark Dirigible Titan. É rápido e possui <strong>propriedades Camo, Chumbo e Preto</strong>.<br><strong>Solta:</strong> 4 Cerâmicas Camufladas/Regeneradoras.</div>
         </div>
 
         <div class="bloon-item">
           <div class="bloon-header">
             <img src="bloons/Bad-bloons.png" class="bloon-icon" alt="BAD">
-            <span class="bloon-name">B.A.D. <span style="color: var(--green); margin-left: 6px; font-size: 0.85em;">20.000 HP</span> <em style="color: var(--gold-light); font-size: 0.8em; margin-left: 4px;">(28.000 na rod. 100)</em></span>
+            <span class="bloon-name">B.A.D. <span style="color: var(--green); margin-left: 6px; font-size: 0.85em;">20000 HP</span> <em style="color: var(--gold-light); font-size: 0.8em; margin-left: 4px;">(28k no r.100)</em></span>
           </div>
-          <div class="bloon-desc">Big Airship of Doom. Imune a desaceleração, atordoamento e instakills.<br><strong>Solta:</strong> 2 Z.O.M.G.s e 3 D.D.T.s.</div>
+          <div class="bloon-desc">Big Airship of Doom. Imune a lentidão e instakills.<br><strong>Solta:</strong> 2 Z.O.M.G.s e 3 D.D.T.s.</div>
         </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO: TABELA DE RODADAS COM FILTROS -->
+    <div class="card card-full">
+      <div class="card-title">Composição das Rodadas (1 - 100)</div>
+      
+      <!-- BARRA DE FILTROS -->
+      <div class="filter-bar">
+        <button class="btn-filter active" onclick="applyFilter('all', this)">Mostrar Todas</button>
+        <button class="btn-filter" onclick="applyFilter('camo', this)">🎯 Camuflados</button>
+        <button class="btn-filter" onclick="applyFilter('lead', this)">🛡️ Chumbo</button>
+        <button class="btn-filter" onclick="applyFilter('purple', this)">🔮 Roxo (Magia/Energia)</button>
+        <button class="btn-filter" onclick="applyFilter('ceramics', this)">🔥 Muitas Cerâmicas</button>
+      </div>
+      
+      <div class="rounds-container" id="roundsList">
+        <!-- O conteúdo será gerado dinamicamente pelo JavaScript -->
       </div>
     </div>
 
   </div>
 </div>
+
+<script>
+  // Mapeamento das imagens base e dos modificadores
+  const imgMap = {
+    'Red': 'bloons/Red-bloons.png',
+    'Blue': 'bloons/Blue-bloons.png',
+    'Green': 'bloons/Green-bloons.png',
+    'Yellow': 'bloons/Yellow-bloons.png',
+    'Pink': 'bloons/Pink-bloons.png',
+    'Black': 'bloons/Black-bloons.png',
+    'White': 'bloons/White-bloons.png',
+    'Purple': 'bloons/Purple-bloons.png',
+    'Lead': 'bloons/Lead-bloons.png',
+    'Zebra': 'bloons/Zebra-bloon.png',
+    'Rainbow': 'bloons/Rainbow-bloons.png',
+    'Ceramic': 'bloons/Ceramic-bloons.png',
+    'MOAB': 'bloons/Moab-class-bloons.png',
+    'BFB': 'bloons/Bfb-bloons.png',
+    'ZOMG': 'bloons/Zomg-bloons.png',
+    'DDT': 'bloons/Ddt-bloons.png',
+    'BAD': 'bloons/Bad-bloons.png',
+    'Camo': 'bloons/Camo-bloons.png',
+    'Regrow': 'bloons/Regrow-bloons.png'
+  };
+
+  // As 100 rodadas completas
+  const rawRounds = [
+    "20 Reds", "35 Reds", "25 Reds, 5 Blues", "35 Reds, 18 Blues", "5 Reds, 27 Blues",
+    "15 Reds, 15 Blues, 4 Greens", "20 Reds, 20 Blues, 5 Greens", "10 Reds, 20 Blues, 14 Greens",
+    "30 Greens", "102 Blues", "10 Reds, 10 Blues, 12 Greens, 3 Yellows", "15 Blues, 10 Greens, 5 Yellows",
+    "50 Blues, 23 Greens", "49 Reds, 15 Blues, 10 Greens, 9 Yellows", "20 Reds, 15 Blues, 12 Greens, 10 Yellows, 5 Pinks",
+    "40 Greens, 8 Yellows", "12 Regrow Yellows", "80 Greens", "10 Greens, 4 Yellows, 5 Regrow Yellows, 15 Pinks",
+    "6 Blacks", "40 Yellows, 14 Pinks", "16 Whites", "7 Blacks, 7 Whites", "20 Blues, 1 Camo Green",
+    "25 Regrow Yellows, 10 Purples", "23 Pinks, 4 Zebras", "100 Reds, 60 Blues, 45 Greens, 45 Yellows",
+    "6 Leads", "50 Yellows, 15 Regrow Yellows", "9 Leads", "8 Blacks, 8 Whites, 8 Zebras, 2 Regrow Zebras",
+    "15 Blacks, 20 Whites, 10 Purples", "20 Camo Reds, 13 Camo Yellows", "160 Yellows, 6 Zebras",
+    "35 Pinks, 30 Blacks, 25 Whites, 5 Rainbows", "140 Pinks, 20 Camo Regrow Greens",
+    "25 Blacks, 25 Whites, 7 Camo Whites, 10 Zebras, 15 Leads", "42 Pinks, 17 Whites, 10 Zebras, 14 Leads, 2 Ceramics",
+    "10 Blacks, 10 Whites, 20 Zebras, 18 Rainbows, 2 Regrow Rainbows", "1 MOAB",
+    "60 Blacks, 60 Zebras", "6 Regrow Rainbows, 5 Camo Rainbows", "10 Rainbows, 7 Ceramics", "50 Zebras",
+    "180 Pinks, 10 Camo Purples, 4 Fortified Leads, 25 Rainbows", "6 Fortified Ceramics",
+    "70 Camo Pinks, 12 Ceramics", "40 Regrow Pinks, 30 Camo Regrow Purples, 40 Rainbows, 3 Fortified Ceramics",
+    "343 Greens, 20 Zebras, 20 Rainbows, 10 Regrow Rainbows, 18 Ceramics", "20 Reds, 8 Fortified Leads, 20 Ceramics, 2 MOABs",
+    "10 Regrow Rainbows, 15 Camo Ceramics", "25 Rainbows, 10 Ceramics, 2 MOABs", "80 Camo Pinks, 3 MOABs",
+    "35 Ceramics, 2 MOABs", "45 Ceramics, 1 MOAB", "40 Camo Rainbows, 1 MOAB", "40 Rainbows, 4 MOABs",
+    "15 Ceramics, 10 Fortified Ceramics, 5 MOABs", "50 Camo Leads, 20 Ceramics, 10 Regrow Ceramics", "1 BFB",
+    "150 Regrow Zebras, 5 MOABs", "250 Purples, 15 Camo Regrow Rainbows, 5 MOABs, 2 Fortified MOABs",
+    "75 Leads, 122 Ceramics", "6 MOABs, 3 Fortified MOABs", "100 Zebras, 70 Rainbows, 50 Ceramics, 3 MOABs, 2 BFBs",
+    "8 MOABs, 3 Fortified MOABs", "13 Camo Regrow Fortified Ceramics, 8 MOABs", "4 MOABs, 1 BFB",
+    "40 Regrow Blacks, 40 Fortified Leads, 50 Ceramics", "120 Camo Regrow Whites, 200 Rainbows, 4 MOABs",
+    "30 Ceramics, 10 MOABs", "38 Regrow Ceramics, 2 BFBs", "8 MOABs, 2 BFBs",
+    "50 Ceramics, 60 Fortified Ceramics, 25 Camo Regrow Fortified Ceramics, 1 BFB",
+    "14 Leads, 14 Fortified Leads, 3 Fortified MOABs, 7 BFBs", "60 Regrow Ceramics", "11 MOABs, 5 BFBs",
+    "80 Purples, 150 Rainbows, 75 Ceramics, 72 Camo Ceramics, 1 BFB", "500 Regrow Rainbows, 4 BFBs, 2 Fortified BFBs",
+    "1 ZOMG", "17 BFBs", "10 BFBs, 5 Fortified BFBs", "40 Ceramics, 40 Regrow Ceramics, 40 Fortified Ceramics, 30 MOABs",
+    "50 MOABs, 10 BFBs", "2 ZOMGs", "5 Fortified BFBs", "4 ZOMGs", "18 MOABs, 8 BFBs, 2 ZOMGs",
+    "20 Fortified MOABs, 8 Fortified BFBs", "50 Camo Regrow Fortified Leads, 3 DDTs",
+    "100 Fortified Ceramics, 20 BFBs", "50 Fortified MOABs, 4 ZOMGs", "10 Fortified BFBs, 6 DDTs",
+    "25 BFBs, 6 ZOMGs", "500 Camo Regrow Purples, 250 Camo Regrow Fortified Leads, 50 Fortified MOABs, 30 DDTs",
+    "40 Fortified MOABs, 30 BFBs, 6 ZOMGs", "2 Fortified ZOMGs", "30 Fortified BFBs, 8 ZOMGs",
+    "60 MOABs, 9 Fortified DDTs", "1 BAD"
+  ];
+
+  const container = document.getElementById('roundsList');
+
+  // Função para aplicar os filtros
+  function applyFilter(filterType, btnElement) {
+    // Atualiza visual dos botões
+    document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
+    btnElement.classList.add('active');
+
+    // Renderiza a lista
+    renderList(filterType);
+  }
+
+  function renderList(filterType) {
+    container.innerHTML = '';
+    let hasResults = false;
+
+    rawRounds.forEach((roundStr, index) => {
+      let show = false;
+
+      // Lógica de filtro
+      if (filterType === 'all') {
+        show = true;
+      } else if (filterType === 'camo' && (roundStr.includes('Camo') || roundStr.includes('DDT'))) {
+        show = true; // DDTs possuem propriedade Camo embutida
+      } else if (filterType === 'lead' && (roundStr.includes('Lead') || roundStr.includes('DDT'))) {
+        show = true; // DDTs possuem propriedade Chumbo embutida
+      } else if (filterType === 'purple' && roundStr.includes('Purple')) {
+        show = true;
+      } else if (filterType === 'ceramics') {
+        // Detecta rushes de cerâmica (40 ou mais num único grupo)
+        const spawns = roundStr.split(', ');
+        spawns.forEach(s => {
+          if (s.includes('Ceramic')) {
+             const match = s.match(/^(\d+)/);
+             if (match && parseInt(match[1]) >= 40) show = true;
+          }
+        });
+      }
+
+      if (!show) return;
+      hasResults = true;
+
+      const row = document.createElement('div');
+      row.className = 'round-row';
+
+      const numCol = document.createElement('div');
+      numCol.className = 'round-num';
+      numCol.innerHTML = `<span>Round</span>${index + 1}`;
+      
+      const spawnsCol = document.createElement('div');
+      spawnsCol.className = 'round-spawns';
+
+      const spawns = roundStr.split(', ');
+
+      spawns.forEach(spawn => {
+        const match = spawn.match(/^(\d+)?\s*(.+)$/);
+        let count = match[1] || '1';
+        let fullName = match[2].trim();
+        
+        let baseType = Object.keys(imgMap).find(key => fullName.includes(key) && key !== 'Camo' && key !== 'Regrow');
+        if (!baseType && fullName.includes('Ceramic')) baseType = 'Ceramic';
+        
+        let contentHtml = `${count}x`;
+
+        if(fullName.includes('Fortified')) {
+           contentHtml += ' <span style="font-size:0.9rem; margin-left:4px;" title="Fortified">🛡️</span>';
+        }
+        if(fullName.includes('Camo')) {
+           contentHtml += ` <img src="${imgMap['Camo']}" alt="Camo" title="Camo">`;
+        }
+        if(fullName.includes('Regrow')) {
+           contentHtml += ` <img src="${imgMap['Regrow']}" alt="Regrow" title="Regrow">`;
+        }
+        if(baseType) {
+           contentHtml += ` <img src="${imgMap[baseType]}" alt="${baseType}" title="${baseType}">`;
+        }
+
+        const badge = document.createElement('span');
+        badge.className = 'spawn-badge';
+        badge.innerHTML = contentHtml;
+        spawnsCol.appendChild(badge);
+      });
+
+      row.appendChild(numCol);
+      row.appendChild(spawnsCol);
+      container.appendChild(row);
+    });
+
+    if (!hasResults) {
+      container.innerHTML = '<div class="empty-msg">Nenhuma rodada encontrou esse filtro.</div>';
+    }
+  }
+
+  // Renderiza todas as rodadas ao carregar a página
+  renderList('all');
+</script>
 
 </body>
 </html>
