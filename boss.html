@@ -5,24 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Guia de Chefões - BTD6</title>
   <style>
-    /* TODO O SEU CSS ORIGINAL MANTIDO INTACTO AQUI */
     :root {
       --bg-color: #0b0e14;
       --card-bg: #151b23;
       --border-color: #30363d;
       --accent-color: #58a6ff;
       --gold: #f59e0b;
-      --gold-light: #fbbf24;
       --green: #10b981;
       --text: #e6edf3;
       --text-muted: #8b949e;
       --danger: #ef4444;
-
-      /* Categorias reaproveitadas para os Bosses */
-      --cat-primary: #38bdf8;
-      --cat-military: #22c55e;
-      --cat-magic: #c084fc;
-      --cat-support: #facc15;
     }
 
     * {
@@ -43,29 +35,10 @@
 
     .container {
       width: 100%;
-      max-width: 780px;
+      max-width: 1000px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-    }
-
-    @media (min-width: 992px) {
-      .container { max-width: 1220px; }
-      .desktop-grid {
-        display: grid;
-        grid-template-columns: 1.15fr 1fr 1fr;
-        gap: 12px;
-        align-items: start;
-      }
-      .desktop-col {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-    }
-
-    @media (max-width: 991px) {
-      .desktop-grid, .desktop-col { display: contents; }
+      gap: 12px;
     }
 
     header {
@@ -75,145 +48,171 @@
     }
 
     h1 {
-      color: var(--danger); /* Mudado para vermelho para dar cara de Boss */
+      color: var(--danger);
       font-size: 1.35rem;
       font-weight: 800;
       letter-spacing: -0.5px;
       margin-bottom: 4px;
     }
 
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.7rem;
-      padding: 2px 8px;
-      border-radius: 10px;
-      background-color: #21262d;
-      color: var(--text-muted);
+    /* BARRA HORIZONTAL DOS CHEFÕES */
+    .boss-carousel {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-color) transparent;
+    }
+    .boss-carousel::-webkit-scrollbar {
+      height: 6px;
+    }
+    .boss-carousel::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
     }
 
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background-color: var(--gold);
+    .boss-thumb-btn {
+      flex: 0 0 auto;
+      width: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: all 0.2s ease;
     }
-    .status-dot.active { background-color: var(--green); }
+    .boss-thumb-btn.active, .boss-thumb-btn:hover {
+      opacity: 1;
+    }
+    .boss-icon-circle {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: var(--card-bg);
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .boss-thumb-btn.active .boss-icon-circle {
+      border-color: var(--danger);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+    }
+    .boss-icon-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .boss-thumb-btn span {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .boss-thumb-btn.active span {
+      color: var(--text);
+    }
+
+    /* GRID PRINCIPAL */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 768px) {
+      .main-grid {
+        grid-template-columns: 350px 1fr;
+        align-items: start;
+      }
+    }
 
     .card {
       background-color: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 10px 12px;
+      padding: 12px;
     }
-
     .card-title {
       font-size: 0.74rem;
       font-weight: 700;
       color: var(--accent-color);
       text-transform: uppercase;
       letter-spacing: 0.4px;
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      margin-bottom: 8px;
     }
 
-    .btn-item {
-      height: 30px;
-      background-color: #0b0e14;
-      border: 1.5px solid #21262d;
-      border-radius: 5px;
-      padding: 2px 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
-      transition: all 0.15s ease-in-out;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: #94a3b8;
-    }
-
-    .btn-item:active { transform: scale(0.96); }
-
-    .btn-item.active {
-      background-color: rgba(239, 68, 68, 0.16);
-      border-color: var(--danger);
-      color: var(--danger);
-      box-shadow: 0 0 8px rgba(239, 68, 68, 0.35);
-    }
-
-    .btn-item.diff-btn {
-      background-color: #12161f;
-      border-color: #262c36;
-      color: #64748b;
-      font-size: 0.65rem;
-    }
-    .btn-item.diff-btn.active {
-      background-color: #0f172a;
-      border-color: var(--danger);
-      color: var(--danger);
-      box-shadow: 0 0 8px rgba(239, 68, 68, 0.5), inset 0 0 4px rgba(239, 68, 68, 0.2);
-    }
-
-    .boss-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-
-    .tier-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
-    }
-
-    .paragon-banner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(245, 158, 11, 0.08) 100%);
-      border: 1px solid rgba(239, 68, 68, 0.25);
-      border-radius: 6px;
-      padding: 8px 12px;
-      margin-top: 10px;
-    }
-
-    .banner-col { display: flex; flex-direction: column; }
-    .banner-col.right { align-items: flex-end; text-align: right; }
-    .banner-col span {
-      font-size: 0.68rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.4px;
-    }
-    .banner-col strong { font-size: 1.25rem; font-variant-numeric: tabular-nums; }
-    .banner-col.left strong { color: var(--text); }
-    .banner-col.right strong { color: var(--danger); }
-
-    .result-card-clean {
+    /* DESTAQUE DO CHEFE */
+    .boss-spotlight {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 10px 14px;
+      gap: 10px;
+    }
+    .boss-main-image {
+      width: 100%;
+      height: 200px;
+      border-radius: 6px;
+      background-color: #0b0e14;
+      border: 1px dashed var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      overflow: hidden;
+    }
+    .boss-main-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
-    .degree-display { text-align: center; width: 100%; }
+    /* SELETORES DE TIER E DIFICULDADE */
+    .config-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      gap: 8px;
+    }
+    .btn-group {
+      display: flex;
+      gap: 4px;
+      width: 100%;
+    }
+    .btn-item {
+      flex: 1;
+      height: 28px;
+      background-color: #0b0e14;
+      border: 1px solid #262c36;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #64748b;
+      cursor: pointer;
+      user-select: none;
+    }
+    .btn-item.active {
+      background-color: #0f172a;
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    /* STATUS (HP) */
+    .degree-display { text-align: center; width: 100%; margin-top: 10px; }
     .degree-number {
       font-size: 2.2rem;
       font-weight: 900;
       color: var(--danger);
       letter-spacing: -1px;
       line-height: 1;
-      margin-bottom: 4px;
     }
-
     .progress-bar-bg {
       background-color: #21262d;
       height: 8px;
@@ -222,36 +221,65 @@
       margin: 8px 0 4px 0;
       width: 100%;
     }
-
     .progress-bar-fill {
       background: linear-gradient(90deg, var(--gold), var(--danger));
       height: 100%;
       width: 100%;
     }
 
-    .strategy-text {
-      font-size: 0.78rem;
-      color: var(--text);
-      line-height: 1.5;
-      margin-bottom: 8px;
+    /* ACORDEÕES DOS 4 BLOCOS */
+    .mechanics-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
     }
-
-    .mechanic-list {
+    @media (min-width: 768px) {
+      .mechanics-container { grid-template-columns: 1fr 1fr; }
+    }
+    .mechanic-item {
+      background-color: #0b0e14;
+      border: 1px solid #262c36;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .mechanic-item summary {
+      padding: 10px 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
       list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    .mechanic-item summary strong {
+      color: var(--accent-color);
+      margin-right: 6px;
+    }
+    .mechanic-item summary::-webkit-details-marker { display: none; }
+    .mechanic-item summary::after {
+      content: '+';
+      color: var(--text-muted);
+      font-weight: bold;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .mechanic-item[open] summary { border-bottom: 1px solid #262c36; }
+    .mechanic-item[open] summary::after { content: '−'; }
+    .mechanic-item p {
+      padding: 10px 12px;
       font-size: 0.75rem;
       color: var(--text-muted);
+      line-height: 1.5;
+      background-color: #12161f;
     }
-    .mechanic-list li {
-      margin-bottom: 4px;
-      padding-left: 12px;
-      position: relative;
-    }
-    .mechanic-list li::before {
-      content: "•";
-      color: var(--danger);
-      position: absolute;
-      left: 0;
-      font-weight: bold;
+
+    .strategy-text {
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: var(--text);
     }
   </style>
 </head>
@@ -260,112 +288,255 @@
 <div class="container">
   <header>
     <h1>Guia de Chefões</h1>
-    <div class="status-badge">
-      <div class="status-dot active"></div>
-      <span>Pronto para a Batalha</span>
-    </div>
   </header>
 
-  <div class="desktop-grid">
+  <!-- LISTA HORIZONTAL DOS 6 BOSSES -->
+  <div class="boss-carousel" id="boss-selector">
+    <div class="boss-thumb-btn active" data-boss="Bloonarius">
+      <div class="boss-icon-circle"><img src="" alt="Bloonarius" onerror="this.style.display='none'"></div>
+      <span>Bloonarius</span>
+    </div>
+    <div class="boss-thumb-btn" data-boss="Lych">
+      <div class="boss-icon-circle"><img src="" alt="Lych" onerror="this.style.display='none'"></div>
+      <span>Lych</span>
+    </div>
+    <div class="boss-thumb-btn" data-boss="Vortex">
+      <div class="boss-icon-circle"><img src="" alt="Vortex" onerror="this.style.display='none'"></div>
+      <span>Vortex</span>
+    </div>
+    <div class="boss-thumb-btn" data-boss="Dreadbloon">
+      <div class="boss-icon-circle"><img src="" alt="Dreadbloon" onerror="this.style.display='none'"></div>
+      <span>Dreadbloon</span>
+    </div>
+    <div class="boss-thumb-btn" data-boss="Phayze">
+      <div class="boss-icon-circle"><img src="" alt="Phayze" onerror="this.style.display='none'"></div>
+      <span>Phayze</span>
+    </div>
+    <div class="boss-thumb-btn" data-boss="Blastapopoulos">
+      <div class="boss-icon-circle"><img src="" alt="Blastapop" onerror="this.style.display='none'"></div>
+      <span>Blastapop</span>
+    </div>
+  </div>
+
+  <div class="main-grid">
     
-    <!-- COLUNA 1: ESCOLHA DO BOSS E TIER -->
-    <div class="desktop-col">
-      <div class="card">
-        <div class="card-title">Selecione o Boss</div>
-        
-        <div class="boss-grid">
-          <div class="btn-item active">Bloonarius</div>
-          <div class="btn-item">Lych</div>
-          <div class="btn-item">Vortex</div>
-          <div class="btn-item">Dreadbloon</div>
-          <div class="btn-item">Phayze</div>
-          <div class="btn-item">Blastapop.</div>
-        </div>
+    <!-- PAINEL ESQUERDO: IMAGEM, TIER E HP -->
+    <div class="card boss-spotlight">
+      <div class="boss-main-image">
+        <img id="main-boss-img" src="" alt="Imagem do Boss" onerror="this.style.display='none'; this.parentNode.innerHTML='[ Imagem do Boss Aqui ]'">
+      </div>
 
-        <div class="card-title" style="margin-top: 10px;">Dificuldade & Tier</div>
-        <div class="tier-grid" style="margin-bottom: 6px;">
-          <div class="btn-item diff-btn active">Normal</div>
-          <div class="btn-item diff-btn">Elite</div>
+      <div class="config-row" id="diff-selector">
+        <div class="btn-group">
+          <div class="btn-item active" data-diff="normal">Normal</div>
+          <div class="btn-item" data-diff="elite">Elite</div>
         </div>
-        
-        <div class="tier-grid">
-          <div class="btn-item diff-btn active">T1</div>
-          <div class="btn-item diff-btn">T2</div>
-          <div class="btn-item diff-btn">T3</div>
-          <div class="btn-item diff-btn">T4</div>
-          <div class="btn-item diff-btn">T5</div>
+      </div>
+      
+      <div class="config-row" id="tier-selector">
+        <div class="btn-group">
+          <div class="btn-item active" data-tier="1">T1</div>
+          <div class="btn-item" data-tier="2">T2</div>
+          <div class="btn-item" data-tier="3">T3</div>
+          <div class="btn-item" data-tier="4">T4</div>
+          <div class="btn-item" data-tier="5">T5</div>
         </div>
+      </div>
 
-        <div class="paragon-banner">
-          <div class="banner-col left">
-            <span>Rodada Alvo</span>
-            <strong>40</strong>
-          </div>
-          <div class="banner-col right">
-            <span>Tempo Médio</span>
-            <strong>Rápido</strong>
-          </div>
+      <div class="degree-display">
+        <div class="degree-number" id="boss-hp">20.000 HP</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill"></div>
         </div>
+        <small id="boss-subtitle" style="color: var(--text-muted); font-size: 0.72rem;">Bloonarius Normal - Tier 1</small>
       </div>
     </div>
 
-    <!-- COLUNA 2: STATUS DO BOSS -->
-    <div class="desktop-col">
-      <div class="card result-card-clean">
-        <div class="degree-display">
-          <div class="degree-number">20.000 HP</div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill"></div>
-          </div>
-          <small style="color: var(--text-muted); font-size: 0.72rem;">Bloonarius Normal - Tier 1</small>
+    <!-- PAINEL DIREITO: 4 MECÂNICAS + ESTRATÉGIA -->
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      
+      <div class="card">
+        <div class="card-title">Mecânicas do Chefe</div>
+        <div class="mechanics-container" id="mechanics-list">
+          <!-- Renderizado via JS com os 4 Blocos -->
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title">Mecânicas Especiais</div>
-        <ul class="mechanic-list">
-          <li><strong>Vômito de Bloons:</strong> A cada caveira atingida, cospe uma grande quantidade de bloons no caminho.</li>
-          <li><strong>Lentidão:</strong> É o boss mais lento do jogo, dando tempo de sobra para causar dano.</li>
-          <li><strong>Imunidade:</strong> Nenhuma imunidade específica, aceita todos os tipos de dano.</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- COLUNA 3: ESTRATÉGIA E FARM -->
-    <div class="desktop-col">
-      <div class="card">
-        <div class="card-title">Estratégia de Dano (T1)</div>
-        <p class="strategy-text">
-          Para o Tier 1, torres com alto dano de alvo único e perfuração em área são essenciais para lidar com o boss e com os bloons que ele cospe. 
-          <br><br>
-          <strong>Recomendações:</strong> Zona de Exclusão de Dardos (0/2/5), Ninja Bomba Pegajosa (1/0/4) ou Elite Defender (0/2/5).
-        </p>
+        <div class="card-title" id="strategy-title">Estratégia de Dano (T1)</div>
+        <div class="strategy-text" id="strategy-content"></div>
       </div>
 
       <div class="card">
-        <div class="card-title">Farm Inicial (Até Rod. 40)</div>
-        <p class="strategy-text">
-          O foco antes do Boss aparecer deve ser 100% em economia. Mantenha a defesa apenas com o estritamente necessário.
-          <br><br>
-          <strong>Dica com Herói:</strong> Se estiver usando o Benjamin, aproveite os Bancos (Fazenda 2/3/0). O bônus de 5% de golpe bancário dele até a fase 40 agiliza muito o acúmulo de dinheiro antes do Tier 1, mesmo que ele não esteja upado além disso.
-        </p>
+        <div class="card-title" id="farm-title">Farm Inicial (Até Rod. 40)</div>
+        <div class="strategy-text" id="farm-content"></div>
       </div>
+
     </div>
 
   </div>
 </div>
 
 <script>
-  // Aqui você pode adicionar a lógica para trocar os dados (HP, dicas) 
-  // quando clicar nos botões, similar ao que fez na Calculadora Paragon.
-  
-  const buttons = document.querySelectorAll('.boss-grid .btn-item');
-  buttons.forEach(btn => {
+  // ESTRUTURA DOS 4 BLOCOS PADRÃO
+  const templateKeys = [
+    { key: "propriedade", label: "1. Propriedade" },
+    { key: "efeitos", label: "2. Efeitos" },
+    { key: "caveira", label: "3. Caveira" },
+    { key: "adicionais", label: "4. Adicionais" }
+  ];
+
+  const bossData = {
+    Bloonarius: {
+      mechanics: {
+        propriedade: "<strong>Colosso Lento:</strong> É o chefe mais lento e com mais HP do jogo. Foca-se em resistir ao dano bruto, não possuindo imunidades ou bloqueios contra categorias específicas de torres.",
+        efeitos: "<strong>Presença Neutra:</strong> Não impõe auras nocivas, atordoamentos ou penalidades diretas contra a sua defesa. É um teste puramente de Dano por Segundo (DPS).",
+        caveira: "<strong>Vômito Massivo:</strong> Ao perder uma caveira, vomita instantaneamente uma onda gigantesca e concentrada de bloons na pista, sobrecarregando facilmente defesas focadas em alvo único.",
+        adicionais: "<strong>Vazamento Contínuo:</strong> Mesmo enquanto caminha passivamente, ele expele bloons mais fracos continuamente pela pista para distrair as torres."
+      },
+      hp: {
+        normal: { 1: "20.000 HP", 2: "75.000 HP", 3: "350.000 HP", 4: "750.000 HP", 5: "3.000.000 HP" },
+        elite:  { 1: "50.000 HP", 2: "300.000 HP", 3: "2.000.000 HP", 4: "8.000.000 HP", 5: "40.000.000 HP" }
+      },
+      strategy: { 1: "Para o Tier 1, torres com alto dano de alvo único e perfuração em área são essenciais.<br><br><strong>Recomendações:</strong> Zona de Exclusão de Dardos (0/2/5), Ninja Bomba Pegajosa (1/0/4) ou Elite Defender (0/2/5)." },
+      farm: { 1: "<strong>Dica com Herói:</strong> Se estiver usando o Benjamin, aproveite os Bancos (Fazenda 2/3/0). O bônus de 5% de golpe bancário dele até a fase 40 agiliza muito o acúmulo de dinheiro antes do Tier 1." }
+    },
+    Lych: {
+      mechanics: {
+        propriedade: "<strong>Roubo de Buffs e Regeneração:</strong> Devora efeitos positivos temporários (como poções do Alquimista e habilidades ativas) para se curar e atordoar torres. Restaura a própria regeneração se ela for anulada.",
+        efeitos: "<strong>Penalidade e Provocação:</strong> Impõe -35% no valor de revenda de todas as torres. Possui Provocação Forte, forçando as defesas a mirarem nele e em suas evocações, ignorando bloons comuns.",
+        caveira: "<strong>Fase Etérea e Alma de Lich:</strong> Torna-se translúcido e invulnerável, libertando a letal Alma de Lich. Volta a ser alvejável apenas quando a Alma for completamente destruída.",
+        adicionais: "<strong>Túmulos Zumbis:</strong> Espalha covas ao longo da pista que invocam continuamente ondas progressivas de MOABs Zumbis."
+      },
+      hp: {
+        normal: { 1: "24.000 HP", 2: "85.000 HP", 3: "400.000 HP", 4: "900.000 HP", 5: "3.200.000 HP" },
+        elite:  { 1: "60.000 HP", 2: "350.000 HP", 3: "2.400.000 HP", 4: "9.500.000 HP", 5: "44.000.000 HP" }
+      },
+      strategy: { 1: "Priorize ataques rápidos multialvo e sem buffs temporários.<br><br><strong>Recomendações:</strong> Às 4/2/0 ou Bucaneiro 4/2/0 contra a Lych-Soul. Engenheiro 2/3/0 (espuma) posicionado na pista." },
+      farm: { 1: "Economia rígida sem Alquimistas de suporte. O Overclock só deve ser usado em fazendas muito afastadas antes do Lych surgir na rodada 40." }
+    },
+    Vortex: {
+      mechanics: {
+        propriedade: "<strong>Escudo Eletrostático:</strong> O vento ao redor do chefe repele, retarda drasticamente ou até destrói projéteis que venham de muito longe antes de atingi-lo.",
+        efeitos: "<strong>Pulso de Atordoamento:</strong> Emite regularmente choques em área que limpam todos os projéteis voadores no alcance e atordoam macacos próximos por um longo tempo.",
+        caveira: "<strong>Recuo e Super Pulso:</strong> Ao perder a caveira, recua levemente na pista e dispara um pulso elétrico maciço e mais demorado, desligando a sua principal linha de frente.",
+        adicionais: "<strong>Velocidade Extrema:</strong> Compensa a falta de bloons invocados com uma velocidade de deslocamento ameaçadora. É um dos chefões mais velozes a cruzar o mapa."
+      },
+      hp: {
+        normal: { 1: "20.000 HP", 2: "75.000 HP", 3: "350.000 HP", 4: "750.000 HP", 5: "2.750.000 HP" },
+        elite:  { 1: "55.000 HP", 2: "320.000 HP", 3: "2.100.000 HP", 4: "8.500.000 HP", 5: "38.000.000 HP" }
+      },
+      strategy: { 1: "Evite aglomerar torres perto da pista. Mantenha os seus principais atacantes (Sniper, Dartling) longe do alcance do Pulso de Atordoamento." },
+      farm: { 1: "Sem restrições de posicionamento no early game, mas prepare-se para usar Mercados que não são afetados pelo atordoamento quando perto da pista." }
+    },
+    Dreadbloon: {
+      mechanics: {
+        propriedade: "<strong>Armadura de Pedra:</strong> Ao surgir e após cada caveira, ganha um escudo maciço de cerâmica. Enquanto tiver o escudo, recebe muito menos dano dos seus ataques.",
+        efeitos: "<strong>Imunidade Rotativa:</strong> A cada fase de vida (tiers), ele se torna 100% imune aos ataques de uma categoria específica de macacos (Primário, Militar, Mágico, Suporte), forçando você a diversificar a defesa.",
+        caveira: "<strong>Invocação de Rock Bloons:</strong> Restaura o escudo de pedra e cospe bloons rochosos (imunes a efeitos e atordoamentos) que drenam suas vidas violentamente caso não sejam contidos.",
+        adicionais: "<strong>Escudo Indestrutível:</strong> Se os Rock Bloons não forem destruídos, o chefe em si não sofrerá dano. Você deve limpar os lacaios de pedra antes de conseguir perfurar o Dreadbloon novamente."
+      },
+      hp: {
+        normal: { 1: "25.000 HP", 2: "90.000 HP", 3: "420.000 HP", 4: "950.000 HP", 5: "3.500.000 HP" },
+        elite:  { 1: "65.000 HP", 2: "380.000 HP", 3: "2.500.000 HP", 4: "10.000.000 HP", 5: "48.000.000 HP" }
+      },
+      strategy: { 1: "Tenha pelo menos duas torres fortes de categorias diferentes (ex: Ninja Bomba Pegajosa + Zona de Exclusão Militar) para não ficar inútil durante a troca de imunidade." },
+      farm: { 1: "Economia agressiva padrão. Prepare caixa suficiente, pois precisará investir em diferentes Paragons no fim do jogo." }
+    },
+    Phayze: {
+      mechanics: {
+        propriedade: "<strong>Camuflagem Dimensional (Camo Nível Boss):</strong> Ele é permanentemente camuflado. Torres sem detecção natural de Camo ou visão concedida por vilas/heróis simplesmente não o atacarão.",
+        efeitos: "<strong>Distorção Temporal (Radar Jammer):</strong> Emite uma aura contínua que reduz drasticamente a velocidade de ataque (cadência) e anula buffs de velocidade de todas as torres próximas a ele.",
+        caveira: "<strong>Salto no Espaço-Tempo:</strong> Teleporta-se instantaneamente para frente na pista, ganhando uma vantagem perigosa de distância e deixando defesas lentas para trás.",
+        adicionais: "<strong>Realidade Despedaçada:</strong> Rasga o mapa criando portais, fazendo com que os bloons e MOABs da rodada saltem grandes partes do caminho direto para o final."
+      },
+      hp: {
+        normal: { 1: "20.000 HP", 2: "80.000 HP", 3: "380.000 HP", 4: "850.000 HP", 5: "3.000.000 HP" },
+        elite:  { 1: "50.000 HP", 2: "320.000 HP", 3: "2.200.000 HP", 4: "9.000.000 HP", 5: "40.000.000 HP" }
+      },
+      strategy: { 1: "A Vila 0/2/0 é obrigatória na sua defesa de DPS para desmascarar o chefe, mas lembre-se que o Phayze diminui a velocidade de quem estiver muito perto!" },
+      farm: { 1: "Otimize espaços. Construa a defesa pesada em áreas onde o Phayze demore para alcançar e atrasar sua cadência." }
+    },
+    Blastapopoulos: {
+      mechanics: {
+        propriedade: "<strong>Colosso Magmático:</strong> Uma ameaça incandescente protegida por escudos e resistência natural a efeitos de dano contínuo (DoT), punindo estratégias que dependem de fogo ou veneno demorado.",
+        efeitos: "<strong>Vingança contra o Luxo:</strong> Foca a sua ira nas suas melhores defesas. Lança constantemente bolas de fogo escaldantes diretamente na torre <em>mais cara</em> do mapa, atordoando-a e inutilizando o seu DPS.",
+        caveira: "<strong>Erupção Vulcânica:</strong> Dispara uma rajada violenta de meteoros, atingindo simultaneamente múltiplas torres do seu arsenal de alto valor e paralisando a sua linha de frente principal.",
+        adicionais: "<strong>Trilha de Magma:</strong> Expele ondas de calor e esferas derretidas na pista, forçando o jogador a usar táticas de sacrifício (ter macacos caros de distração) para proteger a defesa principal."
+      },
+      hp: {
+        normal: { 1: "22.000 HP", 2: "80.000 HP", 3: "360.000 HP", 4: "800.000 HP", 5: "3.100.000 HP" },
+        elite:  { 1: "55.000 HP", 2: "330.000 HP", 3: "2.300.000 HP", 4: "9.000.000 HP", 5: "42.000.000 HP" }
+      },
+      strategy: { 1: "Use uma torre cara 'isca' ou espalhe os seus upgrades de dano em várias torres de preço médio. Se concentrar todo o dinheiro em um só macaco, o Blastapopoulos irá mantê-lo atordoado a luta inteira." },
+      farm: { 1: "Muito cuidado: Bancos e Fazendas T5 muito caras podem ser alvo das bolas de fogo caso o seu DPS principal seja mais barato que elas, embora o stun nas fazendas não seja tão letal." }
+    }
+  };
+
+  let currentBoss = 'Bloonarius';
+  let currentDiff = 'normal';
+  let currentTier = '1';
+
+  function updateDisplay() {
+    const data = bossData[currentBoss] || bossData['Bloonarius'];
+    
+    document.getElementById('boss-hp').textContent = data.hp[currentDiff][currentTier];
+    document.getElementById('boss-subtitle').textContent = 
+      `${currentBoss} ${currentDiff.charAt(0).toUpperCase() + currentDiff.slice(1)} - Tier ${currentTier}`;
+
+    const mechanicsContainer = document.getElementById('mechanics-list');
+    mechanicsContainer.innerHTML = '';
+    
+    templateKeys.forEach((tmpl, index) => {
+      const details = document.createElement('details');
+      details.className = 'mechanic-item';
+      if (index === 0) details.open = true; 
+      
+      const summary = document.createElement('summary');
+      summary.innerHTML = `<strong>${tmpl.label}</strong>`;
+      
+      const p = document.createElement('p');
+      p.innerHTML = data.mechanics[tmpl.key] || "Informação não disponível.";
+      
+      details.appendChild(summary);
+      details.appendChild(p);
+      mechanicsContainer.appendChild(details);
+    });
+
+    document.getElementById('strategy-title').textContent = `Estratégia de Dano (T${currentTier})`;
+    document.getElementById('strategy-content').innerHTML = data.strategy[currentTier] || data.strategy[1];
+    document.getElementById('farm-title').textContent = currentTier == 1 ? 'Farm Inicial (Até Rod. 40)' : `Farm (Tier ${currentTier})`;
+    document.getElementById('farm-content').innerHTML = data.farm[currentTier] || data.farm[1];
+  }
+
+  document.querySelectorAll('#boss-selector .boss-thumb-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      buttons.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#boss-selector .boss-thumb-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      currentBoss = btn.dataset.boss;
+      updateDisplay();
     });
   });
+
+  document.querySelectorAll('#diff-selector .btn-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#diff-selector .btn-item').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentDiff = btn.dataset.diff;
+      updateDisplay();
+    });
+  });
+
+  document.querySelectorAll('#tier-selector .btn-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#tier-selector .btn-item').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTier = btn.dataset.tier;
+      updateDisplay();
+    });
+  });
+
+  updateDisplay();
 </script>
 </body>
 </html>
