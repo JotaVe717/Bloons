@@ -2,64 +2,114 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora Paragon - BTD6</title>
+
+  <!-- Tipografia Moderna: Plus Jakarta Sans (UI) + JetBrains Mono (Valores Tabulares) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+
   <style>
     :root {
       --bg-color: #0b0e14;
-      --card-bg: #151b23;
-      --border-color: #30363d;
+      --card-bg: #131923;
+      --border-color: #2b3442;
       --accent-color: #58a6ff;
       --gold: #f59e0b;
       --gold-light: #fbbf24;
       --green: #10b981;
-      --text: #e6edf3;
-      --text-muted: #8b949e;
+      --text: #eef2f6;
+      --text-muted: #8b96a5;
       --danger: #ef4444;
 
-      /* Categorias */
+      /* Cores oficiais das categorias BTD6 */
       --cat-primary: #38bdf8;
       --cat-military: #22c55e;
       --cat-magic: #c084fc;
       --cat-support: #facc15;
+
+      /* Cor dinâmica de tema atualizada conforme a categoria do Paragon ativo */
+      --theme-accent: var(--cat-primary);
+
+      --font-ui: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
     }
 
+    /* Reset universal corrigido */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
+    /* Suavização da View Transitions API ao alternar Paragon ou Dificuldade */
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 190ms;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
     body {
-      background: linear-gradient(rgba(8, 14, 24, 0.53), rgba(8, 14, 24, 0.70)), url('bloons/wall2.png') center center / cover fixed no-repeat;
+      font-family: var(--font-ui);
+      background:
+        radial-gradient(circle at 50% 0%, color-mix(in oklch, var(--theme-accent) 18%, transparent), transparent 60%),
+        linear-gradient(rgba(8, 14, 24, 0.62), rgba(8, 14, 24, 0.82)),
+        url('bloons/wall2.png') center center / cover fixed no-repeat;
       background-color: var(--bg-color);
       min-height: 100vh;
       color: var(--text);
-      padding: 12px 10px 32px 10px;
+      padding: 12px 12px 28px 12px;
       display: flex;
       justify-content: center;
+      transition: background-color 0.3s ease;
     }
 
+    @media (max-width: 991px) {
+      body {
+        background-attachment: scroll, scroll, scroll;
+        padding: 10px 10px 28px 10px;
+      }
+    }
+
+    /* Acessibilidade e prevenção de zoom acidental de duplo toque */
+    button,
+    input,
+    [role="button"],
+    .btn-item,
+    .drum-step-btn,
+    .drum-roll-item {
+      touch-action: manipulation;
+      font-family: inherit;
+    }
+
+    .mono-num {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Container Principal */
     .container {
       width: 100%;
-      max-width: 780px;
+      max-width: 760px;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
-    /* GRID RESTRITO EXCLUSIVAMENTE AO DESKTOP (3 COLUNAS) */
+    /* Grid Desktop Compacto de 3 Colunas */
     @media (min-width: 992px) {
       .container {
-        max-width: 1220px;
+        max-width: 1240px;
       }
 
       .desktop-grid {
         display: grid;
-        grid-template-columns: 1.15fr 1fr 1fr;
+        grid-template-columns: 1.12fr 1.05fr 1fr;
         gap: 12px;
         align-items: start;
       }
@@ -71,80 +121,222 @@
       }
     }
 
-    /* NO MOBILE: COMPORTAMENTO NATURAL 100% EMPILHADO */
+    /* Mobile: Empilhamento Vertical Fluido */
     @media (max-width: 991px) {
-      .desktop-grid {
-        display: contents;
-      }
+      .desktop-grid,
       .desktop-col {
         display: contents;
       }
     }
 
+    /* Header Moderno com Ações Rápidas */
     header {
-      text-align: center;
-      padding-bottom: 4px;
-      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px 12px;
+      padding: 4px 2px 10px 2px;
+      border-bottom: 1px solid color-mix(in oklch, var(--theme-accent) 22%, var(--border-color));
     }
 
-    h1 {
-      color: var(--gold-light);
-      font-size: 1.35rem;
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      font-size: 1.25rem;
       font-weight: 800;
-      letter-spacing: -0.5px;
-      margin-bottom: 4px;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-icon-wrap {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in oklch, var(--theme-accent) 18%, rgba(15, 23, 42, 0.9));
+      border: 1px solid color-mix(in oklch, var(--theme-accent) 45%, transparent);
+      color: var(--theme-accent);
+      box-shadow: 0 0 14px color-mix(in oklch, var(--theme-accent) 25%, transparent);
+      transition: all 0.25s ease;
+    }
+
+    .brand-icon-wrap svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .btd-tag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: color-mix(in oklch, var(--gold) 18%, transparent);
+      border: 1px solid color-mix(in oklch, var(--gold) 42%, transparent);
+      color: var(--gold-light);
+      letter-spacing: 0.04em;
     }
 
     .status-badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       font-size: 0.7rem;
-      padding: 2px 8px;
-      border-radius: 10px;
-      background-color: #21262d;
+      font-weight: 600;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background-color: rgba(21, 27, 35, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.18);
       color: var(--text-muted);
     }
 
     .status-dot {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background-color: var(--gold);
+      box-shadow: 0 0 6px var(--gold);
     }
-    .status-dot.active { background-color: var(--green); }
-    .status-dot.error { background-color: var(--danger); }
-
-    .card {
-      background-color: rgba(21, 27, 35, 0.93);
-      border: 1px solid rgba(148, 163, 184, 0.24);
-      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
-      border-radius: 8px;
-      padding: 10px 12px;
+    .status-dot.active {
+      background-color: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+    .status-dot.cache {
+      background-color: var(--cat-primary);
+      box-shadow: 0 0 8px var(--cat-primary);
+    }
+    .status-dot.error {
+      background-color: var(--danger);
+      box-shadow: 0 0 8px var(--danger);
     }
 
-    .card-title, .slider-header > div:first-child, header h1 {
+    .header-actions {
       display: flex;
       align-items: center;
-      gap: 7px;
-    }
-    header h1 { justify-content: center; }
-    .card-title svg, .slider-header svg, header h1 svg { width: 17px; height: 17px; flex-shrink: 0; }
-    header h1 svg { width: 22px; height: 22px; }
-    .slider-box {
-      backdrop-filter: blur(7px);
-      -webkit-backdrop-filter: blur(7px);
-    }
-    @media (max-width: 991px) {
-      body { background-attachment: scroll; }
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
-    /* 5 COLUNAS ENXUTAS */
+    .header-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 11px;
+      border-radius: 8px;
+      font-size: 0.73rem;
+      font-weight: 700;
+      color: var(--text);
+      background: rgba(21, 27, 38, 0.88);
+      border: 1px solid color-mix(in oklch, var(--theme-accent) 28%, rgba(148, 163, 184, 0.22));
+      cursor: pointer;
+      transition: all 0.18s ease;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .header-btn svg {
+      width: 14px;
+      height: 14px;
+      color: var(--theme-accent);
+      flex-shrink: 0;
+      transition: color 0.2s ease;
+    }
+
+    .header-btn:hover {
+      background: color-mix(in oklch, var(--theme-accent) 14%, rgba(21, 27, 38, 0.95));
+      border-color: color-mix(in oklch, var(--theme-accent) 55%, transparent);
+      transform: translateY(-1px);
+    }
+
+    .header-btn:active {
+      transform: scale(0.97);
+    }
+
+    .header-btn.copied {
+      border-color: color-mix(in oklch, var(--green) 65%, transparent);
+      background: color-mix(in oklch, var(--green) 16%, rgba(15, 23, 42, 0.95));
+      color: #6ee7b7;
+    }
+
+    .header-btn.copied svg {
+      color: var(--green);
+    }
+
+    @media (max-width: 640px) {
+      header {
+        justify-content: center;
+      }
+      .header-brand {
+        justify-content: center;
+        width: 100%;
+      }
+      .header-actions {
+        justify-content: center;
+        width: 100%;
+      }
+    }
+
+    /* Cards Base com Tint Dinâmico em OKLCH */
+    .card {
+      position: relative;
+      background:
+        linear-gradient(180deg, color-mix(in oklch, var(--theme-accent) 6%, rgba(21, 28, 39, 0.94)) 0%, rgba(15, 20, 29, 0.95) 100%);
+      border: 1px solid color-mix(in oklch, var(--theme-accent) 22%, rgba(148, 163, 184, 0.18));
+      box-shadow:
+        0 8px 26px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 color-mix(in oklch, var(--theme-accent) 24%, rgba(255, 255, 255, 0.05));
+      border-radius: 12px;
+      padding: 12px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card-title {
+      font-size: 0.73rem;
+      font-weight: 800;
+      color: var(--theme-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 7px;
+      transition: color 0.25s ease;
+    }
+
+    .card-title-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-title svg,
+    .slider-header svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Quadro de 5 Colunas: 4 Categorias + Dificuldade */
     .five-cols-board {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 5px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .col-category {
@@ -154,26 +346,29 @@
     }
 
     .col-header {
-      font-size: 0.65rem;
-      font-weight: 700;
+      font-size: 0.63rem;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.05em;
       text-align: center;
-      padding: 3px 0;
-      border-radius: 4px;
-      background-color: rgba(255, 255, 255, 0.02);
+      padding: 4px 2px;
+      border-radius: 6px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.04);
     }
-    .col-header.primary { color: var(--cat-primary); }
-    .col-header.military { color: var(--cat-military); }
-    .col-header.magic { color: var(--cat-magic); }
-    .col-header.support { color: var(--cat-support); }
-    .col-header.diff { color: #94a3b8; }
+    .col-header.primary { color: var(--cat-primary); background: color-mix(in oklch, var(--cat-primary) 10%, transparent); }
+    .col-header.military { color: var(--cat-military); background: color-mix(in oklch, var(--cat-military) 10%, transparent); }
+    .col-header.magic { color: var(--cat-magic); background: color-mix(in oklch, var(--cat-magic) 10%, transparent); }
+    .col-header.support { color: var(--cat-support); background: color-mix(in oklch, var(--cat-support) 10%, transparent); }
+    .col-header.diff { color: #cbd5e1; }
 
     .btn-item {
-      height: 30px;
-      background-color: #0b0e14;
-      border: 1.5px solid #21262d;
-      border-radius: 5px;
+      appearance: none;
+      width: 100%;
+      height: 31px;
+      background-color: rgba(11, 14, 20, 0.88);
+      border: 1.5px solid #222936;
+      border-radius: 7px;
       padding: 2px 4px;
       display: flex;
       align-items: center;
@@ -181,70 +376,84 @@
       text-align: center;
       cursor: pointer;
       user-select: none;
-      transition: all 0.15s ease-in-out;
+      transition: all 0.16s ease;
       font-size: 0.72rem;
       font-weight: 700;
       color: #94a3b8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    @media (min-width: 600px) {
-      .btn-item { height: 28px; font-size: 0.74rem; }
+    .btn-item:hover {
+      border-color: #3b475c;
+      color: #e2e8f0;
     }
 
-    .btn-item:active { transform: scale(0.96); }
+    .btn-item:active {
+      transform: scale(0.96);
+    }
 
     .btn-item.cat-primary.active {
       border-color: var(--cat-primary);
-      background-color: rgba(56, 189, 248, 0.16);
+      background-color: color-mix(in oklch, var(--cat-primary) 18%, #0b0e14);
       color: var(--cat-primary);
-      box-shadow: 0 0 8px rgba(56, 189, 248, 0.35);
+      box-shadow: 0 0 12px color-mix(in oklch, var(--cat-primary) 35%, transparent);
     }
     .btn-item.cat-military.active {
       border-color: var(--cat-military);
-      background-color: rgba(34, 197, 94, 0.16);
+      background-color: color-mix(in oklch, var(--cat-military) 18%, #0b0e14);
       color: var(--cat-military);
-      box-shadow: 0 0 8px rgba(34, 197, 94, 0.35);
+      box-shadow: 0 0 12px color-mix(in oklch, var(--cat-military) 35%, transparent);
     }
     .btn-item.cat-magic.active {
       border-color: var(--cat-magic);
-      background-color: rgba(192, 132, 252, 0.16);
+      background-color: color-mix(in oklch, var(--cat-magic) 18%, #0b0e14);
       color: var(--cat-magic);
-      box-shadow: 0 0 8px rgba(192, 132, 252, 0.35);
+      box-shadow: 0 0 12px color-mix(in oklch, var(--cat-magic) 35%, transparent);
     }
     .btn-item.cat-support.active {
       border-color: var(--cat-support);
-      background-color: rgba(250, 204, 21, 0.16);
+      background-color: color-mix(in oklch, var(--cat-support) 18%, #0b0e14);
       color: var(--cat-support);
-      box-shadow: 0 0 8px rgba(250, 204, 21, 0.35);
+      box-shadow: 0 0 12px color-mix(in oklch, var(--cat-support) 35%, transparent);
     }
 
     .btn-item.diff-btn {
-      background-color: #12161f;
-      border-color: #262c36;
-      color: #64748b;
+      background-color: #111620;
+      border-color: #252d3a;
+      color: #7c8aa0;
       font-size: 0.65rem;
-    }
-    .btn-item.diff-btn.active {
-      background-color: #0f172a;
-      border-color: #38bdf8;
-      color: #38bdf8;
-      box-shadow: 0 0 8px rgba(56, 189, 248, 0.5), inset 0 0 4px rgba(56, 189, 248, 0.2);
+      letter-spacing: 0.02em;
     }
 
-    /* BANNER SUPERIOR COM PREÇO BASE E CUSTO TOTAL */
+    .btn-item.diff-btn.active {
+      background-color: color-mix(in oklch, var(--theme-accent) 16%, #0d131d);
+      border-color: var(--theme-accent);
+      color: var(--text);
+      box-shadow: 0 0 10px color-mix(in oklch, var(--theme-accent) 36%, transparent);
+    }
+
+    /* Banner Resumo: Preço Base e Custo Total */
     .paragon-banner {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: linear-gradient(135deg, rgba(88, 166, 255, 0.08) 0%, rgba(245, 158, 11, 0.08) 100%);
-      border: 1px solid rgba(88, 166, 255, 0.25);
-      border-radius: 6px;
-      padding: 8px 12px;
+      gap: 8px;
+      background: linear-gradient(
+        135deg,
+        color-mix(in oklch, var(--theme-accent) 12%, rgba(11, 14, 20, 0.85)) 0%,
+        color-mix(in oklch, var(--gold) 12%, rgba(11, 14, 20, 0.85)) 100%
+      );
+      border: 1px solid color-mix(in oklch, var(--theme-accent) 32%, rgba(255, 255, 255, 0.08));
+      border-radius: 9px;
+      padding: 9px 12px;
     }
 
     .banner-col {
       display: flex;
       flex-direction: column;
+      gap: 2px;
     }
 
     .banner-col.right {
@@ -253,16 +462,19 @@
     }
 
     .banner-col span {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       color: var(--text-muted);
       text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.4px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
     }
 
     .banner-col strong {
-      font-size: 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 1.18rem;
+      font-weight: 800;
       font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
     }
 
     .banner-col.left strong {
@@ -273,272 +485,370 @@
       color: var(--gold-light);
     }
 
-    /* CARD DE GRAU ATUAL */
+    /* Card de Grau Atual com Medidor Radial SVG Harmonizado */
     .result-card-clean {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 10px 14px;
+      justify-content: center;
+      padding: 12px 16px 14px 16px;
+      background:
+        radial-gradient(circle at 50% 58%, color-mix(in oklch, var(--theme-accent) 13%, transparent) 0%, transparent 68%),
+        linear-gradient(180deg, color-mix(in oklch, var(--theme-accent) 7%, rgba(21, 28, 39, 0.95)) 0%, rgba(15, 20, 29, 0.96) 100%);
     }
 
-    .degree-display {
-      text-align: center;
+    .gauge-wrapper {
+      position: relative;
       width: 100%;
+      max-width: 286px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .gauge-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+
+    .gauge-inner-ring {
+      fill: none;
+      stroke: color-mix(in oklch, var(--theme-accent) 22%, rgba(148, 163, 184, 0.16));
+      stroke-width: 1.5;
+      stroke-dasharray: 3 5;
+      stroke-linecap: round;
+    }
+
+    .gauge-track {
+      fill: none;
+      stroke: rgba(34, 43, 58, 0.95);
+      stroke-width: 12;
+      stroke-linecap: round;
+    }
+
+    .gauge-progress {
+      fill: none;
+      stroke: url(#gaugeDynamicGrad);
+      stroke-width: 12;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 8px color-mix(in oklch, var(--theme-accent) 55%, transparent));
+      transition: stroke-dashoffset 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .gauge-tick {
+      stroke: #475569;
+      stroke-width: 2;
+      stroke-linecap: round;
+      transition: stroke 0.25s ease;
+    }
+
+    .gauge-tick.reached {
+      stroke: var(--gold-light);
+    }
+
+    .gauge-tick-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      fill: #64748b;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      transition: fill 0.25s ease;
+    }
+
+    .gauge-tick-label.reached {
+      fill: var(--gold-light);
+    }
+
+    .gauge-center-overlay {
+      position: absolute;
+      left: 50%;
+      top: 63%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      pointer-events: none;
+      width: 184px;
+    }
+
+    .degree-label-caption {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 1px;
     }
 
     .degree-number {
-      font-size: 2.8rem;
-      font-weight: 900;
-      color: var(--gold);
-      letter-spacing: -1px;
+      font-family: var(--font-mono);
+      font-size: 2.85rem;
+      font-weight: 800;
+      color: var(--gold-light);
+      letter-spacing: -0.04em;
       line-height: 1;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 20px color-mix(in oklch, var(--gold) 36%, transparent);
     }
 
-    .progress-bar-bg {
-      background-color: #21262d;
-      height: 8px;
-      border-radius: 4px;
-      overflow: hidden;
-      margin: 8px 0 4px 0;
-      width: 100%;
+    .boss-tier-pill {
+      font-size: 0.61rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: color-mix(in oklch, var(--theme-accent) 16%, rgba(13, 19, 30, 0.92));
+      border: 1px solid color-mix(in oklch, var(--theme-accent) 44%, transparent);
+      color: var(--theme-accent);
+      box-shadow: 0 2px 10px color-mix(in oklch, var(--theme-accent) 18%, rgba(0, 0, 0, 0.35));
+      white-space: nowrap;
+      transition: all 0.25s ease;
     }
 
-    .progress-bar-fill {
-      background: linear-gradient(90deg, #3b82f6, #10b981);
-      height: 100%;
-      width: 0%;
-      transition: width 0.2s ease-out;
+    .boss-tier-pill.maxed {
+      background: color-mix(in oklch, var(--gold) 22%, rgba(15, 23, 42, 0.95));
+      border-color: var(--gold-light);
+      color: var(--gold-light);
+      box-shadow: 0 0 14px color-mix(in oklch, var(--gold) 38%, transparent);
     }
 
-    /* SLIDER DE INVESTIMENTO */
+    /* Slider de Investimento com Preenchimento Dinâmico e Botão Zerar */
     .slider-box {
-      background: linear-gradient(180deg, #182230 0%, #111722 100%);
-      border: 1px solid #3b82f644;
-      border-radius: 8px;
-      padding: 12px 10px;
+      background:
+        linear-gradient(180deg, color-mix(in oklch, var(--theme-accent) 10%, #151e2c) 0%, #101621 100%);
+      border: 1px solid color-mix(in oklch, var(--theme-accent) 34%, rgba(148, 163, 184, 0.2));
     }
+
     .slider-header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 4px;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
     }
+
+    .slider-title-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--theme-accent);
+      font-size: 0.73rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .slider-right-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .btn-reset-slider {
+      appearance: none;
+      height: 23px;
+      padding: 0 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(239, 68, 68, 0.38);
+      background: rgba(239, 68, 68, 0.12);
+      color: #fca5a5;
+      font-size: 0.65rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: opacity 0.18s ease, transform 0.15s ease, background-color 0.18s ease;
+    }
+
+    .btn-reset-slider svg {
+      width: 11px;
+      height: 11px;
+    }
+
+    .btn-reset-slider:hover:not(:disabled) {
+      background: rgba(239, 68, 68, 0.24);
+      border-color: rgba(239, 68, 68, 0.65);
+    }
+
+    .btn-reset-slider:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+
+    .btn-reset-slider:disabled {
+      opacity: 0;
+      pointer-events: none;
+    }
+
     .slider-val-tag {
-      font-size: 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 1.15rem;
       font-weight: 800;
       color: var(--gold-light);
       font-variant-numeric: tabular-nums;
     }
 
+    /* Trilha preenchida via CSS Custom Property --fill */
     .range-input {
+      --fill: 0%;
       -webkit-appearance: none;
+      appearance: none;
       width: 100%;
-      height: 14px;
-      border-radius: 7px;
-      background: #21262d;
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(
+        90deg,
+        var(--theme-accent) 0%,
+        color-mix(in oklch, var(--theme-accent) 75%, var(--gold)) var(--fill),
+        #212835 var(--fill),
+        #212835 100%
+      );
       outline: none;
-      margin: 4px 0;
+      margin: 6px 0 4px 0;
       cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
+
     .range-input::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
-      background: var(--gold);
-      border: 2px solid #fff;
-      box-shadow: 0 0 6px rgba(245, 158, 11, 0.8);
+      background: var(--gold-light);
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 0 10px color-mix(in oklch, var(--theme-accent) 55%, rgba(245, 158, 11, 0.8));
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+
+    .range-input::-webkit-slider-thumb:hover {
+      transform: scale(1.08);
+    }
+
+    .range-input::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.75);
       cursor: pointer;
     }
 
+    .slider-bounds-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    /* Atalhos de Grau (DOM persistente sem thrashing) */
     .degree-shortcuts-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
-      margin-top: 6px;
+      gap: 5px;
     }
+
     @media (min-width: 600px) and (max-width: 991px) {
-      .degree-shortcuts-grid { grid-template-columns: repeat(6, 1fr); gap: 5px; }
+      .degree-shortcuts-grid {
+        grid-template-columns: repeat(6, 1fr);
+      }
     }
 
     .btn-degree-target {
-      background-color: #21262d;
-      border: 1px solid #30363d;
-      border-radius: 5px;
-      padding: 4px 2px;
+      appearance: none;
+      background-color: rgba(17, 22, 31, 0.9);
+      border: 1px solid #2b3444;
+      border-radius: 7px;
+      padding: 4px 3px;
       text-align: center;
       cursor: pointer;
       display: flex;
       flex-direction: column;
-      gap: 1px;
-      height: 38px;
+      gap: 2px;
+      height: 40px;
       justify-content: center;
-      transition: all 0.15s;
+      transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
     }
+
+    .btn-degree-target:hover {
+      border-color: color-mix(in oklch, var(--theme-accent) 48%, #3b475c);
+    }
+
+    .btn-degree-target:active {
+      transform: scale(0.96);
+    }
+
     .btn-degree-target .deg-label {
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 800;
       color: var(--gold-light);
     }
+
     .btn-degree-target .deg-cost {
+      font-family: var(--font-mono);
       font-size: 0.62rem;
+      font-weight: 700;
       color: var(--text-muted);
       font-variant-numeric: tabular-nums;
+      transition: color 0.18s ease;
     }
+
     .btn-degree-target.reached {
-      border-color: rgba(16, 185, 129, 0.5);
+      border-color: rgba(16, 185, 129, 0.55);
       background-color: rgba(16, 185, 129, 0.12);
     }
-    .btn-degree-target.reached .deg-cost { color: var(--green); }
-    .btn-degree-target.unreachable { border-color: rgba(239, 68, 68, 0.3); }
-    .btn-degree-target.unreachable .deg-cost { color: var(--danger); }
+    .btn-degree-target.reached .deg-cost {
+      color: #34d399;
+    }
+
+    .btn-degree-target.unreachable {
+      border-color: rgba(239, 68, 68, 0.34);
+      background-color: rgba(239, 68, 68, 0.06);
+    }
+    .btn-degree-target.unreachable .deg-cost {
+      color: #f87171;
+    }
+
     .btn-degree-target.selected {
-      border-color: var(--accent-color);
-      box-shadow: 0 0 0 1px var(--accent-color);
+      border-color: var(--theme-accent);
+      box-shadow: 0 0 0 1px var(--theme-accent), 0 0 10px color-mix(in oklch, var(--theme-accent) 30%, transparent);
     }
 
-    /* CARD POPS & FARM */
-    .card-title {
-      font-size: 0.74rem;
-      font-weight: 700;
-      color: var(--accent-color);
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      margin-bottom: 6px;
-    }
-    .form-group:last-child { margin-bottom: 0; }
-
-    label {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .input-pill-box {
-      display: flex;
-      align-items: center;
-      background-color: #0b0e14;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 0 8px;
-      height: 36px;
-      transition: border-color 0.2s;
-    }
-    .input-pill-box:focus-within {
-      border-color: var(--accent-color);
-    }
-    .input-pill-box input {
-      background: transparent;
-      border: none;
-      color: var(--text);
-      font-size: 14px;
-      outline: none;
-      width: 100%;
-      height: 100%;
-    }
-    .input-pill-box span.prefix {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      font-weight: 700;
-      margin-right: 4px;
-      user-select: none;
-    }
-
-    .mini-slider-combat {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 6px;
-      border-radius: 3px;
-      background: #21262d;
-      outline: none;
-      margin: 4px 0 2px 0;
-      cursor: pointer;
-    }
-    .mini-slider-combat.pops-thumb::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--green);
-      border: 2px solid #fff;
-      cursor: pointer;
-      box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
-    }
-    .mini-slider-combat.farm-thumb::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--gold);
-      border: 2px solid #fff;
-      cursor: pointer;
-      box-shadow: 0 0 6px rgba(245, 158, 11, 0.8);
-    }
-
-    /* Barra Bicolor Integrada */
-    .bicolor-track {
-      background-color: #21262d;
-      height: 8px;
-      border-radius: 4px;
-      overflow: hidden;
-      display: flex;
-      margin-top: 8px;
-    }
-    .seg-pops {
-      background-color: var(--green);
-      height: 100%;
-      width: 0%;
-      transition: width 0.2s;
-    }
-    .seg-farm {
-      background-color: var(--gold);
-      height: 100%;
-      width: 0%;
-      transition: width 0.2s;
-    }
-
-    .combat-pct-display {
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: var(--gold-light);
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* 3 CONTADORES DE TAMBOR */
+    /* 3 Tambores Modernos com CSS Scroll-Snap + Mask-Image + Botões -/+ */
     .drum-pickers-row {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 6px;
-      margin-top: 6px;
     }
 
     .drum-box {
-      background-color: #0b0e14;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 6px 4px;
+      background-color: rgba(11, 14, 20, 0.88);
+      border: 1px solid #263040;
+      border-radius: 9px;
+      padding: 7px 5px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      transition: border-color 0.2s ease;
+    }
+
+    .drum-box:hover {
+      border-color: color-mix(in oklch, var(--theme-accent) 38%, #263040);
     }
 
     .drum-title {
-      font-size: 0.68rem;
-      font-weight: 700;
+      font-size: 0.66rem;
+      font-weight: 800;
       color: var(--text-muted);
       margin-bottom: 4px;
       text-align: center;
@@ -548,88 +858,493 @@
       text-overflow: ellipsis;
     }
 
-    .drum-cylinder-viewport {
-      height: 72px;
-      width: 100%;
+    .drum-stage {
       position: relative;
+      width: 100%;
+      height: 72px;
+      border-radius: 6px;
+      background: radial-gradient(circle at center, #17202e 0%, #0b0e14 100%);
       overflow: hidden;
-      cursor: ns-resize;
-      touch-action: none;
-      user-select: none;
-      background: radial-gradient(circle at center, #161b22 0%, #0b0e14 100%);
-      border-radius: 4px;
-      margin: 2px 0;
-      box-shadow: inset 0 6px 8px rgba(0,0,0,0.7), inset 0 -6px 8px rgba(0,0,0,0.7);
     }
 
-    .drum-cylinder-viewport::after {
+    /* Lente central do tambor */
+    .drum-stage::after {
       content: '';
       position: absolute;
       top: 24px;
-      left: 0;
-      right: 0;
+      left: 3px;
+      right: 3px;
       height: 24px;
-      border-top: 1px solid rgba(88, 166, 255, 0.35);
-      border-bottom: 1px solid rgba(88, 166, 255, 0.35);
-      background-color: rgba(88, 166, 255, 0.08);
+      border-radius: 4px;
+      border-top: 1px solid color-mix(in oklch, var(--theme-accent) 48%, transparent);
+      border-bottom: 1px solid color-mix(in oklch, var(--theme-accent) 48%, transparent);
+      background-color: color-mix(in oklch, var(--theme-accent) 10%, transparent);
       pointer-events: none;
+      z-index: 2;
+    }
+
+    .drum-cylinder-viewport {
+      width: 100%;
+      height: 72px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scroll-snap-type: y mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      mask-image: linear-gradient(to bottom, transparent, black 28%, black 72%, transparent);
+      -webkit-mask-image: linear-gradient(to bottom, transparent, black 28%, black 72%, transparent);
+      user-select: none;
+    }
+
+    .drum-cylinder-viewport::-webkit-scrollbar {
+      display: none;
     }
 
     .drum-roll-track {
-      position: absolute;
-      width: 100%;
-      top: 0;
-      left: 0;
-      transition: transform 0.08s ease-out;
+      padding-top: 24px;
+      padding-bottom: 24px;
+      display: flex;
+      flex-direction: column;
     }
 
     .drum-roll-item {
       height: 24px;
+      flex-shrink: 0;
+      scroll-snap-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
       font-weight: 700;
       color: #64748b;
-      opacity: 0.45;
-      transform: scale(0.85);
-      transition: opacity 0.1s, transform 0.1s, color 0.1s;
+      opacity: 0.55;
+      transform: scale(0.88);
+      cursor: pointer;
+      transition: color 0.14s ease, transform 0.14s ease, opacity 0.14s ease;
+    }
+
+    .drum-roll-item:hover {
+      color: #cbd5e1;
+      opacity: 0.85;
     }
 
     .drum-roll-item.active {
       color: var(--gold-light);
-      font-size: 1.15rem;
-      font-weight: 900;
+      font-size: 1.05rem;
+      font-weight: 800;
       opacity: 1;
-      transform: scale(1.1);
+      transform: scale(1.08);
+    }
+
+    .drum-stepper-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      width: 100%;
+      margin-top: 5px;
+    }
+
+    .drum-step-btn {
+      appearance: none;
+      height: 23px;
+      border-radius: 5px;
+      border: 1px solid #263142;
+      background: #141b26;
+      color: #cbd5e1;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 800;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+
+    .drum-step-btn:hover:not(:disabled) {
+      background: color-mix(in oklch, var(--theme-accent) 18%, #141b26);
+      border-color: color-mix(in oklch, var(--theme-accent) 50%, transparent);
+      color: #ffffff;
+    }
+
+    .drum-step-btn:active:not(:disabled) {
+      transform: scale(0.93);
+    }
+
+    .drum-step-btn:disabled {
+      opacity: 0.32;
+      cursor: not-allowed;
     }
 
     .drum-subtext {
+      font-family: var(--font-mono);
       font-size: 0.62rem;
       color: var(--text-muted);
       text-align: center;
+      font-weight: 700;
+      margin-top: 4px;
+      white-space: nowrap;
+    }
+
+    /* Pops & Farm */
+    .combat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    label {
+      font-size: 0.69rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .input-pill-box {
+      display: flex;
+      align-items: center;
+      background-color: rgba(11, 14, 20, 0.92);
+      border: 1px solid #2a3342;
+      border-radius: 7px;
+      padding: 0 9px;
+      height: 35px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .input-pill-box:focus-within {
+      border-color: var(--theme-accent);
+      box-shadow: 0 0 0 2px color-mix(in oklch, var(--theme-accent) 22%, transparent);
+    }
+
+    .input-pill-box input {
+      font-family: var(--font-mono);
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 700;
+      outline: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    .input-pill-box span.prefix {
+      font-family: var(--font-mono);
+      color: var(--gold-light);
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-right: 4px;
+      user-select: none;
+    }
+
+    .mini-slider-combat {
+      --fill: 0%;
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 7px;
+      border-radius: 999px;
+      outline: none;
+      margin: 4px 0 2px 0;
+      cursor: pointer;
+    }
+
+    .mini-slider-combat.pops-thumb {
+      background: linear-gradient(
+        90deg,
+        var(--green) 0%,
+        var(--green) var(--fill),
+        #212835 var(--fill),
+        #212835 100%
+      );
+    }
+
+    .mini-slider-combat.farm-thumb {
+      background: linear-gradient(
+        90deg,
+        var(--gold) 0%,
+        var(--gold) var(--fill),
+        #212835 var(--fill),
+        #212835 100%
+      );
+    }
+
+    .mini-slider-combat.pops-thumb::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: var(--green);
+      border: 2px solid #fff;
+      cursor: pointer;
+      box-shadow: 0 0 7px rgba(16, 185, 129, 0.8);
+    }
+
+    .mini-slider-combat.pops-thumb::-moz-range-thumb {
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: var(--green);
+      border: 2px solid #fff;
+      cursor: pointer;
+    }
+
+    .mini-slider-combat.farm-thumb::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 2px solid #fff;
+      cursor: pointer;
+      box-shadow: 0 0 7px rgba(245, 158, 11, 0.8);
+    }
+
+    .mini-slider-combat.farm-thumb::-moz-range-thumb {
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 2px solid #fff;
+      cursor: pointer;
+    }
+
+    .bicolor-track {
+      background-color: #212835;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+      margin-top: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .seg-pops {
+      background-color: var(--green);
+      height: 100%;
+      width: 0%;
+      transition: width 0.22s ease;
+    }
+
+    .seg-farm {
+      background-color: var(--gold);
+      height: 100%;
+      width: 0%;
+      transition: width 0.22s ease;
+    }
+
+    .combat-legend-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 5px;
+      font-size: 0.63rem;
+      color: var(--text-muted);
       font-weight: 600;
-      margin-top: 3px;
+    }
+
+    .legend-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+
+    .combat-pct-display {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--gold-light);
+    }
+
+    /* Popover Nativo Glassmorphic de Fontes de Energia */
+    .breakdown-popover {
+      margin: auto;
+      inset: 0;
+      width: min(92vw, 430px);
+      max-height: 88vh;
+      overflow-y: auto;
+      background: rgba(15, 21, 31, 0.96);
+      color: var(--text);
+      border: 1px solid color-mix(in oklch, var(--theme-accent) 42%, rgba(148, 163, 184, 0.25));
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.65),
+        0 0 24px color-mix(in oklch, var(--theme-accent) 18%, transparent);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .breakdown-popover::backdrop {
+      background: rgba(5, 9, 16, 0.68);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .popover-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+    }
+
+    .popover-header h2 {
+      font-size: 0.92rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--theme-accent);
+    }
+
+    .popover-header h2 svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .popover-close-btn {
+      appearance: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .popover-close-btn:hover {
+      color: var(--text);
+      border-color: var(--theme-accent);
+    }
+
+    .popover-close-btn svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .source-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .source-item {
+      background: rgba(11, 14, 20, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 9px;
+      padding: 9px 11px;
+    }
+
+    .source-row-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+
+    .source-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .source-val {
+      font-family: var(--font-mono);
+      font-size: 0.73rem;
+      font-weight: 800;
+      color: var(--gold-light);
+    }
+
+    .source-bar-bg {
+      height: 6px;
+      border-radius: 999px;
+      background: #1e2634;
+      overflow: hidden;
+    }
+
+    .source-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      width: 0%;
+      transition: width 0.22s ease;
+    }
+
+    .source-subdetail {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .boss-info-callout {
+      margin-top: 12px;
+      padding: 10px 11px;
+      border-radius: 9px;
+      background: color-mix(in oklch, var(--gold) 10%, rgba(11, 14, 20, 0.85));
+      border: 1px solid color-mix(in oklch, var(--gold) 35%, transparent);
+      font-size: 0.7rem;
+      line-height: 1.45;
+      color: #cbd5e1;
+    }
+
+    .boss-info-callout strong {
+      color: var(--gold-light);
     }
   </style>
 </head>
 <body>
 
 <div class="container">
+  <!-- CABEÇALHO COM STATUS, POPOVER DE FONTES E LINK COMPARTILHÁVEL -->
   <header>
-    <h1><i data-lucide="target" aria-hidden="true"></i> Calculadora Paragon</h1>
-    <div class="status-badge" id="syncStatus">
-      <div class="status-dot" id="statusDot"></div>
-      <span id="statusText">Conectando à planilha...</span>
+    <div class="header-brand">
+      <h1>
+        <span class="brand-icon-wrap"><i data-lucide="crosshair" aria-hidden="true"></i></span>
+        Calculadora Paragon
+        <span class="btd-tag">BTD6</span>
+      </h1>
+      <div class="status-badge" id="syncStatus">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Conectando...</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="header-btn" id="openBreakdownBtn" popovertarget="powerBreakdownPopover">
+        <i data-lucide="layers" aria-hidden="true"></i>
+        <span>Fontes de Energia</span>
+      </button>
+      <button type="button" class="header-btn" id="shareSetupBtn" onclick="shareSetup()">
+        <i data-lucide="share-2" aria-hidden="true"></i>
+        <span id="shareSetupLabel">Compartilhar Setup</span>
+      </button>
     </div>
   </header>
 
-  <!-- CONTAINER DE DISTRIBUIÇÃO: Mobile empilhado clássico / Desktop 3 colunas -->
-  <div class="desktop-grid">
-    
-    <!-- COLUNA 1 (ESQUERDA NO DESKTOP): 1. ESCOLHA DO PARAGON E DA DIFICULDADE -->
+  <!-- GRID RESPONSIVO: 3 COLUNAS NO DESKTOP / EMPILHADO NO MOBILE -->
+  <main class="desktop-grid">
+
+    <!-- COLUNA 1: ESCOLHA DO PARAGON, DIFICULDADE E CUSTOS PRINCIPAIS -->
     <div class="desktop-col">
-      <div class="card">
+      <section class="card" aria-label="Seleção de Paragon e Dificuldade">
         <div class="five-cols-board">
           <div class="col-category">
             <div class="col-header primary">Prim.</div>
@@ -649,14 +1364,13 @@
           </div>
           <div class="col-category">
             <div class="col-header diff">Dific.</div>
-            <div class="btn-item diff-btn" data-diff="facil" onclick="setDifficulty('facil')">FÁCIL</div>
-            <div class="btn-item diff-btn active" data-diff="medio" onclick="setDifficulty('medio')">MÉDIO</div>
-            <div class="btn-item diff-btn" data-diff="dificil" onclick="setDifficulty('dificil')">DIFÍCIL</div>
-            <div class="btn-item diff-btn" data-diff="inestouravel" onclick="setDifficulty('inestouravel')">INEST.</div>
+            <button type="button" class="btn-item diff-btn" data-diff="facil" onclick="setDifficulty('facil')">FÁCIL</button>
+            <button type="button" class="btn-item diff-btn active" data-diff="medio" onclick="setDifficulty('medio')">MÉDIO</button>
+            <button type="button" class="btn-item diff-btn" data-diff="dificil" onclick="setDifficulty('dificil')">DIFÍCIL</button>
+            <button type="button" class="btn-item diff-btn" data-diff="inestouravel" onclick="setDifficulty('inestouravel')">INEST.</button>
           </div>
         </div>
 
-        <!-- PREÇO DO PARAGON E CUSTO TOTAL NA MESMA LINHA -->
         <div class="paragon-banner">
           <div class="banner-col left">
             <span id="currentParagonSummaryLabel">PREÇO DO PARAGON</span>
@@ -667,126 +1381,285 @@
             <strong id="totalSpentOverall">$0</strong>
           </div>
         </div>
-      </div>
+      </section>
     </div>
 
-    <!-- COLUNA 2 (MEIO NO DESKTOP): 2. GRAU ATUAL & 3. SLIDER DE INVESTIMENTO -->
+    <!-- COLUNA 2: MEDIDOR RADIAL DE GRAU ATUAL & SLIDER DE INVESTIMENTO -->
     <div class="desktop-col">
-      <!-- 2. GRAU ATUAL -->
-      <div class="card result-card-clean">
-        <div class="degree-display">
-          <div class="degree-number" id="currentDegreeDisplay">Grau 1</div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="energyProgressBar"></div>
-          </div>
-          <small id="energyRatio" style="color: var(--text-muted); font-size: 0.72rem;">0 / 200.000 Energia</small>
-        </div>
-      </div>
+      <!-- MEDIDOR EM ARCO SVG -->
+      <section class="card result-card-clean" aria-label="Grau Atual do Paragon">
+        <div class="gauge-wrapper">
+          <svg class="gauge-svg" viewBox="0 0 280 180" aria-hidden="true">
+            <defs>
+              <linearGradient id="gaugeDynamicGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="var(--theme-accent)" />
+                <stop offset="100%" stop-color="var(--gold-light)" />
+              </linearGradient>
+            </defs>
 
-      <!-- 3. SLIDER DE INVESTIMENTO -->
-      <div class="card slider-box">
+            <!-- Anel Interno Pontilhado Decorativo -->
+            <path id="gaugeInnerRingArc" class="gauge-inner-ring" />
+
+            <!-- Trilha Base e Arco de Progresso (210deg simétricos no topo) -->
+            <path id="gaugeTrackArc" class="gauge-track" pathLength="100" />
+            <path id="gaugeProgressArc" class="gauge-progress" pathLength="100" stroke-dasharray="100" stroke-dashoffset="99" />
+
+            <!-- Marcações Simétricas (1, 20, 40, 60, 80, 100) -->
+            <g id="gaugeTicksGroup"></g>
+          </svg>
+
+          <div class="gauge-center-overlay">
+            <span class="degree-label-caption">GRAU ATUAL</span>
+            <div class="degree-number" id="currentDegreeDisplay">1</div>
+            <span class="boss-tier-pill" id="bossTierBadge">BASE • GRAU 1–19</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDER DE INVESTIMENTO -->
+      <section class="card slider-box" aria-label="Investimento Direto de Caixa">
         <div class="slider-header">
-          <div>
-            <i data-lucide="sliders-horizontal" aria-hidden="true"></i><span style="font-size: 0.74rem; color: var(--accent-color); font-weight: 700; text-transform: uppercase;">Slider de Investimento</span>
+          <div class="slider-title-group">
+            <i data-lucide="sliders-horizontal" aria-hidden="true"></i>
+            <span>Slider de Investimento</span>
           </div>
-          <div class="slider-val-tag" id="sliderValDisplay">$0</div>
+          <div class="slider-right-controls">
+            <button type="button" class="btn-reset-slider" id="btnResetSlider" onclick="resetSlider()" disabled title="Zerar caixa investido">
+              <i data-lucide="rotate-ccw" aria-hidden="true"></i>
+              <span>Zerar</span>
+            </button>
+            <div class="slider-val-tag" id="sliderValDisplay">$0</div>
+          </div>
         </div>
 
-        <input type="range" class="range-input" id="cashSlider" min="0" max="3780000" step="1000" value="0" oninput="clearDegreeTarget(); calculate()">
+        <input
+          type="range"
+          class="range-input"
+          id="cashSlider"
+          min="0"
+          max="3780000"
+          step="50"
+          value="0"
+          aria-label="Caixa extra investido diretamente no Paragon"
+          oninput="clearDegreeTarget(); updateSliderFill(this); calculate(false)"
+        >
 
-        <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted);">
+        <div class="slider-bounds-row">
           <span>$0</span>
           <span id="sliderMaxLabel">Máx: $0</span>
         </div>
 
         <div class="degree-shortcuts-grid" id="degreeShortcutsContainer"></div>
-      </div>
+      </section>
     </div>
 
-    <!-- COLUNA 3 (DIREITA NO DESKTOP): 4. TORRES & INVESTIMENTO & 5. POPS & FARM -->
+    <!-- COLUNA 3: TAMBORES SCROLL-SNAP (TORRES/T5/TOTENS) & POPS/FARM -->
     <div class="desktop-col">
-      <!-- 4. TORRES E INVESTIMENTO -->
-      <div class="card">
+      <!-- TORRES & INVESTIMENTO -->
+      <section class="card" aria-label="Torres Sacrificadas e Totens">
         <div class="card-title">
-          <span style="display:inline-flex;align-items:center;gap:7px"><i data-lucide="coins" aria-hidden="true"></i>Torres & Investimento</span>
+          <span class="card-title-left">
+            <i data-lucide="coins" aria-hidden="true"></i>
+            <span>Torres & Investimento</span>
+          </span>
         </div>
 
         <div class="drum-pickers-row">
           <!-- Tambor 1: Torres 0/4/0 -->
           <div class="drum-box">
-            <div class="drum-title">Torres 0/4/0</div>
-            <div class="drum-cylinder-viewport" id="viewportUnit">
-              <div class="drum-roll-track" id="trackUnit"></div>
+            <div class="drum-title" title="Torres 0/4/0 sacrificadas">Torres 0/4/0</div>
+            <div class="drum-stage">
+              <div class="drum-cylinder-viewport" id="viewportUnit" aria-label="Quantidade de Torres 0/4/0">
+                <div class="drum-roll-track" id="trackUnit"></div>
+              </div>
+            </div>
+            <div class="drum-stepper-row">
+              <button type="button" class="drum-step-btn" id="minusUnit" onclick="stepDrum('unit', -1)" aria-label="Diminuir Torres 0/4/0">−</button>
+              <button type="button" class="drum-step-btn" id="plusUnit" onclick="stepDrum('unit', 1)" aria-label="Aumentar Torres 0/4/0">+</button>
             </div>
             <div class="drum-subtext" id="unitSubtext">$0</div>
           </div>
 
-          <!-- Tambor 2: T5 Extras (limitado a 9) -->
+          <!-- Tambor 2: T5 Extras -->
           <div class="drum-box">
-            <div class="drum-title">T5 Extras</div>
-            <div class="drum-cylinder-viewport" id="viewportT5">
-              <div class="drum-roll-track" id="trackT5"></div>
+            <div class="drum-title" title="Torres Tier 5 extras (Co-op)">T5 Extras</div>
+            <div class="drum-stage">
+              <div class="drum-cylinder-viewport" id="viewportT5" aria-label="Quantidade de T5 Extras">
+                <div class="drum-roll-track" id="trackT5"></div>
+              </div>
+            </div>
+            <div class="drum-stepper-row">
+              <button type="button" class="drum-step-btn" id="minusT5" onclick="stepDrum('t5', -1)" aria-label="Diminuir T5 Extras">−</button>
+              <button type="button" class="drum-step-btn" id="plusT5" onclick="stepDrum('t5', 1)" aria-label="Aumentar T5 Extras">+</button>
             </div>
             <div class="drum-subtext" id="t5Subtext">+0 pts</div>
           </div>
 
           <!-- Tambor 3: Totens de Geraldo -->
           <div class="drum-box">
-            <div class="drum-title">Totens</div>
-            <div class="drum-cylinder-viewport" id="viewportTotem">
-              <div class="drum-roll-track" id="trackTotem"></div>
+            <div class="drum-title" title="Totens de Poder do Geraldo">Totens</div>
+            <div class="drum-stage">
+              <div class="drum-cylinder-viewport" id="viewportTotem" aria-label="Quantidade de Totens do Geraldo">
+                <div class="drum-roll-track" id="trackTotem"></div>
+              </div>
+            </div>
+            <div class="drum-stepper-row">
+              <button type="button" class="drum-step-btn" id="minusTotem" onclick="stepDrum('totem', -1)" aria-label="Diminuir Totens">−</button>
+              <button type="button" class="drum-step-btn" id="plusTotem" onclick="stepDrum('totem', 1)" aria-label="Aumentar Totens">+</button>
             </div>
             <div class="drum-subtext" id="totemSubtext">+0 pts</div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- 5. POPS & FARM -->
-      <div class="card">
+      <!-- POPS & FARM -->
+      <section class="card" aria-label="Pops e Dinheiro Gerado">
         <div class="card-title">
-          <span style="display:inline-flex;align-items:center;gap:7px"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i>Pops & Farm</span>
+          <span class="card-title-left">
+            <i data-lucide="chart-no-axes-combined" aria-hidden="true"></i>
+            <span>Pops & Farm</span>
+          </span>
           <span class="combat-pct-display" id="lblCombatPct">0%</span>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+        <div class="combat-grid">
           <div class="form-group">
             <label for="popsInput">Pops:</label>
             <div class="input-pill-box">
               <input type="text" id="popsInput" value="0" placeholder="ex: 15m, 800k" oninput="syncPopsFromText()">
             </div>
-            <input type="range" class="mini-slider-combat pops-thumb" id="popsSlider" min="0" max="22500000" step="100000" value="0" oninput="syncPopsFromSlider()">
+            <input
+              type="range"
+              class="mini-slider-combat pops-thumb"
+              id="popsSlider"
+              min="0"
+              max="22500000"
+              step="100000"
+              value="0"
+              aria-label="Slider de Pops"
+              oninput="syncPopsFromSlider()"
+            >
           </div>
 
           <div class="form-group">
             <label for="farmInput">Farm:</label>
             <div class="input-pill-box">
               <span class="prefix">$</span>
-              <input type="text" id="farmInput" value="0" placeholder="ex: 2.5m" oninput="syncFarmFromText()">
+              <input type="text" id="farmInput" value="0" placeholder="ex: 2,5m" oninput="syncFarmFromText()">
             </div>
-            <input type="range" class="mini-slider-combat farm-thumb" id="farmSlider" min="0" max="5625000" step="10000" value="0" oninput="syncFarmFromSlider()">
+            <input
+              type="range"
+              class="mini-slider-combat farm-thumb"
+              id="farmSlider"
+              min="0"
+              max="5625000"
+              step="10000"
+              value="0"
+              aria-label="Slider de Farm"
+              oninput="syncFarmFromSlider()"
+            >
           </div>
         </div>
 
-        <!-- Barra Bicolor Integrada -->
         <div class="bicolor-track" title="Teto conjunto: 125.000 pts">
           <div id="barPops" class="seg-pops"></div>
           <div id="barFarm" class="seg-farm"></div>
         </div>
-      </div>
+
+        <div class="combat-legend-row">
+          <span><span class="legend-dot" style="background: var(--green)"></span>Pops (180 = 1 pt)</span>
+          <span><span class="legend-dot" style="background: var(--gold)"></span>Farm ($45 = 1 pt)</span>
+        </div>
+      </section>
     </div>
 
+  </main>
+</div>
+
+<!-- POPOVER NATIVO: DETALHAMENTO EM TEMPO REAL DAS FONTES DE ENERGIA -->
+<div id="powerBreakdownPopover" popover="auto" class="breakdown-popover">
+  <div class="popover-header">
+    <h2>
+      <i data-lucide="zap" aria-hidden="true"></i>
+      Fontes de Energia em Tempo Real
+    </h2>
+    <button type="button" class="popover-close-btn" popovertarget="powerBreakdownPopover" popovertargetaction="hide" aria-label="Fechar detalhamento">
+      <i data-lucide="x" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <div class="source-list">
+    <div class="source-item">
+      <div class="source-row-top">
+        <span class="source-name">Pops & Farm</span>
+        <span class="source-val" id="popBreakCombat">0 / 125.000</span>
+      </div>
+      <div class="source-bar-bg">
+        <div class="source-bar-fill" id="barBreakCombat" style="background: linear-gradient(90deg, var(--green), var(--gold));"></div>
+      </div>
+      <div class="source-subdetail" id="subBreakCombat">Pops: 0 pts • Farm: 0 pts (Teto: 125k)</div>
+    </div>
+
+    <div class="source-item">
+      <div class="source-row-top">
+        <span class="source-name">Caixa + Torres 0/4/0</span>
+        <span class="source-val" id="popBreakCash">0 / 80.000</span>
+      </div>
+      <div class="source-bar-bg">
+        <div class="source-bar-fill" id="barBreakCash" style="background: var(--theme-accent);"></div>
+      </div>
+      <div class="source-subdetail" id="subBreakCash">Torres 0/4/0: 0 pts • Slider: 0 pts (Teto: 80k)</div>
+    </div>
+
+    <div class="source-item">
+      <div class="source-row-top">
+        <span class="source-name">T5 Extras (Co-op)</span>
+        <span class="source-val" id="popBreakT5">0 / 50.000</span>
+      </div>
+      <div class="source-bar-bg">
+        <div class="source-bar-fill" id="barBreakT5" style="background: var(--cat-magic);"></div>
+      </div>
+      <div class="source-subdetail" id="subBreakT5">6.000 pts por T5 adicional além dos 3 iniciais</div>
+    </div>
+
+    <div class="source-item">
+      <div class="source-row-top">
+        <span class="source-name">Totens do Geraldo</span>
+        <span class="source-val" id="popBreakTotem">+0 pts</span>
+      </div>
+      <div class="source-bar-bg">
+        <div class="source-bar-fill" id="barBreakTotem" style="background: var(--cat-primary);"></div>
+      </div>
+      <div class="source-subdetail" id="subBreakTotem">2.000 pts por totem (sem teto individual)</div>
+    </div>
+  </div>
+
+  <div class="boss-info-callout">
+    <strong>Escalonamento contra Bosses:</strong> Além do ganho contínuo de atributos a cada grau, os <strong>Graus 20, 40, 60, 80 e 100</strong> destravam saltos multiplicativos extras de dano contra Boss Bloons e Elites. Mirar exatamente nesses marcos otimiza seu dinheiro nas runs competitivas!
   </div>
 </div>
 
 <script>
+  /* =========================================================================
+     1. CONSTANTES E TABELAS EXATAS DO BTD6
+     ========================================================================= */
   const SPREADSHEET_ID = '1xRZhyUQVPL6E2BUNmLg9YJ96Sb8WJHJoLxWfysZDhDg';
+  const CACHE_STORAGE_KEY = 'btd6_paragon_calc_cache_v3';
 
   const MAX_POPS_POWER = 125000;
   const POPS_CAP = 22500000;
   const FARM_CAP = 5625000;
   const MAX_CASH_CATEGORY_POWER = 80000;
   const KEY_DEGREES = [20, 30, 40, 60, 80, 100];
+  const BOSS_MILESTONES = [1, 20, 40, 60, 80, 100];
   const ITEM_HEIGHT = 24;
+
+  const CATEGORY_ACCENT_HEX = {
+    'cat-primary': '#38bdf8',
+    'cat-military': '#22c55e',
+    'cat-magic': '#c084fc',
+    'cat-support': '#facc15'
+  };
 
   const TOWER_CATEGORIES = {
     'DARDO': { cat: 'cat-primary', short: 'Dardo', col: 'colPrimary', order: 1 },
@@ -822,23 +1695,76 @@
     'USINA': 13350
   };
 
-  let drumValues = { unit: 0, t5: 0, totem: 0 };
-  const DRUM_LIMITS = {
-    unit: { min: 0, max: 50 },
-    t5: { min: 0, max: 9 },
-    totem: { min: 0, max: 60 }
+  const DIFF_MULTIPLIERS = {
+    facil: 0.85,
+    medio: 1.0,
+    dificil: 1.08,
+    inestouravel: 1.20
   };
+
+  const FALLBACK_PARAGONS_RAW = [
+    { nome: "DARDO", facil: 127000, medio: 150000, dificil: 162000, inestouravel: 180000 },
+    { nome: "BOOMERANG", facil: 318750, medio: 375000, dificil: 405000, inestouravel: 450000 },
+    { nome: "TACHINHA", facil: 170000, medio: 200000, dificil: 216000, inestouravel: 240000 },
+    { nome: "GELO", facil: 255000, medio: 300000, dificil: 324000, inestouravel: 360000 },
+    { nome: "BOMBARDEIRO", facil: 510000, medio: 600000, dificil: 648000, inestouravel: 720000 },
+    { nome: "ATIRADOR", facil: 680000, medio: 800000, dificil: 864000, inestouravel: 960000 },
+    { nome: "BUCANEIRO", facil: 467500, medio: 550000, dificil: 594000, inestouravel: 660000 },
+    { nome: "ÁS", facil: 765000, medio: 900000, dificil: 972000, inestouravel: 1080000 },
+    { nome: "SUB", facil: 340000, medio: 400000, dificil: 432000, inestouravel: 480000 },
+    { nome: "MAGO", facil: 680000, medio: 800000, dificil: 864000, inestouravel: 960000 },
+    { nome: "NINJA", facil: 425000, medio: 500000, dificil: 594000, inestouravel: 660000 },
+    { nome: "DRUIDA", facil: 403750, medio: 475000, dificil: 513000, inestouravel: 570000 },
+    { nome: "ENGENHEIRO", facil: 552500, medio: 650000, dificil: 702000, inestouravel: 780000 },
+    { nome: "USINA", facil: 637500, medio: 750000, dificil: 810000, inestouravel: 900000 }
+  ];
+
+  const FALLBACK_POWER_TABLE = [
+    0, 2000, 2324, 2666, 3027, 3408, 3808, 4228, 4669, 5131,
+    5615, 6121, 6650, 7203, 7779, 8379, 9004, 9654, 10330, 11032,
+    11761, 12518, 13302, 14114, 14955, 15825, 16725, 17655, 18616, 19609,
+    20633, 21689, 22778, 23900, 25056, 26246, 27471, 28732, 30028, 31360,
+    32729, 34135, 35579, 37061, 38582, 40143, 41743, 43383, 45064, 46786,
+    48550, 50356, 52205, 54098, 56034, 58014, 60039, 62109, 64225, 66387,
+    68596, 70853, 73157, 75509, 77910, 80360, 82860, 85410, 88011, 90664,
+    93368, 96124, 98933, 101795, 104711, 107681, 110706, 113787, 116923, 120115,
+    123364, 126670, 130034, 133456, 136937, 140478, 144078, 147738, 151459, 155241,
+    159085, 162991, 166960, 170993, 175089, 179249, 183474, 187764, 192120, 200000
+  ];
+
+  const DRUM_LIMITS = {
+    unit: { min: 0, max: 50, viewportId: 'viewportUnit', trackId: 'trackUnit', minusId: 'minusUnit', plusId: 'plusUnit' },
+    t5: { min: 0, max: 9, viewportId: 'viewportT5', trackId: 'trackT5', minusId: 'minusT5', plusId: 'plusT5' },
+    totem: { min: 0, max: 60, viewportId: 'viewportTotem', trackId: 'trackTotem', minusId: 'minusTotem', plusId: 'plusTotem' }
+  };
+
+  /* =========================================================================
+     2. ESTADO DA APLICAÇÃO E CONTROLES DE ANIMAÇÃO
+     ========================================================================= */
+  let drumValues = { unit: 0, t5: 0, totem: 0 };
+  const drumProgrammaticUntil = { unit: 0, t5: 0, totem: 0 };
+  const drumInitialized = { unit: false, t5: false, totem: false };
 
   let paragonsData = [];
   let powerTable = [];
   let selectedParagonIndex = 0;
   let currentDifficulty = 'medio';
   let selectedDegreeTarget = null;
+  let lastCalculatedDegree = 1;
+  let isBootReady = false;
 
+  // Referências persistentes de DOM para evitar thrashing
+  const shortcutButtonRefs = new Map();
+  const gaugeTickRefs = new Map();
+  const numberAnimators = {};
+
+  /* =========================================================================
+     3. UTILITÁRIOS DE FORMATAÇÃO, VIBRAÇÃO E TRANSIÇÃO
+     ========================================================================= */
   function parseSmartNumber(input) {
     if (!input) return 0;
     if (typeof input === 'number') return input;
-    
+
     let clean = String(input).trim().toLowerCase().replace(/\s+/g, '').replace(/\$/g, '');
     let mult = 1;
 
@@ -859,7 +1785,7 @@
     }
 
     const val = parseFloat(clean);
-    return isNaN(val) ? 0 : Math.round(val * mult);
+    return isNaN(val) ? 0 : Math.max(0, Math.round(val * mult));
   }
 
   function formatMoney(num) {
@@ -870,211 +1796,350 @@
     return Math.round(num).toLocaleString('pt-BR');
   }
 
+  function formatShortNumber(num) {
+    if (num >= 1e6 && num % 100000 === 0) {
+      return (num / 1e6).toFixed(1).replace('.0', '').replace('.', ',') + 'm';
+    }
+    if (num >= 1e3 && num % 1000 === 0 && num < 1e6) {
+      return (num / 1e3).toFixed(0) + 'k';
+    }
+    return num.toLocaleString('pt-BR');
+  }
+
+  function triggerHaptic() {
+    if (!isBootReady) return;
+    try {
+      navigator.vibrate?.(8);
+    } catch (_) {
+      // Silencioso em navegadores sem suporte a vibração
+    }
+  }
+
+  function runWithViewTransition(fn) {
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (document.startViewTransition && !prefersReduced) {
+      document.startViewTransition(() => {
+        fn();
+      });
+    } else {
+      fn();
+    }
+  }
+
+  /**
+   * Interpola suavemente números principais via requestAnimationFrame
+   */
+  function animateMetric(key, targetValue, element, formatter, shouldAnimate = true) {
+    if (!element) return;
+    const state = numberAnimators[key] || { current: targetValue, rafId: null };
+    numberAnimators[key] = state;
+
+    if (state.rafId) {
+      cancelAnimationFrame(state.rafId);
+      state.rafId = null;
+    }
+
+    if (!shouldAnimate || Math.abs(targetValue - state.current) < 1) {
+      state.current = targetValue;
+      element.textContent = formatter(targetValue);
+      return;
+    }
+
+    const startValue = state.current;
+    const delta = targetValue - startValue;
+    const duration = 240;
+    const startTime = performance.now();
+
+    function step(now) {
+      const elapsed = now - startTime;
+      const t = Math.min(1, elapsed / duration);
+      const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+      const currentVal = startValue + delta * eased;
+      state.current = currentVal;
+      element.textContent = formatter(Math.round(currentVal));
+
+      if (t < 1) {
+        state.rafId = requestAnimationFrame(step);
+      } else {
+        state.current = targetValue;
+        element.textContent = formatter(targetValue);
+        state.rafId = null;
+      }
+    }
+
+    state.rafId = requestAnimationFrame(step);
+  }
+
+  /* =========================================================================
+     4. GEOMETRIA DO MEDIDOR EM ARCO SVG (RADIAL GAUGE)
+     ========================================================================= */
+  function polarToCartesian(cx, cy, r, angleDeg) {
+    const rad = (angleDeg * Math.PI) / 180;
+    return {
+      x: cx + r * Math.cos(rad),
+      y: cy + r * Math.sin(rad)
+    };
+  }
+
+  function describeArc(cx, cy, r, startAngle, endAngle) {
+    const start = polarToCartesian(cx, cy, r, startAngle);
+    const end = polarToCartesian(cx, cy, r, endAngle);
+    const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
+    return `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} A ${r} ${r} 0 ${largeArcFlag} 1 ${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
+  }
+
+  function initRadialGauge() {
+    const cx = 140;
+    const cy = 124;
+    const radius = 88;
+    const innerRadius = 72;
+    const startAngle = -195; // 210 graus simétricos ao redor do topo (-90 deg), indo de -195 a +15
+    const sweepAngle = 210;
+    const endAngle = startAngle + sweepAngle;
+
+    const arcPath = describeArc(cx, cy, radius, startAngle, endAngle);
+    const innerArcPath = describeArc(cx, cy, innerRadius, startAngle, endAngle);
+
+    document.getElementById('gaugeTrackArc').setAttribute('d', arcPath);
+    document.getElementById('gaugeProgressArc').setAttribute('d', arcPath);
+    document.getElementById('gaugeInnerRingArc').setAttribute('d', innerArcPath);
+
+    const ticksGroup = document.getElementById('gaugeTicksGroup');
+    ticksGroup.innerHTML = '';
+    gaugeTickRefs.clear();
+
+    BOSS_MILESTONES.forEach(deg => {
+      const ratio = deg === 1 ? 0 : deg / 100;
+      const angle = startAngle + ratio * sweepAngle;
+      const innerPt = polarToCartesian(cx, cy, radius + 9, angle);
+      const outerPt = polarToCartesian(cx, cy, radius + 15, angle);
+      const labelPt = polarToCartesian(cx, cy, radius + 26, angle);
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', innerPt.x.toFixed(2));
+      line.setAttribute('y1', innerPt.y.toFixed(2));
+      line.setAttribute('x2', outerPt.x.toFixed(2));
+      line.setAttribute('y2', outerPt.y.toFixed(2));
+      line.setAttribute('class', 'gauge-tick');
+
+      const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      label.setAttribute('x', labelPt.x.toFixed(2));
+      label.setAttribute('y', labelPt.y.toFixed(2));
+      label.setAttribute('class', 'gauge-tick-label');
+      label.textContent = String(deg);
+
+      ticksGroup.appendChild(line);
+      ticksGroup.appendChild(label);
+      gaugeTickRefs.set(deg, { line, label });
+    });
+  }
+
+  /* =========================================================================
+     5. SLIDERS COM PREENCHIMENTO DINÂMICO E ATALHOS PERSISTENTES
+     ========================================================================= */
+  function updateSliderFill(sliderEl) {
+    if (!sliderEl) return;
+    const min = parseFloat(sliderEl.min) || 0;
+    const max = parseFloat(sliderEl.max) || 100;
+    const val = parseFloat(sliderEl.value) || 0;
+    const pct = max > min ? Math.max(0, Math.min(100, ((val - min) / (max - min)) * 100)) : 0;
+    sliderEl.style.setProperty('--fill', `${pct.toFixed(2)}%`);
+  }
+
+  function updateAllSliderFills() {
+    updateSliderFill(document.getElementById('cashSlider'));
+    updateSliderFill(document.getElementById('popsSlider'));
+    updateSliderFill(document.getElementById('farmSlider'));
+  }
+
+  function initDegreeShortcuts() {
+    const container = document.getElementById('degreeShortcutsContainer');
+    container.innerHTML = '';
+    shortcutButtonRefs.clear();
+
+    KEY_DEGREES.forEach(deg => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn-degree-target';
+      btn.setAttribute('aria-pressed', 'false');
+
+      const labelSpan = document.createElement('span');
+      labelSpan.className = 'deg-label';
+      labelSpan.textContent = `Grau ${deg}`;
+
+      const costSpan = document.createElement('span');
+      costSpan.className = 'deg-cost';
+      costSpan.textContent = '$0';
+
+      btn.appendChild(labelSpan);
+      btn.appendChild(costSpan);
+      btn.addEventListener('click', () => fitToDegree(deg));
+
+      container.appendChild(btn);
+      shortcutButtonRefs.set(deg, { btn, costSpan });
+    });
+  }
+
+  /* =========================================================================
+     6. TAMBORES COM SCROLL-SNAP, MASK-IMAGE E BOTÕES -/+
+     ========================================================================= */
+  function setupDrum(type) {
+    const cfg = DRUM_LIMITS[type];
+    const viewport = document.getElementById(cfg.viewportId);
+    const track = document.getElementById(cfg.trackId);
+
+    if (!drumInitialized[type]) {
+      track.innerHTML = '';
+      for (let i = cfg.min; i <= cfg.max; i++) {
+        const item = document.createElement('div');
+        item.className = `drum-roll-item ${i === drumValues[type] ? 'active' : ''}`;
+        item.textContent = String(i);
+        item.addEventListener('click', () => {
+          setDrumValue(type, i, true);
+        });
+        track.appendChild(item);
+      }
+
+      // Leitura fluida do scroll nativo quando arrastado pelo usuário
+      viewport.addEventListener('scroll', () => {
+        if (performance.now() < drumProgrammaticUntil[type]) return;
+        const rawIndex = Math.round(viewport.scrollTop / ITEM_HEIGHT);
+        const clamped = Math.max(cfg.min, Math.min(cfg.max, rawIndex));
+        if (clamped !== drumValues[type]) {
+          drumValues[type] = clamped;
+          syncDrumActiveVisuals(type);
+          triggerHaptic();
+          updateDrumSubtexts();
+          calculate(false);
+        }
+      }, { passive: true });
+
+      // Suporte cirúrgico à roda do mouse no desktop
+      let wheelAcc = 0;
+      viewport.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        if (Math.abs(e.deltaY) >= 40) {
+          wheelAcc = 0;
+          stepDrum(type, e.deltaY > 0 ? 1 : -1);
+        } else {
+          wheelAcc += e.deltaY;
+          if (Math.abs(wheelAcc) >= 26) {
+            stepDrum(type, wheelAcc > 0 ? 1 : -1);
+            wheelAcc = 0;
+          }
+        }
+      }, { passive: false });
+
+      drumInitialized[type] = true;
+    }
+
+    scrollDrumToValue(type, drumValues[type], false);
+    syncDrumActiveVisuals(type);
+  }
+
+  function syncDrumActiveVisuals(type) {
+    const cfg = DRUM_LIMITS[type];
+    const track = document.getElementById(cfg.trackId);
+    const val = drumValues[type];
+    const items = track.children;
+
+    for (let i = 0; i < items.length; i++) {
+      items[i].classList.toggle('active', i === val);
+    }
+
+    const minusBtn = document.getElementById(cfg.minusId);
+    const plusBtn = document.getElementById(cfg.plusId);
+    if (minusBtn) minusBtn.disabled = val <= cfg.min;
+    if (plusBtn) plusBtn.disabled = val >= cfg.max;
+  }
+
+  function scrollDrumToValue(type, val, smooth = true) {
+    const cfg = DRUM_LIMITS[type];
+    const viewport = document.getElementById(cfg.viewportId);
+    if (!viewport) return;
+
+    drumProgrammaticUntil[type] = performance.now() + (smooth ? 280 : 80);
+    viewport.scrollTo({
+      top: val * ITEM_HEIGHT,
+      behavior: smooth ? 'smooth' : 'instant'
+    });
+  }
+
+  function setDrumValue(type, val, smooth = true) {
+    const cfg = DRUM_LIMITS[type];
+    const clamped = Math.max(cfg.min, Math.min(cfg.max, val));
+    if (clamped === drumValues[type]) return;
+
+    drumValues[type] = clamped;
+    syncDrumActiveVisuals(type);
+    scrollDrumToValue(type, clamped, smooth);
+    triggerHaptic();
+    updateDrumSubtexts();
+    calculate(true);
+  }
+
+  function stepDrum(type, delta) {
+    setDrumValue(type, drumValues[type] + delta, true);
+  }
+
   function getUnitSingleCost() {
-    const diffMultipliers = { facil: 0.85, medio: 1.0, dificil: 1.08, inestouravel: 1.20 };
-    const mult = diffMultipliers[currentDifficulty] || 1.0;
+    const mult = DIFF_MULTIPLIERS[currentDifficulty] || 1.0;
     const currentName = paragonsData[selectedParagonIndex] ? paragonsData[selectedParagonIndex].nome.toUpperCase() : 'DARDO';
     const baseCost040 = TOWER_040_PRICES[currentName] || 8000;
     return Math.round(baseCost040 * mult);
   }
 
-  function setupDrum(type, viewportId, trackId) {
-    const track = document.getElementById(trackId);
-    const viewport = document.getElementById(viewportId);
-    const limits = DRUM_LIMITS[type];
-
-    track.innerHTML = '';
-    for (let i = limits.min; i <= limits.max; i++) {
-      const el = document.createElement('div');
-      el.className = `drum-roll-item ${i === drumValues[type] ? 'active' : ''}`;
-      el.innerText = i;
-      track.appendChild(el);
-    }
-
-    function renderPosition() {
-      const offset = 24 - (drumValues[type] * ITEM_HEIGHT);
-      track.style.transform = `translateY(${offset}px)`;
-
-      const items = track.children;
-      for (let i = 0; i < items.length; i++) {
-        items[i].classList.toggle('active', i === drumValues[type]);
-      }
-    }
-
-    renderPosition();
-
-    viewport.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      const delta = e.deltaY > 0 ? 1 : -1;
-      setDrumValue(type, drumValues[type] + delta, renderPosition);
-    }, { passive: false });
-
-    let startY = 0;
-    let accumulated = 0;
-
-    viewport.addEventListener('touchstart', (e) => {
-      startY = e.touches[0].clientY;
-      accumulated = 0;
-    }, { passive: true });
-
-    viewport.addEventListener('touchmove', (e) => {
-      const currentY = e.touches[0].clientY;
-      const diff = startY - currentY;
-      accumulated += diff;
-      startY = currentY;
-
-      if (Math.abs(accumulated) >= 14) {
-        const step = accumulated > 0 ? 1 : -1;
-        setDrumValue(type, drumValues[type] + step, renderPosition);
-        accumulated = 0;
-      }
-    }, { passive: true });
-  }
-
-  function setDrumValue(type, val, callback) {
-    const limits = DRUM_LIMITS[type];
-    const clamped = Math.max(limits.min, Math.min(limits.max, val));
-    if (clamped !== drumValues[type]) {
-      drumValues[type] = clamped;
-      callback();
-      updateDrumSubtexts();
-      calculate();
-    }
-  }
-
   function updateDrumSubtexts() {
     const costEach = getUnitSingleCost();
     const totalCash = drumValues.unit * costEach;
-    document.getElementById('unitSubtext').innerText = formatMoney(totalCash);
-    document.getElementById('t5Subtext').innerText = `+${formatNumber(drumValues.t5 * 6000)} pts`;
-    document.getElementById('totemSubtext').innerText = `+${formatNumber(drumValues.totem * 2000)} pts`;
+    document.getElementById('unitSubtext').textContent = formatMoney(totalCash);
+    document.getElementById('t5Subtext').textContent = `+${formatNumber(drumValues.t5 * 6000)} pts`;
+    document.getElementById('totemSubtext').textContent = `+${formatNumber(drumValues.totem * 2000)} pts`;
   }
 
+  /* =========================================================================
+     7. SINCRONIZAÇÃO DE POPS & FARM
+     ========================================================================= */
   function syncPopsFromSlider() {
-    const val = parseInt(document.getElementById('popsSlider').value) || 0;
-    document.getElementById('popsInput').value = formatShortNumber(val);
-    calculate();
+    const slider = document.getElementById('popsSlider');
+    const val = parseInt(slider.value, 10) || 0;
+    document.getElementById('popsInput').value = val === 0 ? '0' : formatShortNumber(val);
+    updateSliderFill(slider);
+    calculate(false);
   }
 
   function syncPopsFromText() {
     const val = parseSmartNumber(document.getElementById('popsInput').value);
-    document.getElementById('popsSlider').value = Math.min(POPS_CAP, val);
-    calculate();
+    const slider = document.getElementById('popsSlider');
+    slider.value = Math.min(POPS_CAP, val);
+    updateSliderFill(slider);
+    calculate(false);
   }
 
   function syncFarmFromSlider() {
-    const val = parseInt(document.getElementById('farmSlider').value) || 0;
-    document.getElementById('farmInput').value = formatShortNumber(val);
-    calculate();
+    const slider = document.getElementById('farmSlider');
+    const val = parseInt(slider.value, 10) || 0;
+    document.getElementById('farmInput').value = val === 0 ? '0' : formatShortNumber(val);
+    updateSliderFill(slider);
+    calculate(false);
   }
 
   function syncFarmFromText() {
     const val = parseSmartNumber(document.getElementById('farmInput').value);
-    document.getElementById('farmSlider').value = Math.min(FARM_CAP, val);
-    calculate();
+    const slider = document.getElementById('farmSlider');
+    slider.value = Math.min(FARM_CAP, val);
+    updateSliderFill(slider);
+    calculate(false);
   }
 
-  function formatShortNumber(num) {
-    if (num >= 1e6) {
-      return (num / 1e6).toFixed(1).replace('.0', '') + 'm';
-    }
-    if (num >= 1e3) {
-      return (num / 1e3).toFixed(0) + 'k';
-    }
-    return String(num);
-  }
-
-  async function fetchSheetData(sheetName, query = 'SELECT *') {
-    const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?sheet=${encodeURIComponent(sheetName)}&tq=${encodeURIComponent(query)}`;
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`Falha HTTP ${response.status}`);
-    const text = await response.text();
-    const jsonString = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-    const json = JSON.parse(jsonString);
-    return json.table;
-  }
-
-  async function syncWithSpreadsheet() {
-    const statusText = document.getElementById('statusText');
-    const statusDot = document.getElementById('statusDot');
-
-    try {
-      const tablePrecos = await fetchSheetData('PreçoParagon');
-      paragonsData = [];
-
-      tablePrecos.rows.forEach(r => {
-        const c = r.c;
-        if (!c || !c[1] || !c[1].v) return;
-        const nome = String(c[1].v).trim();
-        if (nome === 'PARAGON' || !nome) return;
-
-        const parseCell = (cell) => {
-          if (!cell || cell.v == null) return 0;
-          if (typeof cell.v === 'number') return cell.v;
-          return parseFloat(String(cell.v).replace(/\./g, '').replace(',', '.')) || 0;
-        };
-
-        const facil = parseCell(c[2]);
-        const medio = parseCell(c[3]);
-        const dificil = parseCell(c[4]);
-        const inestouravel = parseCell(c[5]);
-
-        const meta = TOWER_CATEGORIES[nome.toUpperCase()] || { cat: 'cat-primary', short: nome, col: 'colPrimary', order: 99 };
-
-        paragonsData.push({
-          nome: nome,
-          shortName: meta.short,
-          cat: meta.cat,
-          col: meta.col,
-          order: meta.order,
-          facil: facil || Math.round(medio * 0.85),
-          medio: medio,
-          dificil: dificil || Math.round(medio * 1.08),
-          inestouravel: inestouravel || Math.round(medio * 1.20)
-        });
-      });
-
-      paragonsData.sort((a, b) => a.order - b.order);
-
-      const tablePoder = await fetchSheetData('CustoExcelência');
-      powerTable = [];
-
-      tablePoder.rows.forEach(r => {
-        const c = r.c;
-        if (!c || c[0] == null || c[1] == null) return;
-        const grau = parseInt(c[0].v);
-        const parseCell = (cell) => {
-          if (!cell || cell.v == null) return 0;
-          if (typeof cell.v === 'number') return cell.v;
-          return parseFloat(String(cell.v).replace(/\./g, '').replace(',', '.')) || 0;
-        };
-        const energia = parseCell(c[1]);
-
-        if (!isNaN(grau) && grau >= 1 && grau <= 100) {
-          powerTable[grau - 1] = energia;
-        }
-      });
-
-      renderColumns();
-
-      setupDrum('unit', 'viewportUnit', 'trackUnit');
-      setupDrum('t5', 'viewportT5', 'trackT5');
-      setupDrum('totem', 'viewportTotem', 'trackTotem');
-
-      updateDrumSubtexts();
-
-      statusDot.className = 'status-dot active';
-      statusText.innerText = `Sincronizado (${paragonsData.length} paragons)`;
-      
-      updateSliderConstraints();
-      calculate();
-
-    } catch (err) {
-      console.warn('Fallback offline ativado:', err);
-      statusDot.className = 'status-dot error';
-      statusText.innerText = 'Modo Local / Fallback';
-      loadFallbackData();
-    }
+  /* =========================================================================
+     8. TEMA DINÂMICO, SELEÇÃO DE PARAGON E DIFICULDADE
+     ========================================================================= */
+  function applyCategoryTheme() {
+    const current = paragonsData[selectedParagonIndex];
+    const cat = current ? current.cat : 'cat-primary';
+    const hex = CATEGORY_ACCENT_HEX[cat] || '#38bdf8';
+    document.documentElement.style.setProperty('--theme-accent', hex);
   }
 
   function renderColumns() {
@@ -1086,85 +2151,67 @@
       const container = document.getElementById(p.col);
       if (!container) return;
 
-      const btn = document.createElement('div');
+      const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = `btn-item ${p.cat} ${idx === selectedParagonIndex ? 'active' : ''}`;
-      btn.innerText = p.shortName;
+      btn.textContent = p.shortName;
       btn.id = `paragon-btn-${idx}`;
-      btn.onclick = () => selectParagon(idx);
+      btn.setAttribute('aria-pressed', String(idx === selectedParagonIndex));
+      btn.addEventListener('click', () => selectParagon(idx));
       container.appendChild(btn);
     });
   }
 
   function selectParagon(idx) {
-    selectedParagonIndex = idx;
-    document.querySelectorAll('.col-category .btn-item:not(.diff-btn)').forEach(btn => {
-      btn.classList.remove('active');
-    });
-    const activeBtn = document.getElementById(`paragon-btn-${idx}`);
-    if (activeBtn) activeBtn.classList.add('active');
+    if (idx === selectedParagonIndex) return;
+    runWithViewTransition(() => {
+      selectedParagonIndex = idx;
+      document.querySelectorAll('.col-category .btn-item:not(.diff-btn)').forEach(btn => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-pressed', 'false');
+      });
+      const activeBtn = document.getElementById(`paragon-btn-${idx}`);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.setAttribute('aria-pressed', 'true');
+      }
 
-    updateDrumSubtexts();
-    updateSliderConstraints();
-    if (selectedDegreeTarget !== null) fitToDegree(selectedDegreeTarget);
-    else calculate();
+      applyCategoryTheme();
+      updateDrumSubtexts();
+      updateSliderConstraints();
+
+      if (selectedDegreeTarget !== null) {
+        fitToDegree(selectedDegreeTarget);
+      } else {
+        calculate(true);
+      }
+    });
   }
 
   function setDifficulty(diff) {
-    currentDifficulty = diff;
-    document.querySelectorAll('.diff-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.diff === diff);
+    if (diff === currentDifficulty) return;
+    runWithViewTransition(() => {
+      currentDifficulty = diff;
+      document.querySelectorAll('.diff-btn').forEach(btn => {
+        const isActive = btn.dataset.diff === diff;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
+      });
+
+      updateDrumSubtexts();
+      updateSliderConstraints();
+
+      if (selectedDegreeTarget !== null) {
+        fitToDegree(selectedDegreeTarget);
+      } else {
+        calculate(true);
+      }
     });
-    updateDrumSubtexts();
-    updateSliderConstraints();
-    if (selectedDegreeTarget !== null) fitToDegree(selectedDegreeTarget);
-    else calculate();
   }
 
-  function loadFallbackData() {
-    const rawFallback = [
-      { nome: "DARDO", facil: 127000, medio: 150000, dificil: 162000, inestouravel: 180000 },
-      { nome: "BOOMERANG", facil: 318750, medio: 375000, dificil: 405000, inestouravel: 450000 },
-      { nome: "TACHINHA", facil: 170000, medio: 200000, dificil: 216000, inestouravel: 240000 },
-      { nome: "GELO", facil: 255000, medio: 300000, dificil: 324000, inestouravel: 360000 },
-      { nome: "BOMBARDEIRO", facil: 510000, medio: 600000, dificil: 648000, inestouravel: 720000 },
-      { nome: "ATIRADOR", facil: 680000, medio: 800000, dificil: 864000, inestouravel: 960000 },
-      { nome: "BUCANEIRO", facil: 467500, medio: 550000, dificil: 594000, inestouravel: 660000 },
-      { nome: "ÁS", facil: 765000, medio: 900000, dificil: 972000, inestouravel: 1080000 },
-      { nome: "SUB", facil: 340000, medio: 400000, dificil: 432000, inestouravel: 480000 },
-      { nome: "MAGO", facil: 680000, medio: 800000, dificil: 864000, inestouravel: 960000 },
-      { nome: "NINJA", facil: 425000, medio: 500000, dificil: 594000, inestouravel: 660000 },
-      { nome: "DRUIDA", facil: 403750, medio: 475000, dificil: 513000, inestouravel: 570000 },
-      { nome: "ENGENHEIRO", facil: 552500, medio: 650000, dificil: 702000, inestouravel: 780000 },
-      { nome: "USINA", facil: 637500, medio: 750000, dificil: 810000, inestouravel: 900000 }
-    ];
-
-    paragonsData = rawFallback.map(p => {
-      const meta = TOWER_CATEGORIES[p.nome.toUpperCase()] || { cat: 'cat-primary', short: p.nome, col: 'colPrimary', order: 99 };
-      return { ...p, shortName: meta.short, cat: meta.cat, col: meta.col, order: meta.order };
-    }).sort((a, b) => a.order - b.order);
-
-    powerTable = [
-      0, 2000, 2324, 2666, 3027, 3408, 3808, 4228, 4669, 5131,
-      5615, 6121, 6650, 7203, 7779, 8379, 9004, 9654, 10330, 11032,
-      11761, 12518, 13302, 14114, 14955, 15825, 16725, 17655, 18616, 19609,
-      20633, 21689, 22778, 23900, 25056, 26246, 27471, 28732, 30028, 31360,
-      32729, 34135, 35579, 37061, 38582, 40143, 41743, 43383, 45064, 46786,
-      48550, 50356, 52205, 54098, 56034, 58014, 60039, 62109, 64225, 66387,
-      68596, 70853, 73157, 75509, 77910, 80360, 82860, 85410, 88011, 90664,
-      93368, 96124, 98933, 101795, 104711, 107681, 110706, 113787, 116923, 120115,
-      123364, 126670, 130034, 133456, 136937, 140478, 144078, 147738, 151459, 155241,
-      159085, 162991, 166960, 170993, 175089, 179249, 183474, 187764, 192120, 200000
-    ];
-
-    renderColumns();
-    setupDrum('unit', 'viewportUnit', 'trackUnit');
-    setupDrum('t5', 'viewportT5', 'trackT5');
-    setupDrum('totem', 'viewportTotem', 'trackTotem');
-    updateDrumSubtexts();
-    updateSliderConstraints();
-    calculate();
-  }
-
+  /* =========================================================================
+     9. MATEMÁTICA E FÓRMULAS EXATAS DE ENERGIA DO PARAGON
+     ========================================================================= */
   function getRequiredPower(degree) {
     if (degree <= 1) return 0;
     if (degree >= 100) return 200000;
@@ -1192,8 +2239,11 @@
     const maxVal = getMaxSliderCash();
     const slider = document.getElementById('cashSlider');
     slider.max = maxVal;
-    if (parseFloat(slider.value) > maxVal) slider.value = maxVal;
-    document.getElementById('sliderMaxLabel').innerText = `Máx: ${formatMoney(maxVal)}`;
+    if (parseFloat(slider.value) > maxVal) {
+      slider.value = maxVal;
+    }
+    updateSliderFill(slider);
+    document.getElementById('sliderMaxLabel').textContent = `Máx: ${formatMoney(maxVal)}`;
   }
 
   function clearDegreeTarget() {
@@ -1202,65 +2252,63 @@
 
   function resetSlider() {
     clearDegreeTarget();
-    document.getElementById('cashSlider').value = 0;
-    calculate();
+    const slider = document.getElementById('cashSlider');
+    slider.value = 0;
+    updateSliderFill(slider);
+    triggerHaptic();
+    calculate(true);
   }
 
   function fitToDegree(targetDeg) {
     selectedDegreeTarget = targetDeg;
     const baseCost = getBaseParagonCost();
+    const maxSliderCash = getMaxSliderCash();
     const targetPower = getRequiredPower(targetDeg);
     const nonSliderPower = getNonSliderPower();
     const neededPower = Math.max(0, targetPower - nonSliderPower);
 
     const currentSacPower = getTowerSacrificePower();
     const availableCashPowerSlot = Math.max(0, MAX_CASH_CATEGORY_POWER - currentSacPower);
-
     const sliderPowerToFill = Math.min(availableCashPowerSlot, neededPower);
 
     const neededCash = (sliderPowerToFill / MAX_CASH_CATEGORY_POWER) * (baseCost * 4.2);
     const slider = document.getElementById('cashSlider');
-    slider.value = Math.min(getMaxSliderCash(), Math.ceil(neededCash / 1000) * 1000);
+    slider.value = Math.min(maxSliderCash, Math.ceil(neededCash / 1000) * 1000);
+    updateSliderFill(slider);
 
-    calculate();
+    triggerHaptic();
+    calculate(true);
   }
 
   function updateDegreeShortcuts(nonSliderPower) {
-    const container = document.getElementById('degreeShortcutsContainer');
     const baseCost = getBaseParagonCost();
     const currentSacPower = getTowerSacrificePower();
     const availableCashPowerSlot = Math.max(0, MAX_CASH_CATEGORY_POWER - currentSacPower);
 
-    container.innerHTML = '';
-
     KEY_DEGREES.forEach(deg => {
+      const ref = shortcutButtonRefs.get(deg);
+      if (!ref) return;
+
       const targetPower = getRequiredPower(deg);
       const neededPower = Math.max(0, targetPower - nonSliderPower);
+      const isSelected = deg === selectedDegreeTarget;
 
-      const btn = document.createElement('button');
-      btn.className = 'btn-degree-target';
-      if (deg === selectedDegreeTarget) btn.classList.add('selected');
-      btn.setAttribute('aria-pressed', String(deg === selectedDegreeTarget));
+      ref.btn.classList.toggle('selected', isSelected);
+      ref.btn.setAttribute('aria-pressed', String(isSelected));
 
-      let costLabel = '';
       if (neededPower === 0) {
-        btn.classList.add('reached');
-        costLabel = 'Atingido';
+        ref.btn.classList.add('reached');
+        ref.btn.classList.remove('unreachable');
+        ref.costSpan.textContent = 'Atingido';
       } else if (neededPower > availableCashPowerSlot) {
-        btn.classList.add('unreachable');
-        costLabel = 'Excede';
+        ref.btn.classList.add('unreachable');
+        ref.btn.classList.remove('reached');
+        ref.costSpan.textContent = 'Excede';
       } else {
+        ref.btn.classList.remove('reached', 'unreachable');
         const cashNeeded = (neededPower / MAX_CASH_CATEGORY_POWER) * (baseCost * 4.2);
-        costLabel = formatMoney(cashNeeded);
+        ref.costSpan.textContent = formatMoney(cashNeeded);
       }
-
-      btn.innerHTML = `
-        <span class="deg-label">Grau ${deg}</span>
-        <span class="deg-cost">${costLabel}</span>
-      `;
-
-      btn.onclick = () => fitToDegree(deg);
-      container.appendChild(btn);
     });
   }
 
@@ -1284,7 +2332,6 @@
   function getTowerSacrificePower() {
     const baseCost = getBaseParagonCost();
     const costPerPowerPoint = baseCost / 20000;
-
     const unitCash = drumValues.unit * getUnitSingleCost();
     const rawSacPower = Math.floor(unitCash / costPerPowerPoint);
     return Math.min(MAX_CASH_CATEGORY_POWER, rawSacPower);
@@ -1293,65 +2340,462 @@
   function getNonSliderPower() {
     const combat = getCombatPowerAndStats();
     const sacrificePower = getTowerSacrificePower();
-
     const t5Power = Math.min(50000, drumValues.t5 * 6000);
     const totemPower = drumValues.totem * 2000;
-
     return combat.clampedTotal + sacrificePower + t5Power + totemPower;
   }
 
-  function calculate() {
+  function getBossTierLabel(degree) {
+    if (degree >= 100) return 'PARAGON PERFEITO ★';
+    if (degree >= 80) return 'TIER BOSS IV • 80+';
+    if (degree >= 60) return 'TIER BOSS III • 60+';
+    if (degree >= 40) return 'TIER BOSS II • 40+';
+    if (degree >= 20) return 'TIER BOSS I • 20+';
+    return 'BASE • GRAU 1–19';
+  }
+
+  function calculate(animateNumbers = false) {
     const baseCost = getBaseParagonCost();
 
-    // 1. Combate & Farm
+    // 1. Pops & Farm
     const combat = getCombatPowerAndStats();
-    document.getElementById('barPops').style.width = combat.popPct + '%';
-    document.getElementById('barFarm').style.width = combat.farmPct + '%';
-    document.getElementById('lblCombatPct').innerText = `${Math.round(combat.totalPct)}%`;
+    document.getElementById('barPops').style.width = `${combat.popPct}%`;
+    document.getElementById('barFarm').style.width = `${combat.farmPct}%`;
+    document.getElementById('lblCombatPct').textContent = `${Math.round(combat.totalPct)}%`;
 
     // 2. Sacrifício em Torres 0/4/0
     const unitCash = drumValues.unit * getUnitSingleCost();
     const towerSacPower = getTowerSacrificePower();
 
-    // 3. Bônus Extras
+    // 3. T5 Extras & Totens
     const t5Power = Math.min(50000, drumValues.t5 * 6000);
     const totemPower = drumValues.totem * 2000;
 
     // 4. Slider de Investimento
     const sliderCash = parseFloat(document.getElementById('cashSlider').value) || 0;
     const maxSliderCash = getMaxSliderCash();
-    const rawSliderPower = Math.floor((sliderCash / maxSliderCash) * MAX_CASH_CATEGORY_POWER);
-
+    const rawSliderPower = maxSliderCash > 0 ? Math.floor((sliderCash / maxSliderCash) * MAX_CASH_CATEGORY_POWER) : 0;
     const combinedCashPower = Math.min(MAX_CASH_CATEGORY_POWER, towerSacPower + rawSliderPower);
 
+    // Visibilidade do botão Zerar
+    document.getElementById('btnResetSlider').disabled = sliderCash <= 0;
+
+    // 5. Energia Total e Grau
     const nonSliderPower = combat.clampedTotal + towerSacPower + t5Power + totemPower;
     const totalPower = combat.clampedTotal + combinedCashPower + t5Power + totemPower;
     const currentDegree = getDegreeFromPower(totalPower);
 
+    if (isBootReady && currentDegree !== lastCalculatedDegree) {
+      triggerHaptic();
+    }
+    const degreeChanged = currentDegree !== lastCalculatedDegree;
+    lastCalculatedDegree = currentDegree;
+
     updateDegreeShortcuts(nonSliderPower);
 
-    // 5. Interface
+    // 6. Atualização de Textos e Números Animados
     const diffNames = { facil: 'FÁCIL', medio: 'MÉDIO', dificil: 'DIFÍCIL', inestouravel: 'INEST.' };
     const currentParagon = paragonsData[selectedParagonIndex];
     const paragonName = currentParagon ? currentParagon.nome : 'PARAGON';
-    document.getElementById('currentParagonSummaryLabel').innerText = `${paragonName} (${diffNames[currentDifficulty]})`;
-    document.getElementById('fixedParagonPriceDisplay').innerText = formatMoney(baseCost);
 
-    document.getElementById('sliderValDisplay').innerText = formatMoney(sliderCash);
-    document.getElementById('currentDegreeDisplay').innerText = `Grau ${currentDegree}`;
+    document.getElementById('currentParagonSummaryLabel').textContent = `${paragonName} (${diffNames[currentDifficulty]})`;
+    document.getElementById('sliderValDisplay').textContent = formatMoney(sliderCash);
 
-    document.getElementById('totalSpentOverall').innerText = formatMoney(baseCost + sliderCash + unitCash);
+    const totalSpent = baseCost + sliderCash + unitCash;
 
-    const progressPercent = Math.min(100, (totalPower / 200000) * 100);
-    document.getElementById('energyProgressBar').style.width = `${progressPercent}%`;
-    document.getElementById('energyRatio').innerText = `${formatNumber(totalPower)} / 200.000 Energia (${progressPercent.toFixed(1)}%)`;
+    animateMetric('basePrice', baseCost, document.getElementById('fixedParagonPriceDisplay'), formatMoney, animateNumbers);
+    animateMetric('totalSpent', totalSpent, document.getElementById('totalSpentOverall'), formatMoney, animateNumbers);
+    animateMetric('degree', currentDegree, document.getElementById('currentDegreeDisplay'), (v) => String(v), animateNumbers || degreeChanged);
+
+    // 7. Medidor Radial SVG (alinhado exatamente aos Graus 20, 40, 60, 80, 100)
+    let gaugePct = 1;
+    if (currentDegree >= 100) {
+      gaugePct = 100;
+    } else if (currentDegree === 1) {
+      const req2 = getRequiredPower(2) || 2000;
+      gaugePct = 1 + Math.min(1, totalPower / req2);
+    } else {
+      const reqCurr = getRequiredPower(currentDegree);
+      const reqNext = getRequiredPower(currentDegree + 1);
+      const span = Math.max(1, reqNext - reqCurr);
+      const frac = Math.min(1, Math.max(0, (totalPower - reqCurr) / span));
+      gaugePct = currentDegree + frac;
+    }
+
+    const dashOffset = Math.max(0, 100 - gaugePct);
+    document.getElementById('gaugeProgressArc').style.strokeDashoffset = dashOffset.toFixed(2);
+
+    BOSS_MILESTONES.forEach(m => {
+      const ref = gaugeTickRefs.get(m);
+      if (!ref) return;
+      const isReached = currentDegree >= m;
+      ref.line.classList.toggle('reached', isReached);
+      ref.label.classList.toggle('reached', isReached);
+    });
+
+    const bossBadge = document.getElementById('bossTierBadge');
+    bossBadge.textContent = getBossTierLabel(currentDegree);
+    bossBadge.classList.toggle('maxed', currentDegree >= 100);
+
+    // 8. Atualização do Popover de Detalhamento
+    updateBreakdownPopover(combat, towerSacPower, rawSliderPower, combinedCashPower, t5Power, totemPower);
   }
 
-  if (window.lucide) window.lucide.createIcons();
-  else window.addEventListener('DOMContentLoaded', () => {
+  function updateBreakdownPopover(combat, towerSacPower, rawSliderPower, combinedCashPower, t5Power, totemPower) {
+    document.getElementById('popBreakCombat').textContent = `${formatNumber(combat.clampedTotal)} / 125.000`;
+    document.getElementById('barBreakCombat').style.width = `${Math.min(100, (combat.clampedTotal / 125000) * 100)}%`;
+    document.getElementById('subBreakCombat').textContent =
+      `Pops: ${formatNumber(combat.rawPopPower)} pts • Farm: ${formatNumber(combat.rawFarmPower)} pts`;
+
+    document.getElementById('popBreakCash').textContent = `${formatNumber(combinedCashPower)} / 80.000`;
+    document.getElementById('barBreakCash').style.width = `${Math.min(100, (combinedCashPower / 80000) * 100)}%`;
+    document.getElementById('subBreakCash').textContent =
+      `Torres 0/4/0: ${formatNumber(towerSacPower)} pts • Slider: ${formatNumber(rawSliderPower)} pts`;
+
+    document.getElementById('popBreakT5').textContent = `${formatNumber(t5Power)} / 50.000`;
+    document.getElementById('barBreakT5').style.width = `${Math.min(100, (t5Power / 50000) * 100)}%`;
+    document.getElementById('subBreakT5').textContent =
+      `${drumValues.t5} T5 extra(s) × 6.000 pts (teto de 50.000 pts)`;
+
+    document.getElementById('popBreakTotem').textContent = `+${formatNumber(totemPower)} pts`;
+    document.getElementById('barBreakTotem').style.width = `${Math.min(100, (drumValues.totem / 60) * 100)}%`;
+    document.getElementById('subBreakTotem').textContent =
+      `${drumValues.totem} totem(ns) × 2.000 pts`;
+  }
+
+  /* =========================================================================
+     10. COMPARTILHAMENTO E RESTAURAÇÃO DE SETUP POR URL
+     ========================================================================= */
+  function copyTextToClipboard(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.top = '-9999px';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    let copied = false;
+    try {
+      copied = document.execCommand('copy');
+    } catch (_) {
+      copied = false;
+    }
+    document.body.removeChild(textarea);
+    return copied;
+  }
+
+  function shareSetup() {
+    const cash = Math.round(parseFloat(document.getElementById('cashSlider').value) || 0);
+    const pops = parseSmartNumber(document.getElementById('popsInput').value);
+    const farm = parseSmartNumber(document.getElementById('farmInput').value);
+
+    const params = new URLSearchParams();
+    params.set('p', String(selectedParagonIndex));
+    params.set('d', currentDifficulty);
+    params.set('c', String(cash));
+    params.set('u', String(drumValues.unit));
+    params.set('t5', String(drumValues.t5));
+    params.set('tot', String(drumValues.totem));
+    params.set('pops', String(pops));
+    params.set('farm', String(farm));
+
+    try {
+      window.history.replaceState(null, '', `?${params.toString()}`);
+    } catch (_) {
+      // Ignorado se o ambiente de preview restringir history.replaceState
+    }
+
+    const cleanBase = window.location.href.split('?')[0].split('#')[0];
+    const shareUrl = `${cleanBase}?${params.toString()}`;
+    copyTextToClipboard(shareUrl);
+    triggerHaptic();
+
+    const btn = document.getElementById('shareSetupBtn');
+    const lbl = document.getElementById('shareSetupLabel');
+    btn.classList.add('copied');
+    lbl.textContent = 'Link copiado!';
+
+    clearTimeout(shareSetup._timer);
+    shareSetup._timer = setTimeout(() => {
+      btn.classList.remove('copied');
+      lbl.textContent = 'Compartilhar Setup';
+    }, 2200);
+  }
+
+  function restoreSetupFromURL() {
+    let params;
+    try {
+      params = new URLSearchParams(window.location.search);
+    } catch (_) {
+      return;
+    }
+
+    if (![...params.keys()].length) return;
+
+    const d = params.get('d');
+    if (d && DIFF_MULTIPLIERS[d]) {
+      currentDifficulty = d;
+      document.querySelectorAll('.diff-btn').forEach(btn => {
+        const isActive = btn.dataset.diff === d;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
+      });
+    }
+
+    if (params.has('p')) {
+      const pIdx = parseInt(params.get('p'), 10);
+      if (!isNaN(pIdx) && pIdx >= 0 && pIdx < paragonsData.length) {
+        selectedParagonIndex = pIdx;
+      }
+    }
+
+    renderColumns();
+    applyCategoryTheme();
+    updateSliderConstraints();
+
+    if (params.has('u')) {
+      const u = parseInt(params.get('u'), 10);
+      if (!isNaN(u)) drumValues.unit = Math.max(0, Math.min(DRUM_LIMITS.unit.max, u));
+    }
+    if (params.has('t5')) {
+      const t5 = parseInt(params.get('t5'), 10);
+      if (!isNaN(t5)) drumValues.t5 = Math.max(0, Math.min(DRUM_LIMITS.t5.max, t5));
+    }
+    if (params.has('tot')) {
+      const tot = parseInt(params.get('tot'), 10);
+      if (!isNaN(tot)) drumValues.totem = Math.max(0, Math.min(DRUM_LIMITS.totem.max, tot));
+    }
+
+    ['unit', 't5', 'totem'].forEach(type => {
+      syncDrumActiveVisuals(type);
+      scrollDrumToValue(type, drumValues[type], false);
+    });
+
+    if (params.has('c')) {
+      const cash = Math.max(0, parseInt(params.get('c'), 10) || 0);
+      const cashSlider = document.getElementById('cashSlider');
+      cashSlider.value = Math.min(getMaxSliderCash(), cash);
+    }
+
+    if (params.has('pops')) {
+      const pops = Math.max(0, parseInt(params.get('pops'), 10) || 0);
+      document.getElementById('popsInput').value = pops === 0 ? '0' : formatShortNumber(pops);
+      document.getElementById('popsSlider').value = Math.min(POPS_CAP, pops);
+    }
+
+    if (params.has('farm')) {
+      const farm = Math.max(0, parseInt(params.get('farm'), 10) || 0);
+      document.getElementById('farmInput').value = farm === 0 ? '0' : formatShortNumber(farm);
+      document.getElementById('farmSlider').value = Math.min(FARM_CAP, farm);
+    }
+
+    updateDrumSubtexts();
+    updateAllSliderFills();
+  }
+
+  /* =========================================================================
+     11. CACHE INSTANTÂNEO (STALE-WHILE-REVALIDATE) + GOOGLE SHEETS PROMISE.ALL
+     ========================================================================= */
+  function setSyncBadge(mode, text) {
+    const dot = document.getElementById('statusDot');
+    const lbl = document.getElementById('statusText');
+    dot.className = `status-dot ${mode}`;
+    lbl.textContent = text;
+  }
+
+  function buildEnrichedParagons(rawList) {
+    return rawList.map(p => {
+      const meta = TOWER_CATEGORIES[p.nome.toUpperCase()] || {
+        cat: 'cat-primary',
+        short: p.nome,
+        col: 'colPrimary',
+        order: 99
+      };
+      return {
+        ...p,
+        shortName: meta.short,
+        cat: meta.cat,
+        col: meta.col,
+        order: meta.order
+      };
+    }).sort((a, b) => a.order - b.order);
+  }
+
+  function loadFallbackData() {
+    paragonsData = buildEnrichedParagons(FALLBACK_PARAGONS_RAW);
+    powerTable = [...FALLBACK_POWER_TABLE];
+  }
+
+  function tryLoadCache() {
+    try {
+      const raw = localStorage.getItem(CACHE_STORAGE_KEY);
+      if (!raw) return false;
+      const parsed = JSON.parse(raw);
+      if (
+        Array.isArray(parsed.paragonsData) &&
+        parsed.paragonsData.length > 0 &&
+        Array.isArray(parsed.powerTable) &&
+        parsed.powerTable.length === 100
+      ) {
+        paragonsData = parsed.paragonsData;
+        powerTable = parsed.powerTable;
+        return true;
+      }
+    } catch (_) {
+      // Ignorado se localStorage estiver indisponível
+    }
+    return false;
+  }
+
+  function saveCache() {
+    try {
+      localStorage.setItem(CACHE_STORAGE_KEY, JSON.stringify({
+        paragonsData,
+        powerTable,
+        savedAt: Date.now()
+      }));
+    } catch (_) {
+      // Ignorado se localStorage estiver bloqueado
+    }
+  }
+
+  async function fetchSheetData(sheetName) {
+    const query = 'SELECT *';
+    const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?sheet=${encodeURIComponent(sheetName)}&tq=${encodeURIComponent(query)}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Falha HTTP ${response.status}`);
+    const text = await response.text();
+    const jsonString = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+    const json = JSON.parse(jsonString);
+    return json.table;
+  }
+
+  function parseCellNumber(cell) {
+    if (!cell || cell.v == null) return 0;
+    if (typeof cell.v === 'number') return cell.v;
+    return parseFloat(String(cell.v).replace(/\./g, '').replace(',', '.')) || 0;
+  }
+
+  async function initAppAndSync() {
+    initRadialGauge();
+    initDegreeShortcuts();
+
+    // 1. Renderização instantânea em 0ms (Cache Local ou Fallback inicial)
+    const hadCache = tryLoadCache();
+    if (!hadCache) {
+      loadFallbackData();
+      setSyncBadge('', 'Sincronizando...');
+    } else {
+      setSyncBadge('cache', 'Cache Local');
+    }
+
+    renderColumns();
+    applyCategoryTheme();
+    setupDrum('unit');
+    setupDrum('t5');
+    setupDrum('totem');
+    updateSliderConstraints();
+    updateDrumSubtexts();
+    updateAllSliderFills();
+    restoreSetupFromURL();
+    calculate(false);
+    isBootReady = true;
+
+    // 2. Revalidação em paralelo das duas abas no Google Sheets
+    try {
+      const currentParagonName = paragonsData[selectedParagonIndex]?.nome;
+
+      const [tablePrecos, tablePoder] = await Promise.all([
+        fetchSheetData('PreçoParagon'),
+        fetchSheetData('CustoExcelência')
+      ]);
+
+      const freshParagonsRaw = [];
+      tablePrecos.rows.forEach(r => {
+        const c = r.c;
+        if (!c || !c[1] || !c[1].v) return;
+        const nome = String(c[1].v).trim();
+        if (nome === 'PARAGON' || !nome) return;
+
+        const facil = parseCellNumber(c[2]);
+        const medio = parseCellNumber(c[3]);
+        const dificil = parseCellNumber(c[4]);
+        const inestouravel = parseCellNumber(c[5]);
+
+        freshParagonsRaw.push({
+          nome,
+          facil: facil || Math.round(medio * 0.85),
+          medio,
+          dificil: dificil || Math.round(medio * 1.08),
+          inestouravel: inestouravel || Math.round(medio * 1.20)
+        });
+      });
+
+      const freshPowerTable = [];
+      tablePoder.rows.forEach(r => {
+        const c = r.c;
+        if (!c || c[0] == null || c[1] == null) return;
+        const grau = parseInt(c[0].v, 10);
+        const energia = parseCellNumber(c[1]);
+        if (!isNaN(grau) && grau >= 1 && grau <= 100) {
+          freshPowerTable[grau - 1] = energia;
+        }
+      });
+
+      if (freshParagonsRaw.length > 0 && freshPowerTable.length === 100) {
+        paragonsData = buildEnrichedParagons(freshParagonsRaw);
+        powerTable = freshPowerTable;
+
+        // Mantém o Paragon escolhido pelo usuário após a atualização
+        if (currentParagonName) {
+          const foundIdx = paragonsData.findIndex(p => p.nome === currentParagonName);
+          if (foundIdx >= 0) selectedParagonIndex = foundIdx;
+        }
+
+        saveCache();
+        renderColumns();
+        applyCategoryTheme();
+        updateSliderConstraints();
+        updateDrumSubtexts();
+        calculate(false);
+        setSyncBadge('active', `Sincronizado (${paragonsData.length} paragons)`);
+      }
+    } catch (err) {
+      console.warn('Sincronização remota indisponível:', err);
+      if (hadCache) {
+        setSyncBadge('cache', 'Cache Local');
+      } else {
+        setSyncBadge('error', 'Modo Offline');
+      }
+    }
+  }
+
+  // Fallback seguro caso algum WebView antigo não suporte Popover API nativamente
+  function setupPopoverFallbackIfNeeded() {
+    if ('popover' in HTMLElement.prototype) return;
+    const pop = document.getElementById('powerBreakdownPopover');
+    const openBtn = document.getElementById('openBreakdownBtn');
+    if (!pop || !openBtn) return;
+
+    pop.style.display = 'none';
+    pop.style.position = 'fixed';
+    pop.style.zIndex = '999';
+    openBtn.addEventListener('click', () => {
+      pop.style.display = pop.style.display === 'none' ? 'block' : 'none';
+    });
+    pop.querySelector('.popover-close-btn')?.addEventListener('click', () => {
+      pop.style.display = 'none';
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
     if (window.lucide) window.lucide.createIcons();
+    setupPopoverFallbackIfNeeded();
+    initAppAndSync();
   });
-  syncWithSpreadsheet();
 </script>
 
 </body>
