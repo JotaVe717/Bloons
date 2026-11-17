@@ -374,6 +374,10 @@
     .btn-degree-target.reached .deg-cost { color: var(--green); }
     .btn-degree-target.unreachable { border-color: rgba(239, 68, 68, 0.3); }
     .btn-degree-target.unreachable .deg-cost { color: var(--danger); }
+    .btn-degree-target.selected {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 1px var(--accent-color);
+    }
 
     /* CARD POPS & FARM */
     .card-title {
@@ -668,7 +672,7 @@
           <div class="slider-val-tag" id="sliderValDisplay">$0</div>
         </div>
 
-        <input type="range" class="range-input" id="cashSlider" min="0" max="3780000" step="1000" value="0" oninput="calculate()">
+        <input type="range" class="range-input" id="cashSlider" min="0" max="3780000" step="1000" value="0" oninput="clearDegreeTarget(); calculate()">
 
         <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted);">
           <span>$0</span>
@@ -809,6 +813,7 @@
   let powerTable = [];
   let selectedParagonIndex = 0;
   let currentDifficulty = 'medio';
+  let selectedDegreeTarget = null;
 
   function parseSmartNumber(input) {
     if (!input) return 0;
@@ -1080,7 +1085,8 @@
 
     updateDrumSubtexts();
     updateSliderConstraints();
-    calculate();
+    if (selectedDegreeTarget !== null) fitToDegree(selectedDegreeTarget);
+    else calculate();
   }
 
   function setDifficulty(diff) {
@@ -1090,7 +1096,8 @@
     });
     updateDrumSubtexts();
     updateSliderConstraints();
-    calculate();
+    if (selectedDegreeTarget !== null) fitToDegree(selectedDegreeTarget);
+    else calculate();
   }
 
   function loadFallbackData() {
@@ -1169,12 +1176,18 @@
     document.getElementById('sliderMaxLabel').innerText = `Máx: ${formatMoney(maxVal)}`;
   }
 
+  function clearDegreeTarget() {
+    selectedDegreeTarget = null;
+  }
+
   function resetSlider() {
+    clearDegreeTarget();
     document.getElementById('cashSlider').value = 0;
     calculate();
   }
 
   function fitToDegree(targetDeg) {
+    selectedDegreeTarget = targetDeg;
     const baseCost = getBaseParagonCost();
     const targetPower = getRequiredPower(targetDeg);
     const nonSliderPower = getNonSliderPower();
@@ -1206,6 +1219,8 @@
 
       const btn = document.createElement('button');
       btn.className = 'btn-degree-target';
+      if (deg === selectedDegreeTarget) btn.classList.add('selected');
+      btn.setAttribute('aria-pressed', String(deg === selectedDegreeTarget));
 
       let costLabel = '';
       if (neededPower === 0) {
