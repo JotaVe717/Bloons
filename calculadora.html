@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Calculadora Paragon - BTD6</title>
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
   <style>
     :root {
       --bg-color: #0b0e14;
@@ -33,7 +34,9 @@
     }
 
     body {
+      background: linear-gradient(rgba(8, 14, 24, 0.53), rgba(8, 14, 24, 0.70)), url('bloons/wall2.png') center center / cover fixed no-repeat;
       background-color: var(--bg-color);
+      min-height: 100vh;
       color: var(--text);
       padding: 12px 10px 32px 10px;
       display: flex;
@@ -113,8 +116,30 @@
     .status-dot.error { background-color: var(--danger); }
 
     .card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
+      background-color: rgba(21, 27, 35, 0.93);
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .card-title, .slider-header > div:first-child, header h1 {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    header h1 { justify-content: center; }
+    .card-title svg, .slider-header svg, header h1 svg { width: 17px; height: 17px; flex-shrink: 0; }
+    header h1 svg { width: 22px; height: 22px; }
+    .slider-box {
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+    }
+    @media (max-width: 991px) {
+      body { background-attachment: scroll; }
+    }
+    .card-legacy-placeholder { 
+      /* Keeps original card declarations untouched below. */
       border-radius: 8px;
       padding: 10px 12px;
     }
@@ -597,7 +622,7 @@
 
 <div class="container">
   <header>
-    <h1>Calculadora Paragon</h1>
+    <h1><i data-lucide="target" aria-hidden="true"></i> Calculadora Paragon</h1>
     <div class="status-badge" id="syncStatus">
       <div class="status-dot" id="statusDot"></div>
       <span id="statusText">Conectando à planilha...</span>
@@ -667,7 +692,7 @@
       <div class="card slider-box">
         <div class="slider-header">
           <div>
-            <span style="font-size: 0.74rem; color: var(--accent-color); font-weight: 700; text-transform: uppercase;">Slider de Investimento</span>
+            <i data-lucide="sliders-horizontal" aria-hidden="true"></i><span style="font-size: 0.74rem; color: var(--accent-color); font-weight: 700; text-transform: uppercase;">Slider de Investimento</span>
           </div>
           <div class="slider-val-tag" id="sliderValDisplay">$0</div>
         </div>
@@ -688,7 +713,7 @@
       <!-- 4. TORRES E INVESTIMENTO -->
       <div class="card">
         <div class="card-title">
-          <span>Torres & Investimento</span>
+          <span style="display:inline-flex;align-items:center;gap:7px"><i data-lucide="coins" aria-hidden="true"></i>Torres & Investimento</span>
         </div>
 
         <div class="drum-pickers-row">
@@ -724,7 +749,7 @@
       <!-- 5. POPS & FARM -->
       <div class="card">
         <div class="card-title">
-          <span>Pops & Farm</span>
+          <span style="display:inline-flex;align-items:center;gap:7px"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i>Pops & Farm</span>
           <span class="combat-pct-display" id="lblCombatPct">0%</span>
         </div>
 
@@ -1327,6 +1352,10 @@
     document.getElementById('energyRatio').innerText = `${formatNumber(totalPower)} / 200.000 Energia (${progressPercent.toFixed(1)}%)`;
   }
 
+  if (window.lucide) window.lucide.createIcons();
+  else window.addEventListener('DOMContentLoaded', () => {
+    if (window.lucide) window.lucide.createIcons();
+  });
   syncWithSpreadsheet();
 </script>
 
